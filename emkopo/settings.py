@@ -78,6 +78,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'emkopo.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',  # Keep JSON for other endpoints
+        'rest_framework_xml.parsers.XMLParser',  # Add XMLParser for XML support
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',  # Keep JSON for other endpoints
+        'rest_framework_xml.renderers.XMLRenderer',  # Add XMLRenderer for XML support
+    ]
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
