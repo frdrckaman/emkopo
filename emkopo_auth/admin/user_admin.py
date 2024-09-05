@@ -49,7 +49,7 @@ class UserAdmin(BaseUserAdmin):
             role_names=[role.display_name for role in roles],
             extra_group_names=[grp.name.replace("_", " ") for grp in extra_groups],
         )
-        template_obj = select_idap_template("user_role_description.html", "somans_auth")
+        template_obj = select_idap_template("user_role_description.html", "emkopo_auth")
         return render_to_string(template_obj.template.name, context)
 
     @staticmethod
@@ -68,5 +68,5 @@ class UserAdmin(BaseUserAdmin):
             role_names=[role.display_name for role in roles],
             extra_group_names=[grp.name.replace("_", " ") for grp in extra_groups],
         )
-        template_obj = select_idap_template("user_role_description.html", "somans_auth")
+        template_obj = select_idap_template("user_role_description.html", "emkopo_auth")
         return render_to_string(template_obj.template.name, context)

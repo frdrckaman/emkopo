@@ -19,7 +19,7 @@ def update_roles(groups_by_role_name=None, role_names=None, verbose=None):
     """
     if verbose:
         sys.stdout.write(style.MIGRATE_HEADING("Updating roles:\n"))
-    role_model_cls = django_apps.get_model("somans_auth.role")
+    role_model_cls = django_apps.get_model("emkopo_auth.role")
     group_model_cls = django_apps.get_model("auth.group")
     index = 0
     for role_name, groups in groups_by_role_name.items():

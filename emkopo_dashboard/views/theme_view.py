@@ -18,4 +18,4 @@ def change_theme(request):
             theme_user=request.user,
         )
     app_name = 'emkopo_dashboard'
-    return redirect(reverse(f'{app_name}:{request.GET.get("next")}'))
+    return redirect(reverse(f'{app_name}:welcome'))
