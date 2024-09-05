@@ -4,7 +4,7 @@ EMKOPO
 --------
 
 
-.. |actions| image:: https://github.com/frdrckaman/somans/actions/workflows/build.yml/badge
+.. |actions| image:: https://github.com/frdrckaman/emkopo/actions/workflows/build.yml/badge
 .svg?branch=develop
-  :target: https://github.com/frdrckaman/somans/actions/workflows/build.yml
+  :target: https://github.com/frdrckaman/emkopo/actions/workflows/build.yml
 
