@@ -1,0 +1,28 @@
+<div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
+    <nav class="w-full sm:w-auto sm:mr-auto">
+        <ul class="pagination">
+{#            <li class="page-item">#}
+{#                <a class="page-link" href="#"> <i class="w-4 h-4" data-lucide="chevrons-left"></i> </a>#}
+{#            </li>#}
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ page_obj.previous_page_number }}"> <i class="w-4 h-4" data-lucide="chevron-left"></i> </a>
+                </li>
+            {% endif %}
+            {% for num in num_pages %}
+                <li class="page-item {% if forloop.counter == page_obj.number %}active{% endif %}">
+                    <a href="{{ forloop.counter }}" class="page-link">{{ forloop.counter }}</a>
+                </li>
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ page_obj.next_page_number }}"> <i class="w-4 h-4" data-lucide="chevron-right"></i> </a>
+                </li>
+            {% endif %}
+{#            <li class="page-item">#}
+{#                <a class="page-link" href="{{ Page.end_index }}"> <i class="w-4 h-4" data-lucide="chevrons-right"></i> </a>#}
+{#            </li>#}
+        </ul>
+    </nav>
+</div><br>

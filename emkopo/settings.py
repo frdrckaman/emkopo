@@ -29,6 +29,7 @@ SMTP_PORT = env("SMTP_PORT")
 
 EMKOPO_BOOTSTRAP = env("EMKOPO_BOOTSTRAP")
 EMKOPO_PAGINATION = env("EMKOPO_PAGINATION")
+EMKOPO_ADMIN = env.str("EMKOPO_ADMIN")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -41,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'emkopo_dashboard.apps.AppConfig',
+    'emkopo_auth.apps.AppConfig',
 ]
 
 MIDDLEWARE = [

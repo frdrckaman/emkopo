@@ -1,0 +1,6 @@
+{% load static %}
+{% if usr_theme == 'dark' %}
+    <link href="{% static 'dist/js/tabulator/css/tabulator_midnight.min.css' %}" rel="stylesheet">
+{% else %}
+    <link href="{% static 'dist/js/tabulator/css/tabulator.min.css' %}" rel="stylesheet">
+{% endif %}

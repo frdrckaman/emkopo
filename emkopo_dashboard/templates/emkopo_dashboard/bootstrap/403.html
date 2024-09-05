@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+    <!-- BEGIN: Head -->
+    <head>
+        <meta charset="utf-8">
+        <link href="{% static 'dist/images/logo.svg' %}" rel="shortcut icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="e-MKOPO">
+        <meta name="keywords" content="e-MKOPO">
+        <meta name="author" content="Fredrick Amani">
+        <title> Error Page - e-MKOPO </title>
+        <!-- BEGIN: CSS Assets-->
+        <link rel="stylesheet" href="{% static 'dist/css/app.css' %}" />
+        <!-- END: CSS Assets-->
+    </head>
+    <!-- END: Head -->
+    <body class="py-5 md:py-0">
+        <div class="container">
+            <!-- BEGIN: Error Page -->
+            <div class="error-page flex flex-col lg:flex-row items-center justify-center h-screen text-center lg:text-left">
+                <div class="-intro-x lg:mr-20">
+                    <img alt="e-MKOPO" class="h-48 lg:h-auto" src="{% static 'dist/images/error-illustration.svg' %}">
+                </div>
+                <div class="text-white mt-10 lg:mt-0">
+                    <div class="intro-x text-8xl font-medium">403 Forbidden</div>
+                    <div class="intro-x text-xl lg:text-3xl font-medium mt-5">Oops. You don't have permission to view this page.</div>
+                    <div class="intro-x text-lg mt-3">You are invited to request access to this page.</div>
+                    <button class="intro-x btn py-3 px-4 text-white border-white dark:border-darkmode-400 dark:text-slate-200 mt-10">Back to Home</button>
+                </div>
+            </div>
+            <!-- END: Error Page -->
+        </div>
+        <!-- BEGIN: Dark Mode Switcher-->
+        
+        <!-- END: Dark Mode Switcher-->
+        
+        <!-- BEGIN: JS Assets-->
+        <script src=""></script>
+        <script src="{% static 'dist/js/app.js' %}"></script>
+        <!-- END: JS Assets-->
+    </body>
+</html>

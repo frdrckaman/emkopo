@@ -1,0 +1,452 @@
+{% load emkopo_extra %}
+{% load emkopo_menu %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="{% get_theme %}">
+    <!-- BEGIN: Head -->
+    <head>
+        <meta charset="utf-8">
+        <link href="{% static 'dist/images/stanbic.png' %}" rel="shortcut icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="e-MKOPO">
+        <meta name="keywords" content="e-MKOPO">
+        <meta name="author" content="Fredrick Amani">
+        {% block title %}
+            <title> e-MKOPO </title>
+        {% endblock title %}
+        <!-- BEGIN: CSS Assets-->
+        <link rel="stylesheet" href="{% static 'dist/css/app.css' %}" />
+        <!-- frdrck -->
+        {% theme_user_mode %}
+        <script type="text/javascript" src="{% static 'dist/js/tabulator/js/tabulator.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'dist/js/tabulator/xlsx.full.min.js' %}"></script>
+        <script src="{% static 'dist/js/tabulator/jspdf.umd.min.js' %}"></script>
+        <script src="{% static 'dist/js/tabulator/jspdf.plugin.autotable.min.js' %}"></script>
+        <!-- frdrck -->
+        <!-- END: CSS Assets-->
+    </head>
+    <!-- END: Head -->
+    {% block login %}{% endblock login %}
+    {% block app_link %}{% endblock app_link %}
+    {% block finservice %}{% endblock finservice %}
+    {% block main_content %}
+    <body class="py-5 md:py-0">
+        <!-- BEGIN: Mobile Menu -->
+        {% block mobile-menu %}
+            {% mobile_menu %}
+        {% endblock mobile-menu %}
+        <!-- END: Mobile Menu -->
+        <!-- BEGIN: Top Bar -->
+        {% top_bar_menu %}
+        <!-- END: Top Bar -->
+        <!-- BEGIN: Top Menu -->
+        {% block main-menu %}
+            {% main_menu %}
+        {% endblock main-menu %}
+        <!-- END: Top Menu -->
+        <!-- BEGIN: Content -->
+        {% block content %}
+            <div class="content content--top-nav">
+                <div class="grid grid-cols-12 gap-6">
+                    <div class="col-span-12 2xl:col-span-9">
+                        <div class="grid grid-cols-12 gap-6">
+                            <!-- BEGIN: General Report -->
+                            <div class="col-span-12 mt-8">
+                                <div class="intro-y flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        General Report
+                                    </h2>
+                                    <a href="" class="ml-auto flex items-center text-primary"> <i data-lucide="refresh-ccw" class="w-4 h-4 mr-3"></i> Reload Data </a>
+                                </div>
+                                <div class="grid grid-cols-12 gap-6 mt-5">
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="cpu" class="report-box__icon text-primary"></i>
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer" title="Total loans"> TZ <i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>Total loans
+                                                <div class="text-3xl font-medium leading-8 mt-6">0</div>
+                                                <div class="text-base text-slate-500 mt-1">Total Loans</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="monitor" class="report-box__icon text-success"></i>
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer" title="Approved Loans"> TZ <i data-lucide="chevron-down" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>Approved Loans
+                                                <div class="text-3xl font-medium leading-8 mt-6">0</div>
+                                                <div class="text-base text-slate-500 mt-1">Approved</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="package" class="report-box__icon text-success"></i>
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator
+                                                        bg-success tooltip cursor-pointer" title="On progress loans"> TZ <i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6">0</div>
+                                                <div class="text-base text-slate-500 mt-1">On Progress</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="user" class="report-box__icon text-success"></i>
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator
+                                                        bg-success tooltip cursor-pointer" title="Rejected loans"> TZ <i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6">0</div>
+                                                <div class="text-base text-slate-500 mt-1">Rejected</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END: General Report -->
+
+                            <!-- BEGIN: Weekly Top Products -->
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        Weekly Summary Report
+                                    </h2>
+                                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                                        <button class="btn box flex items-center text-slate-600 dark:text-slate-300"> <i data-lucide="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to Excel </button>
+                                        <button class="ml-3 btn box flex items-center text-slate-600 dark:text-slate-300"> <i data-lucide="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to PDF </button>
+                                    </div>
+                                </div>
+                                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
+                                    <table class="table table-report sm:mt-2">
+                                        <thead>
+                                            <tr>
+                                                <th class="whitespace-nowrap">IMAGES</th>
+                                                <th class="whitespace-nowrap">PRODUCT NAME</th>
+                                                <th class="text-center whitespace-nowrap">COUNT</th>
+                                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="intro-x">
+                                                <td class="w-40">
+                                                    <div class="flex">
+                                                        <div class="w-10 h-10 image-fit zoom-in">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip rounded-full" src="{% static 'dist/images/preview-5.jpg' %}"
+                                                                 title="Uploaded
+                                                                 at 30 May 2022">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip rounded-full" src="{% static 'dist/images/preview-3.jpg' %}"
+                                                                 title="Uploaded
+                                                                 at 8 June 2022">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip rounded-full" src="{% static 'dist/images/preview-13.jpg' %}"
+                                                                 title="Uploaded
+                                                                 at 9 March 2021">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="" class="font-medium whitespace-nowrap">Unique Server Names</a>
+                                                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Stanbic Tz</div>
+                                                </td>
+                                                <td class="text-center">164</td>
+                                                <td class="w-40">
+                                                    <div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>
+                                                </td>
+                                                <td class="table-report__action w-56">
+                                                    <div class="flex justify-center items-center">
+                                                        <a class="flex items-center mr-3" href=""> <i data-lucide="eye" class="w-4 h-4 mr-1"></i> View </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="intro-x">
+                                                <td class="w-40">
+                                                    <div class="flex">
+                                                        <div class="w-10 h-10 image-fit zoom-in">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-10.jpg' %}" title="Uploaded at 9 July 2022">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-7.jpg' %}" title="Uploaded at 18 January 2021">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-9.jpg' %}" title="Uploaded at 27 February 2022">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="" class="font-medium whitespace-nowrap">Unique Workstation Names</a>
+                                                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Stanbic Tz</div>
+                                                </td>
+                                                <td class="text-center">87</td>
+                                                <td class="w-40">
+                                                    <div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>
+                                                </td>
+                                                <td class="table-report__action w-56">
+                                                    <div class="flex justify-center items-center">
+                                                        <a class="flex items-center mr-3" href=""> <i data-lucide="eye" class="w-4 h-4 mr-1"></i> View </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="intro-x">
+                                                <td class="w-40">
+                                                    <div class="flex">
+                                                        <div class="w-10 h-10 image-fit zoom-in">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-10.jpg' %}" title="Uploaded at 22 June 2020">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-10.jpg' %}" title="Uploaded at 7 September 2021">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-3.jpg' %}" title="Uploaded at 31 January 2021">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="" class="font-medium whitespace-nowrap">Duplicate Server Names</a>
+                                                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Stanbic Tz</div>
+                                                </td>
+                                                <td class="text-center">94</td>
+                                                <td class="w-40">
+                                                    <div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>
+                                                </td>
+                                                <td class="table-report__action w-56">
+                                                    <div class="flex justify-center items-center">
+                                                        <a class="flex items-center mr-3" href=""> <i data-lucide="eye" class="w-4 h-4 mr-1"></i> View </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="intro-x">
+                                                <td class="w-40">
+                                                    <div class="flex">
+                                                        <div class="w-10 h-10 image-fit zoom-in">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-14.jpg' %}" title="Uploaded at 24 November 2022">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-4.jpg' %}" title="Uploaded at 13 November 2022">
+                                                        </div>
+                                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                            <img alt="e-MKOPO Icon"
+                                                                 class="tooltip
+                                                             rounded-full" src="{% static 'dist/images/preview-11.jpg' %}" title="Uploaded at 2 August 2020">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="" class="font-medium whitespace-nowrap">Duplicate Workstation Names</a>
+                                                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Stanbic Tz</div>
+                                                </td>
+                                                <td class="text-center">50</td>
+                                                <td class="w-40">
+                                                    <div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>
+                                                </td>
+                                                <td class="table-report__action w-56">
+                                                    <div class="flex justify-center items-center">
+                                                        <a class="flex items-center mr-3" href=""> <i data-lucide="eye" class="w-4 h-4 mr-1"></i> View </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- END: Weekly Top Products -->
+                        </div>
+                    </div>
+                    <div class="col-span-12 2xl:col-span-3">
+                        <div class="2xl:border-l -mb-10 pb-10">
+                            <div class="2xl:pl-6 grid grid-cols-12 gap-x-6 2xl:gap-x-0 gap-y-6">
+                                <!-- BEGIN: Transactions -->
+                                <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3 2xl:mt-8">
+                                    <div class="intro-x flex items-center h-10">
+                                        <h2 class="text-lg font-medium truncate mr-5">
+                                            New Installed Software
+                                        </h2>
+                                    </div>
+                                    <div class="mt-5">
+                                        <div class="intro-x">
+                                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                                    <img alt="e-MKOPO Icon" src=
+                                                            "{% static 'dist/images/profile-3.jpg' %}">
+                                                </div>
+                                                <div class="ml-4 mr-auto">
+                                                    <div class="font-medium">Servers</div>
+                                                    <div class="text-slate-500 text-xs mt-0.5">30 May 2022</div>
+                                                </div>
+                                                <div class="py-1 px-2 rounded-full text-xs bg-success text-white cursor-pointer font-medium">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="intro-x">
+                                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                                    <img alt="e-MKOPO Ic
+                                                    on" src="{% static 'dist/images/profile-2.jpg' %}">
+                                                </div>
+                                                <div class="ml-4 mr-auto">
+                                                    <div class="font-medium">Workstations</div>
+                                                    <div class="text-slate-500 text-xs mt-0.5">9 July 2022</div>
+                                                </div>
+                                                <div class="py-1 px-2 rounded-full text-xs bg-success text-white cursor-pointer font-medium">0</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3 2xl:mt-8">
+                                    <div class="intro-x flex items-center h-10">
+                                        <h2 class="text-lg font-medium truncate mr-5">
+                                            Brands
+                                        </h2>
+                                    </div>
+                                    <div class="mt-5">
+                                        <div class="intro-x">
+                                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                                    <img alt="e-MKOPO Icon" src=
+                                                            "{% static 'dist/images/profile-3.jpg' %}">
+                                                </div>
+                                                <div class="ml-4 mr-auto">
+                                                    <div class="font-medium">DELL</div>
+                                                    <div class="text-slate-500 text-xs mt-0.5">30 May 2022</div>
+                                                </div>
+                                                <div class="text-success">+$45</div>
+                                            </div>
+                                        </div>
+                                        <div class="intro-x">
+                                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                                    <img alt="e-MKOPO Ic
+                                                    on" src="{% static 'dist/images/profile-2.jpg' %}">
+                                                </div>
+                                                <div class="ml-4 mr-auto">
+                                                    <div class="font-medium">LENOVO</div>
+                                                    <div class="text-slate-500 text-xs mt-0.5">9 July 2022</div>
+                                                </div>
+                                                <div class="text-success">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="intro-x">
+                                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                                    <img alt="Midone - HTML Admin Template" src="{% static 'dist/images/profile-10.jpg' %}">
+                                                </div>
+                                                <div class="ml-4 mr-auto">
+                                                    <div class="font-medium">HP</div>
+                                                    <div class="text-slate-500 text-xs mt-0.5">22 June 2020</div>
+                                                </div>
+                                                <div class="text-success">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="intro-x">
+                                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                                    <img alt="e-MKOPO Icon" src=
+                                                            "{% static 'dist/images/profile-10.jpg' %}">
+                                                </div>
+                                                <div class="ml-4 mr-auto">
+                                                    <div class="font-medium">MACBOOK</div>
+                                                    <div class="text-slate-500 text-xs mt-0.5">24 November 2022</div>
+                                                </div>
+                                                <div class="text-danger">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="intro-x">
+                                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                                    <img alt="e-MKOPO Ic
+                                                    on" src="{% static 'dist/images/profile-10.jpg' %}">
+                                                </div>
+                                                <div class="ml-4 mr-auto">
+                                                    <div class="font-medium">VIRTUAL</div>
+                                                    <div class="text-slate-500 text-xs mt-0.5">9 April 2022</div>
+                                                </div>
+                                                <div class="text-danger">0</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END: Transactions -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock content %}
+        <!-- END: Content -->
+        <!-- BEGIN: Dark Mode Switcher-->
+        {% theme_mode request.get_full_path %}
+        <!-- END: Dark Mode Switcher-->
+
+        <!-- BEGIN: JS Assets-->
+        <script src="{% static 'dist/js/app.js' %}"></script>
+        <!-- END: JS Assets-->
+
+        <script>
+            //trigger download of data.csv file
+            document.getElementById("tabulator-export-csv").addEventListener("click", function(){
+                table.download("csv", "data.csv");
+            });
+
+            //trigger download of data.json file
+            document.getElementById("tabulator-export-json").addEventListener("click", function(){
+                table.download("json", "data.json");
+            });
+
+            //trigger download of data.xlsx file
+            document.getElementById("tabulator-export-xlsx").addEventListener("click", function(){
+                table.download("xlsx", "data.xlsx", {sheetName:"My Data"});
+            });
+
+            //trigger download of data.pdf file
+            document.getElementById("tabulator-export-pdf").addEventListener("click", function(){
+                table.download("pdf", "data.pdf", {
+                    orientation:"portrait", //set page orientation to portrait
+                    title:"Example Report", //add title to report
+                });
+            });
+
+            //trigger download of data.html file
+            document.getElementById("tabulator-export-html").addEventListener("click", function(){
+                table.download("html", "data.html", {style:true});
+            });
+        </script>
+    </body>
+    {% endblock main_content %}
+</html>
