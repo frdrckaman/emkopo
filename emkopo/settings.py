@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'emkopo_dashboard.apps.AppConfig',
     'emkopo_auth.apps.AppConfig',
+    'emkopo_product.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
