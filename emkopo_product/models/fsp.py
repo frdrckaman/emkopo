@@ -25,4 +25,4 @@ class Fsp(BaseUuidModel):
 
     class Meta(BaseUuidModel.Meta):
         verbose_name = "Financial Service Provider"
-        verbose_name_plural = "Financial Service ProviderS"
+        verbose_name_plural = "Financial Service Providers"
