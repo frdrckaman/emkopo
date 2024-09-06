@@ -7,11 +7,11 @@ from emkopo_mixins.model import BaseUuidModel
 class Fsp(BaseUuidModel):
     name = models.CharField(
         verbose_name="FSP Name",
-        max_length=84,
+        max_length=100,
     )
     code = models.CharField(
         verbose_name="FSP Code",
-        max_length=45,
+        max_length=10,
     )
     status = models.IntegerField(
         verbose_name="FSP Status",
