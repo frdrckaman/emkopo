@@ -1,3 +1,4 @@
+{% load product_tags %}
 {% if terms %}
     <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3">
         <table class="table table-striped">
@@ -15,7 +16,7 @@
                     <td>{{ term.TermsConditionNumber }}</td>
                     <td>{{ term.Description }}</td>
                     <td>{{ term.TCEffectiveDate }}</td>
-                    <td></td>
+                    <td>{% update_terms term.id %} {% delete_terms term.id %}</td>
                 </tr>
             {% endfor %}
             </tbody>

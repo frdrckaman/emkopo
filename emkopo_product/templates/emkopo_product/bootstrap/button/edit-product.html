@@ -1,0 +1,93 @@
+<a href="javascript:;" data-tw-toggle="modal" data-tw-target="#edit-product" class="btn btn-success mr-1 mb-1">Edit Product</a>
+<div id="edit-product" class="modal" tabindex="-1" aria-hidden="true" data-tw-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="intro-y box mt-5">
+                <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+                    <h2 class="font-medium text-base mr-auto">
+                        UPDATE PRODUCT
+                    </h2>
+                </div>
+                <div id="input-groups" class="p-5">
+                    <div class="preview">
+                        <form action="{% url 'emkopo_product:update-product' %}" method="post">
+                            {% csrf_token %}
+                            <div>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Product Code</label>
+                                    <input id="fsp-name" name="ProductCode" value="{{ product.ProductCode }}" type="text" class="form-control" placeholder="Product Code">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Product Name</label>
+                                    <input id="fsp-name" name="ProductName" value="{{ product.ProductName }}" type="text" class="form-control" placeholder="Product Name">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Product Description</label>
+                                    <input id="fsp-name" name="ProductDescription" value="{{ product.ProductDescription }}" type="text" class="form-control" placeholder="Product Description">
+                                </div><br>
+                                <div>
+                                    <label>For Executive</label>
+                                    <div class="form-check mt-2">
+                                        <input id="radio-switch-1" class="form-check-input" type="radio" name="ForExecutive" value="1" {% if product.ProductDescription == 1 %}checked{% endif %} required>
+                                        <label class="form-check-label" for="radio-switch-1">Yes</label>
+                                    </div>
+                                    <div class="form-check mt-2">
+                                        <input id="radio-switch-2" class="form-check-input" type="radio" name="ForExecutive" value="0" {% if product.ProductDescription == 0 %}checked{% endif %} required>
+                                        <label class="form-check-label" for="radio-switch-2">No</label>
+                                    </div>
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Minimum repayment period</label>
+                                    <input id="fsp-name" name="MinimumTenure" value="{{ product.MinimumTenure }}" type="text" class="form-control" placeholder="Minimum repayment period">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Maximum repayment period</label>
+                                    <input id="fsp-name" name="MaximumTenure" value="{{ product.MaximumTenure }}" type="text" class="form-control" placeholder="Maximum repayment period">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Percentage charged on loan amount</label>
+                                    <input id="fsp-name" name="InterestRate" value="{{ product.InterestRate }}" type="text" class="form-control" placeholder="Percentage charged on loan amount">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Cost of loan processing percentage</label>
+                                    <input id="fsp-name" name="ProcessFee" value="{{ product.ProcessFee }}" type="text" class="form-control" placeholder="Cost of loan processing percentage">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Loan cover percentage</label>
+                                    <input id="fsp-name" name="Insurance" value="{{ product.Insurance }}" type="text" class="form-control" placeholder="Loan cover percentage">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Maximum Amount</label>
+                                    <input id="fsp-name" name="MaxAmount" value="{{ product.MaxAmount }}" type="text" class="form-control" placeholder="Maximum Amount">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Minimum Amount</label>
+                                    <input id="fsp-name" name="MinAmount" value="{{ product.MinAmount }}" type="text" class="form-control" placeholder="Minimum Amount">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Frequency of loan repayment</label>
+                                    <input id="fsp-name" name="RepaymentType" value="{{ product.RepaymentType }}" type="text" class="form-control" placeholder="Frequency of loan repayment">
+                                </div><br>
+                                <div>
+                                    <label for="regular-form-1" class="form-label">Currency</label>
+                                    <select name="Currency" class="form-select mt-2 sm:mr-2" aria-label="Currency">
+                                        <option value="{{ product.Currency }}">{% if product %}{{ product.Currency }}{% else %}Select Currency{% endif %}</option>
+                                        {% for currency in currencies %}
+                                            <option value="{{ currency.code }}">{{ currency.code }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div><br>
+                            </div><br>
+                            <div>
+                                <input type="hidden" name="id" value="{{ product.id }}">
+                                <input type="hidden" name="next_url_name" value="product-catalog">
+                                <input type="submit" value="Submit" class="btn btn-primary w-1/2 sm:w-auto mr-2 pull-right">
+                                <button type="button" data-tw-dismiss="modal" class="btn btn-outline-warning w-1/2 sm:w-auto mr-2">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

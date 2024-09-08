@@ -60,7 +60,7 @@
                                             <td>{{ product.MinAmount }}</td>
                                             <td>{{ product.RepaymentType }}</td>
                                             <td>{{ product.Currency }}</td>
-                                            <td></td>
+                                            <td>{% update_product product.id %} {% add_terms product.id %} {% delete_product product.id %}</td>
                                         </tr>
                                         {% terms_conditions product.id %}
                                     {% endfor %}

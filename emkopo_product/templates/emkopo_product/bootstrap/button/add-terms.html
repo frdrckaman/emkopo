@@ -1,0 +1,42 @@
+<a href="javascript:;" data-tw-toggle="modal" data-tw-target="#add-terms" class="btn btn-success mr-1 mb-1">Add Terms & Conditions</a>
+<div id="add-terms" class="modal" tabindex="-1" aria-hidden="true" data-tw-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="intro-y box mt-5">
+                <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+                    <h2 class="font-medium text-base mr-auto">
+                        Add Terms and Conditions
+                    </h2>
+                </div>
+                <div id="input-groups" class="p-5">
+                    <div class="preview">
+                        <form action="{% url 'emkopo_product:add-terms' %}" method="post">
+                            {% csrf_token %}
+                            <div>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Terms Condition Number</label>
+                                    <input id="fsp-name" name="TermsConditionNumber" type="text" class="form-control" placeholder="Terms Condition Number">
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">Description</label>
+                                    <textarea id="fsp-name" name="Description" class="form-control" rows="4" placeholder="Description"> </textarea>
+                                </div><br>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <label for="fsp-name" class="form-label">TC Effective Date</label>
+                                    <input type="text" name="TCEffectiveDate" class="datepicker form-control w-56 block mx-auto" data-single-mode="true">
+                                </div>
+                            </div><br>
+                            <div>
+                                <input type="hidden" name="ProductCatalog" value="{{ ProductCatalog }}">
+                                <input type="hidden" name="id" value="{{ terms.id }}">
+                                <input type="hidden" name="next_url_name" value="fsp">
+                                <input type="submit" value="Submit" class="btn btn-primary w-1/2 sm:w-auto mr-2 pull-right">
+                                <button type="button" data-tw-dismiss="modal" class="btn btn-outline-warning w-1/2 sm:w-auto mr-2">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

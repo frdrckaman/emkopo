@@ -1,6 +1,6 @@
 from django import template
 
-from emkopo_product.models import Fsp, Currency, TermsCondition
+from emkopo_product.models import Fsp, Currency, TermsCondition, ProductCatalog
 
 register = template.Library()
 
@@ -55,6 +55,33 @@ def add_product(context):
 
 
 @register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/edit-product.html",
+    takes_context=True,
+)
+def update_product(context, product_id):
+    title = None
+    product = ProductCatalog.objects.filter(id=product_id)
+    print(product)
+    return dict(
+        title=title,
+        product=product,
+    )
+
+
+@register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/del-product.html",
+    takes_context=True,
+)
+def delete_product(context, product_id):
+    title = None
+    product = ProductCatalog.objects.get(id=product_id)
+    return dict(
+        title=title,
+        product=product,
+    )
+
+
+@register.inclusion_tag(
     f"emkopo_product/bootstrap/button/add-currency.html",
     takes_context=True,
 )
@@ -75,4 +102,42 @@ def terms_conditions(context, product_id):
     return dict(
         title=title,
         terms=terms,
+    )
+
+
+@register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/add-terms.html",
+    takes_context=True,
+)
+def add_terms(context, product_id):
+    title = None
+    return dict(
+        title=title,
+        ProductCatalog=product_id
+    )
+
+
+@register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/edit-terms.html",
+    takes_context=True,
+)
+def update_terms(context, terms_id):
+    title = None
+    terms = TermsCondition.objects.filter(id=terms_id)
+    return dict(
+        terms=terms,
+        title=title,
+    )
+
+
+@register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/del-terms.html",
+    takes_context=True,
+)
+def delete_terms(context, terms_id):
+    title = None
+    terms = TermsCondition.objects.filter(id=terms_id)
+    return dict(
+        terms=terms,
+        title=title,
     )
