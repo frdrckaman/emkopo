@@ -1,6 +1,6 @@
 from django import template
 
-from emkopo_product.models import Fsp
+from emkopo_product.models import Fsp, Currency
 
 register = template.Library()
 
@@ -38,5 +38,28 @@ def delete_fsp(context, fsp_id):
     fsp = Fsp.objects.get(id=fsp_id)
     return dict(
         fsp=fsp,
+        title=title,
+    )
+
+
+@register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/add-product.html",
+    takes_context=True,
+)
+def add_product(context):
+    title = None
+    currencies = Currency.objects.filter(status=True)
+    return dict(
+        currencies=currencies,
+    )
+
+
+@register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/add-currency.html",
+    takes_context=True,
+)
+def add_currency(context):
+    title = None
+    return dict(
         title=title,
     )

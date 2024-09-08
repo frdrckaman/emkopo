@@ -1,10 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'emkopo_dashboard/bootstrap/base.html' %}
+{% load product_tags %}
+{% load emkopo_extra %}
+{% block title %}
+    <title> e-MKOPO | PRODUCT </title>
+{% endblock %}
+{% block content %}
+    <div class="content content--top-nav"><br>
+        {% if request.GET.response == 'success' %}
+            <div class="alert alert-success-soft alert-dismissible show flex items-center mb-2" role="alert"> <i data-lucide="thumbs-up" class="w-6 h-6 mr-2"></i> {{ request.GET.message }} <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close"> <i data-lucide="x" class="w-4 h-4"></i> </button></div>
+        {% elif request.GET.response == 'error' %}
+            <div class="alert alert-danger-soft alert-dismissible show flex items-center mb-2" role="alert"> <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i> {{ request.GET.message }} <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close"> <i data-lucide="x" class="w-4 h-4"></i> </button></div>
+        {% endif %}
+        <div class="grid grid-cols-12 gap-6 mt-5">
+            <div class="intro-y col-span-12 lg:col-span-10">
+                <!-- BEGIN: Striped Rows -->
+                <div class="intro-y box mt-5">
+                    <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60">
+                        <h2 class="font-medium text-base mr-auto">
+                            Product Catalog
+                        </h2>
+                        {% add_product %}
+                        {% add_currency %}
+                    </div>
+                    <div class="p-5" id="striped-rows-table">
+                        <div class="preview">
+                            <div class="overflow-x-auto">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="whitespace-nowrap">Product code</th>
+                                        <th class="whitespace-nowrap">Product name</th>
+                                        <th class="whitespace-nowrap">Product Description</th>
+                                        <th class="whitespace-nowrap">For Executive</th>
+                                        <th class="whitespace-nowrap">Minimum Tenure</th>
+                                        <th class="whitespace-nowrap">Maximum Tenure</th>
+                                        <th class="whitespace-nowrap">Interest rate</th>
+                                        <th class="whitespace-nowrap">Processing fee</th>
+                                        <th class="whitespace-nowrap">Insurance</th>
+                                        <th class="whitespace-nowrap">Max Amount</th>
+                                        <th class="whitespace-nowrap">Min Amount</th>
+                                        <th class="whitespace-nowrap">Repayment Type</th>
+                                        <th class="whitespace-nowrap">Currency</th>
+                                        <th class="whitespace-nowrap">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in products %}
+                                        <tr>
+                                            <td>{{ product.ProductCode }}</td>
+                                            <td>{{ product.ProductName }}</td>
+                                            <td>{{ product.ProductDescription }}</td>
+                                            <td>{{ product.ForExecutive }}</td>
+                                            <td>{{ product.MinimumTenure }}</td>
+                                            <td>{{ product.MaximumTenure }}</td>
+                                            <td>{{ product.InterestRate }}</td>
+                                            <td>{{ product.ProcessFee }}</td>
+                                            <td>{{ product.Insurance }}</td>
+                                            <td>{{ product.MaxAmount }}</td>
+                                            <td>{{ product.MinAmount }}</td>
+                                            <td>{{ product.RepaymentType }}</td>
+                                            <td>{{ product.Currency }}</td>
+                                            <td></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+{#                   {% pagination %}#}
+                </div><!-- END: Striped Rows -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
