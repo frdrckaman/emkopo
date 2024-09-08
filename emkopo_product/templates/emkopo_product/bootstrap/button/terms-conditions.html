@@ -1,0 +1,34 @@
+{% if terms %}
+    <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="whitespace-nowrap">Terms Condition Number</th>
+                <th class="whitespace-nowrap">Description</th>
+                <th class="whitespace-nowrap">TC Effective Date</th>
+                <th class="whitespace-nowrap">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for term in terms %}
+                <tr>
+                    <td>{{ term.TermsConditionNumber }}</td>
+                    <td>{{ term.Description }}</td>
+                    <td>{{ term.TCEffectiveDate }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3">
+        <table class="table table-striped">
+            <tbody>
+            <tr>
+                <td> No Task Terms and Conditions available for this product </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endif %}

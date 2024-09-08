@@ -1,6 +1,6 @@
 from django import template
 
-from emkopo_product.models import Fsp, Currency
+from emkopo_product.models import Fsp, Currency, TermsCondition
 
 register = template.Library()
 
@@ -62,4 +62,17 @@ def add_currency(context):
     title = None
     return dict(
         title=title,
+    )
+
+
+@register.inclusion_tag(
+    f"emkopo_product/bootstrap/button/terms-conditions.html",
+    takes_context=True,
+)
+def terms_conditions(context, product_id):
+    title = None
+    terms = TermsCondition.objects.filter(ProductCatalog_id=product_id)
+    return dict(
+        title=title,
+        terms=terms,
     )
