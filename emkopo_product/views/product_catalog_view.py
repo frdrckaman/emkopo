@@ -130,7 +130,7 @@ def update_product(request):
 def update_terms(request):
     if request.method == 'POST':
         try:
-            ProductCatalog.objects.filter(pk=request.POST.get("id")).update(
+            TermsCondition.objects.filter(pk=request.POST.get("id")).update(
                 TermsConditionNumber=request.POST['TermsConditionNumber'],
                 Description=request.POST['Description'],
                 TCEffectiveDate=convert_date_format(request.POST['TCEffectiveDate']))

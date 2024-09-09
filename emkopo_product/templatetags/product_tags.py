@@ -5,6 +5,12 @@ from emkopo_product.models import Fsp, Currency, TermsCondition, ProductCatalog
 register = template.Library()
 
 
+@register.filter(name='format_received_time')
+def format_received_time(value):
+    formated_dt = value.strftime('%d %b, %Y') if value else None
+    return formated_dt
+
+
 @register.inclusion_tag(
     f"emkopo_product/bootstrap/button/add-fsp.html",
     takes_context=True,
@@ -60,8 +66,7 @@ def add_product(context):
 )
 def update_product(context, product_id):
     title = None
-    product = ProductCatalog.objects.filter(id=product_id)
-    print(product)
+    product = ProductCatalog.objects.get(id=product_id)
     return dict(
         title=title,
         product=product,
@@ -123,7 +128,7 @@ def add_terms(context, product_id):
 )
 def update_terms(context, terms_id):
     title = None
-    terms = TermsCondition.objects.filter(id=terms_id)
+    terms = TermsCondition.objects.get(id=terms_id)
     return dict(
         terms=terms,
         title=title,
