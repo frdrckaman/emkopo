@@ -59,3 +59,4 @@ waitress==3.0.0
 WebOb==1.8.8
 WebTest==3.0.1
 wheel==0.43.0
+xmltodict==0.13.0

@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
+    'emkopo_api.apps.AppConfig',
     'emkopo_dashboard.apps.AppConfig',
     'emkopo_auth.apps.AppConfig',
     'emkopo_product.apps.AppConfig',

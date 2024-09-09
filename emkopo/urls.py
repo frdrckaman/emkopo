@@ -8,5 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("dashboard/", include("emkopo_dashboard.urls")),
     path("product/", include("emkopo_product.urls")),
+    path("api/", include("emkopo_api.urls")),
     path("", include("emkopo_auth.urls"))
 ]
