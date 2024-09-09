@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import xmltodict
+import requests
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -10,7 +11,7 @@ from emkopo_api.serializers import DocumentSerializer
 
 class ProductCatalogAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="API to receive product details in XML format",
+        operation_description="API to receive product catalog in XML format",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -87,7 +88,23 @@ class ProductCatalogAPIView(APIView):
         # Use Serializer to validate data
         serializer = DocumentSerializer(data=data_dict)
         if serializer.is_valid():
-            # Process the valid data here
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            # Convert the dictionary back to XML format
+            xml_payload = xmltodict.unparse(data_dict, pretty=True)
+
+            # URL of the third-party system
+            third_party_url = 'https://third-party-system.com/api/receive-data/'
+
+            # Headers for the request
+            headers = {'Content-Type': 'application/xml'}
+
+            # Send the request to the third-party system
+            try:
+                response = requests.post(third_party_url, data=xml_payload, headers=headers)
+                response.raise_for_status()  # Raise an exception for HTTP errors
+                return Response({'message': 'Data successfully sent to third-party system',
+                                 'response': response.text}, status=status.HTTP_200_OK)
+            except requests.exceptions.RequestException as e:
+                return Response({'error': str(e)},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
