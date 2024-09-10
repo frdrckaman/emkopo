@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import path, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -8,10 +9,10 @@ from emkopo_api.views import ProductCatalogAPIView
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Product Catalog API",
+        title="e-MKOPO API",
         default_version='v1',
         description="API documentation for handling product details and terms & conditions",
-        terms_of_service="https://www.example.com/terms/",
+        terms_of_service=settings.EMKOPO_TERMS_SERVICE_URL,
         contact=openapi.Contact(email="contact@example.com"),
         license=openapi.License(name="BSD License"),
     ),

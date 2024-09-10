@@ -19,6 +19,7 @@ environ.Env.read_env(ENV_DIR)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env.str("DJANGO_SECRET_KEY")
+DEVELOPER = env.str("DEVELOPER")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DJANGO_DEBUG")
@@ -30,6 +31,7 @@ SMTP_PORT = env("SMTP_PORT")
 EMKOPO_BOOTSTRAP = env("EMKOPO_BOOTSTRAP")
 EMKOPO_PAGINATION = env("EMKOPO_PAGINATION")
 EMKOPO_ADMIN = env.str("EMKOPO_ADMIN")
+EMKOPO_TERMS_SERVICE_URL = env.str("EMKOPO_TERMS_SERVICE_URL")
 
 ALLOWED_HOSTS = ["*"]
 
