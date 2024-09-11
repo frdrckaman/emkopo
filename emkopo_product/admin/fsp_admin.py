@@ -14,7 +14,7 @@ class FspAdmin(BaseSimpleHistoryAdmin):
                 "fields": (
                     "name",
                     "code",
-                    "sysName"
+                    "sysName",
                     "status",
                 ),
             },

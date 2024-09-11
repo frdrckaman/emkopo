@@ -1,0 +1,2 @@
+INWARD = "inward"
+OUTWARD = "outward"
