@@ -14,6 +14,7 @@ class FspAdmin(BaseSimpleHistoryAdmin):
                 "fields": (
                     "name",
                     "code",
+                    "sysName"
                     "status",
                 ),
             },
@@ -24,12 +25,14 @@ class FspAdmin(BaseSimpleHistoryAdmin):
     list_display = (
         "name",
         "code",
+        "sysName",
         "status",
     )
 
     search_fields = (
         "name",
         "code",
+        "sysName",
         "status",
     )
 

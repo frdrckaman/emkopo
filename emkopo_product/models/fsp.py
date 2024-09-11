@@ -9,6 +9,11 @@ class Fsp(BaseUuidModel):
         verbose_name="FSP Name",
         max_length=100,
     )
+    sysName = models.CharField(
+        verbose_name="System Name",
+        max_length=45,
+        default='FSPSystem'
+    )
     code = models.CharField(
         verbose_name="FSP Code",
         max_length=10,

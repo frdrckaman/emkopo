@@ -1,1 +1,3 @@
-from .produuct_apiview import ProductCatalogAPIView
+from .produuct_apiview import ProductCatalogXMLView
+from .product_decommission_apiview import GenerateXMLForDecommissionView
+

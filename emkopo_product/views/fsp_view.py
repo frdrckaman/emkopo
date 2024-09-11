@@ -23,6 +23,7 @@ def add_fsp(request):
         created = Fsp.objects.get_or_create(
             name=request.POST['name'],
             code=request.POST['code'],
+            sysName=request.POST.get("sysName"),
         )
 
         if created:
@@ -44,7 +45,8 @@ def update_fsp(request):
         try:
             Fsp.objects.filter(pk=request.POST.get("id")).update(
                 name=request.POST.get("name"),
-                code=request.POST.get("code"))
+                code=request.POST.get("code"),
+                sysName=request.POST.get("sysName"))
 
             res = 'success'
             message = 'Request Approved successful'

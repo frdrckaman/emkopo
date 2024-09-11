@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
+from emkopo_product.models import TermsCondition
 
-class TermsConditionSerializer(serializers.Serializer):
-    TermsConditionNumber = serializers.CharField(max_length=20)
-    Description = serializers.CharField(max_length=255)
-    TCEffectiveDate = serializers.DateField()
+
+class TermsConditionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermsCondition
+        fields = ['TermsConditionNumber', 'Description', 'TCEffectiveDate']

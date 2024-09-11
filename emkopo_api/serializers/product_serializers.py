@@ -1,20 +1,17 @@
 from rest_framework import serializers
 
 from emkopo_api.serializers import TermsConditionSerializer
+from emkopo_product.models import ProductCatalog
 
 
-class ProductCatalogSerializer(serializers.Serializer):
-    ProductCode = serializers.CharField(max_length=8)
-    ProductName = serializers.CharField(max_length=255)
-    ProductDescription = serializers.CharField(max_length=255, required=False)
-    ForExecutive = serializers.BooleanField()
-    MinimumTenure = serializers.IntegerField()
-    MaximumTenure = serializers.IntegerField()
-    InterestRate = serializers.DecimalField(max_digits=5, decimal_places=2)
-    ProcessFee = serializers.DecimalField(max_digits=5, decimal_places=2, required=False)
-    Insurance = serializers.DecimalField(max_digits=5, decimal_places=2)
-    MaxAmount = serializers.DecimalField(max_digits=40, decimal_places=2)
-    MinAmount = serializers.DecimalField(max_digits=40, decimal_places=2)
-    RepaymentType = serializers.CharField(max_length=10, required=False)
-    Currency = serializers.CharField(max_length=10)
-    TermsCondition = TermsConditionSerializer(many=True)
+class ProductCatalogSerializer(serializers.ModelSerializer):
+    terms_conditions = TermsConditionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ProductCatalog
+        fields = [
+            'ProductCode', 'ProductName', 'ProductDescription', 'ForExecutive',
+            'MinimumTenure', 'MaximumTenure', 'InterestRate', 'ProcessFee',
+            'Insurance', 'MaxAmount', 'MinAmount', 'RepaymentType', 'Currency',
+            'terms_conditions'
+        ]
