@@ -7,6 +7,7 @@ import uuid
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from emkopo_api.mixins import log_and_make_api_call
 from emkopo_product.models import ProductCatalog, Fsp
 
 
@@ -48,13 +49,24 @@ class GenerateXMLForDecommissionView(APIView):
         # Generate XML data for API call
         xml_data = self.generate_xml_for_decommission(product, fsp)
 
-        # Simulate the API call to the third-party system
-        response = self.send_to_third_party(xml_data)
+        # Call the helper function to log the request and simulate the API call
+        response = log_and_make_api_call(
+            message_type="PRODUCT_DECOMMISSION",
+            request_type=fsp.name,
+            payload=xml_data,
+            signature="XYZ",  # Replace with actual signature if available
+            url="https://third-party-api.example.com/endpoint"
+            # Replace with actual endpoint URL
+        )
 
-        if response.status_code == 200:
-            return Response({"message": "Data sent successfully (simulated)"}, status=status.HTTP_200_OK)
+        # Simulate the API call to the third-party system
+        # response = self.send_to_third_party(xml_data)
+
+        if response.get('status') == 200:
+            return Response({"message": "Data sent successfully"}, status=status.HTTP_200_OK)
         else:
-            return Response({"error": "Failed to send data to third-party system."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": response.get('error', 'Failed to send data')},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def generate_xml_for_decommission(self, product, fsp):
         """
