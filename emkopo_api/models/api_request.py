@@ -12,7 +12,7 @@ class ApiRequest(BaseUuidModel):
         max_length=100,
     )
     RequestType = models.CharField(
-        verbose_name="System Name",
+        verbose_name="Request Type",
         max_length=45,
         choices=REQUEST_TYPE,
     )

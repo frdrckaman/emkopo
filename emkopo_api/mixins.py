@@ -1,8 +1,14 @@
 import requests
+from django.conf import settings
 from django.utils import timezone
 from unittest.mock import Mock
+from rest_framework.response import Response
+from rest_framework import status
+
+from emkopo_product.models import Fsp
 from .models import ApiRequest
 import uuid
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 
 def log_and_make_api_call(message_type, request_type, payload, signature, url):
@@ -61,6 +67,73 @@ def log_and_make_api_call(message_type, request_type, payload, signature, url):
         api_request.Status = 500  # Assuming 500 for internal errors
         api_request.save()
 
+        return {
+            'status': 500,
+            'error': str(e)
+        }
+
+
+def call_decommission_api(product_id):
+    """
+    Function to call the GenerateXMLForDecommissionView API with an XML payload.
+
+    Args:
+        product_id (str): The ID of the product to decommission.
+
+    Returns:
+        dict: A dictionary containing the API response status and content.
+    """
+    fsp = Fsp.objects.all().first()
+
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Define the URL of the API endpoint
+    api_url = settings.EMKOPO_PRODUCT_DECOMMISSION_API  # Replace with your actual endpoint URL
+
+    # Create the XML payload
+    document = Element("Document")
+    data_elem = SubElement(document, "Data")
+
+    # Create the header element
+    header = SubElement(data_elem, "Header")
+    SubElement(header, "Sender").text = fsp.name  # Get Sender from Fsp model
+    SubElement(header, "Receiver").text = settings.EMKOPO_UTUMISHI_SYSNAME
+    SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
+    SubElement(header, "MsgId").text = str(uuid.uuid4())  # Generate unique MsgId
+    SubElement(header, "MessageType").text = "PRODUCT_DECOMMISSION"
+
+    # Add the product code to the MessageDetails element
+    message_details = SubElement(data_elem, "MessageDetails")
+    SubElement(message_details, "id").text = product_id
+
+    # Convert the ElementTree to a string
+    xml_payload = tostring(document, encoding="utf-8").decode("utf-8")
+    # print(xml_payload)
+
+    # Prepare headers for the XML request
+    headers = {
+        'Content-Type': 'application/xml',  # Set content type to XML
+    }
+
+    try:
+        # Make the POST request to the API
+        response = requests.post(api_url, data=xml_payload, headers=headers)
+
+        # Check the response status
+        if response.status_code == 200:
+            print("API call successful:", response.content)
+        else:
+            print("API call failed with status:", response.status_code)
+            print("Error message:", response.text)
+
+        # Return the response data
+        return {
+            'status': response.status_code,
+            'content': response.content if response.status_code == 200 else response.text
+        }
+    except requests.exceptions.RequestException as e:
+        print("Error making the API call:", str(e))
         return {
             'status': 500,
             'error': str(e)

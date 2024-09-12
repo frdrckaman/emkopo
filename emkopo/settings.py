@@ -31,7 +31,10 @@ SMTP_PORT = env("SMTP_PORT")
 EMKOPO_BOOTSTRAP = env("EMKOPO_BOOTSTRAP")
 EMKOPO_PAGINATION = env("EMKOPO_PAGINATION")
 EMKOPO_ADMIN = env.str("EMKOPO_ADMIN")
+EMKOPO_UTUMISHI_SYSNAME = env.str("EMKOPO_UTUMISHI_SYSNAME")
 EMKOPO_TERMS_SERVICE_URL = env.str("EMKOPO_TERMS_SERVICE_URL")
+
+EMKOPO_PRODUCT_DECOMMISSION_API = env.str("EMKOPO_PRODUCT_DECOMMISSION_API")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'simple_history',
     'rest_framework',
     'drf_yasg',
     'emkopo_api.apps.AppConfig',

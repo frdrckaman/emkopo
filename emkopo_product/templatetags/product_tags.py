@@ -26,10 +26,11 @@ def add_fsp(context):
     f"emkopo_product/bootstrap/button/edit-fsp.html",
     takes_context=True,
 )
-def update_fsp(context, fsp_id):
+def update_fsp(context, fsp_id, num):
     title = None
     fsp = Fsp.objects.get(id=fsp_id)
     return dict(
+        num=num,
         fsp=fsp,
         title=title,
     )
@@ -39,10 +40,11 @@ def update_fsp(context, fsp_id):
     f"emkopo_product/bootstrap/button/del-fsp.html",
     takes_context=True,
 )
-def delete_fsp(context, fsp_id):
+def delete_fsp(context, fsp_id, num):
     title = None
     fsp = Fsp.objects.get(id=fsp_id)
     return dict(
+        num=num,
         fsp=fsp,
         title=title,
     )
@@ -64,10 +66,11 @@ def add_product(context):
     f"emkopo_product/bootstrap/button/edit-product.html",
     takes_context=True,
 )
-def update_product(context, product_id):
+def update_product(context, product_id, num):
     title = None
     product = ProductCatalog.objects.get(id=product_id)
     return dict(
+        num=num,
         title=title,
         product=product,
     )
@@ -77,10 +80,11 @@ def update_product(context, product_id):
     f"emkopo_product/bootstrap/button/del-product.html",
     takes_context=True,
 )
-def delete_product(context, product_id):
+def delete_product(context, product_id, num):
     title = None
     product = ProductCatalog.objects.get(id=product_id)
     return dict(
+        num=num,
         title=title,
         product=product,
     )
@@ -126,10 +130,11 @@ def add_terms(context, product_id):
     f"emkopo_product/bootstrap/button/edit-terms.html",
     takes_context=True,
 )
-def update_terms(context, terms_id):
+def update_terms(context, terms_id, num):
     title = None
     terms = TermsCondition.objects.get(id=terms_id)
     return dict(
+        num=num,
         terms=terms,
         title=title,
     )
@@ -139,10 +144,11 @@ def update_terms(context, terms_id):
     f"emkopo_product/bootstrap/button/del-terms.html",
     takes_context=True,
 )
-def delete_terms(context, terms_id):
+def delete_terms(context, terms_id, num):
     title = None
     terms = TermsCondition.objects.filter(id=terms_id)
     return dict(
+        num=num,
         terms=terms,
         title=title,
     )

@@ -1,7 +1,7 @@
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import get_object_or_404
 from xml.etree.ElementTree import Element, SubElement, tostring
 import uuid
 from drf_yasg.utils import swagger_auto_schema
@@ -35,32 +35,29 @@ class GenerateXMLForDecommissionView(APIView):
         # Get the product ID from the request data
         product_id = request.data.get("id")
 
-        # Retrieve the product instance
-        product = get_object_or_404(ProductCatalog, pk=product_id)
-
         # Retrieve the Fsp instance dynamically
         fsp = Fsp.objects.all().first()
 
         if not fsp:
             return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        ProductCatalog.objects.filter(pk=product_id).update(status=False)
+        product = ProductCatalog.objects.get(pk=product_id)
 
         # Generate XML data for API call
         xml_data = self.generate_xml_for_decommission(product, fsp)
 
+        product.status = False
+        product.save()
+
         # Call the helper function to log the request and simulate the API call
         response = log_and_make_api_call(
             message_type="PRODUCT_DECOMMISSION",
-            request_type=fsp.name,
+            request_type="outward",
             payload=xml_data,
             signature="XYZ",  # Replace with actual signature if available
             url="https://third-party-api.example.com/endpoint"
             # Replace with actual endpoint URL
         )
-
-        # Simulate the API call to the third-party system
-        # response = self.send_to_third_party(xml_data)
 
         if response.get('status') == 200:
             return Response({"message": "Data sent successfully"}, status=status.HTTP_200_OK)
@@ -79,7 +76,7 @@ class GenerateXMLForDecommissionView(APIView):
         # Create the header element
         header = SubElement(data_elem, "Header")
         SubElement(header, "Sender").text = fsp.name  # Get Sender from Fsp model
-        SubElement(header, "Receiver").text = "ESS_UTUMISHI"
+        SubElement(header, "Receiver").text = settings.EMKOPO_UTUMISHI_SYSNAME
         SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
         SubElement(header, "MsgId").text = str(uuid.uuid4())  # Generate unique MsgId
         SubElement(header, "MessageType").text = "PRODUCT_DECOMMISSION"
@@ -94,14 +91,3 @@ class GenerateXMLForDecommissionView(APIView):
         # Convert the Element to a string
         xml_string = tostring(document, encoding="utf-8").decode("utf-8")
         return xml_string
-
-    def send_to_third_party(self, xml_data):
-        """
-        Simulate sending data to a third-party system.
-        """
-        # Simulate the response
-        from unittest.mock import Mock
-        mock_response = Mock()
-        mock_response.status_code = 200  # Simulating a successful response
-        mock_response.content = "Data sent successfully (simulated)"
-        return mock_response

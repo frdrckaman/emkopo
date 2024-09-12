@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,6 +11,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from unittest.mock import Mock
 
+from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import ProductCatalogSerializer
 from emkopo_product.models import ProductCatalog, Fsp
 
@@ -41,12 +43,22 @@ class ProductCatalogXMLView(APIView):
         xml_data = self.convert_to_xml(serializer.data, fsp, msg_id)
 
         # Simulate the API call to the third-party system
-        response = self.send_to_third_party(xml_data)
+        # response = self.send_to_third_party(xml_data)
 
-        if response.status_code == 200:
-            return Response({"message": "Data sent successfully (simulated)"}, status=status.HTTP_200_OK)
+        response = log_and_make_api_call(
+            message_type="PRODUCT_DETAIL",
+            request_type="outward",
+            payload=xml_data,
+            signature="XYZ",  # Replace with actual signature if available
+            url="https://third-party-api.example.com/endpoint"
+            # Replace with actual endpoint URL
+        )
+
+        if response.get('status') == 200:
+            return Response({"message": "Data sent successfully"}, status=status.HTTP_200_OK)
         else:
-            return Response({"error": "Failed to send data (simulated)"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": response.get('error', 'Failed to send data')},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def convert_to_xml(self, data, fsp, msg_id):
         # Create the root element
@@ -56,7 +68,7 @@ class ProductCatalogXMLView(APIView):
         # Create the header element
         header = SubElement(data_elem, "Header")
         SubElement(header, "Sender").text = fsp.name  # Get Sender from Fsp model
-        SubElement(header, "Receiver").text = "ESS_UTUMISHI"
+        SubElement(header, "Receiver").text = settings.EMKOPO_UTUMISHI_SYSNAME
         SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
         SubElement(header, "MsgId").text = msg_id  # Use generated unique MsgId
         SubElement(header, "MessageType").text = "PRODUCT_DETAIL"
@@ -82,18 +94,19 @@ class ProductCatalogXMLView(APIView):
 
     @staticmethod
     def send_to_third_party(xml_data):
-        print(xml_data)
-        mock_response = Mock()
-        mock_response.status_code = 200  # Simulating a successful response
-        mock_response.content = "Data sent successfully (simulated)"
-        return mock_response
 
-        # url = 'https://third-party-api.example.com/endpoint'  # Replace with the actual API endpoint
-        # headers = {'Content-Type': 'application/xml'}
-        #
-        # try:
-        #     response = requests.post(url, data=xml_data, headers=headers)
-        #     return response
-        # except requests.exceptions.RequestException as e:
-        #     print(f"An error occurred: {e}")
-        #     return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response = log_and_make_api_call(
+            message_type="PRODUCT_DETAIL",
+            request_type="outward",
+            payload=xml_data,
+            signature="XYZ",  # Replace with actual signature if available
+            url="https://third-party-api.example.com/endpoint"
+            # Replace with actual endpoint URL
+        )
+
+        if response.get('status') == 200:
+            return Response({"message": "Data sent successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": response.get('error', 'Failed to send data')},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

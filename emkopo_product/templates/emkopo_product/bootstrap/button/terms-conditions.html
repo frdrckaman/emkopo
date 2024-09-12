@@ -16,7 +16,7 @@
                     <td>{{ term.TermsConditionNumber }}</td>
                     <td>{{ term.Description }}</td>
                     <td>{{ term.TCEffectiveDate }}</td>
-                    <td>{% update_terms term.id %} {% delete_terms term.id %}</td>
+                    <td>{% update_terms term.id forloop.counter %} {% delete_terms term.id forloop.counter %}</td>
                 </tr>
             {% endfor %}
             </tbody>

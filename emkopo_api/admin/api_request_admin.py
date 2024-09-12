@@ -17,7 +17,7 @@ class ApiRequestAdmin(BaseSimpleHistoryAdmin):
                     "TimeStamp",
                     "ApiUrl",
                     "PayLoad",
-                    "status",
+                    "Status",
                 ),
             },
         ),

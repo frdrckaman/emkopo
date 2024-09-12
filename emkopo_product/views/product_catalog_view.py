@@ -6,6 +6,7 @@ from rest_framework import status
 from xml.etree.ElementTree import Element, SubElement, tostring
 import uuid
 
+from emkopo_api.mixins import log_and_make_api_call
 from emkopo_auth.mixins import LoginMixin
 from emkopo_mixins.date_mixins import convert_date_format
 from emkopo_product.models import ProductCatalog, Currency, TermsCondition, Fsp
@@ -23,7 +24,7 @@ class ProductCatalogView(LoginMixin, TemplateView):
         return context
 
 
-def add_product(request):
+def add_product(request, url=None):
     if request.method == 'POST':
         created = ProductCatalog.objects.create(
             ProductCode=request.POST['ProductCode'],
@@ -55,7 +56,7 @@ def add_product(request):
     return redirect(url)
 
 
-def add_currency(request):
+def add_currency(request, url=None):
     if request.method == 'POST':
         created = Currency.objects.get_or_create(
             name=request.POST['name'],
@@ -76,7 +77,7 @@ def add_currency(request):
     return redirect(url)
 
 
-def add_terms(request):
+def add_terms(request, url=None):
     if request.method == 'POST':
         created = TermsCondition.objects.update_or_create(
             ProductCatalog_id=request.POST['ProductCatalog'],
@@ -99,7 +100,7 @@ def add_terms(request):
     return redirect(url)
 
 
-def update_product(request):
+def update_product(request, res=None, message=None, url=None):
     if request.method == 'POST':
         try:
             product_id = request.POST.get("id")
@@ -135,10 +136,10 @@ def update_product(request):
     return redirect(url)
 
 
-def update_terms(request):
+def update_terms(request, res=None, message=None):
     if request.method == 'POST':
         try:
-            terms = TermsCondition.objects.filter(pk=request.POST.get("id"))
+            terms = TermsCondition.objects.get(pk=request.POST.get("id"))
             terms.TermsConditionNumber = request.POST['TermsConditionNumber'],
             terms.Description = request.POST['Description'],
             terms.TCEffectiveDate = convert_date_format(request.POST['TCEffectiveDate'])
@@ -159,24 +160,7 @@ def update_terms(request):
     return redirect(url)
 
 
-# def delete_product(request):
-#     if request.method == 'POST':
-#         try:
-#             ProductCatalog.objects.filter(pk=request.POST.get("id")).update(status=False)
-#             res = 'success'
-#             message = 'Request Approved successful'
-#         except Exception as e:
-#             res = 'error'
-#             message = ('Error occurred while processing the request,please check your inputs '
-#                        'and try again')
-#
-#     notification = res + '&message=' + message
-#     url = "?response=".join(
-#         [reverse(f'emkopo_product:{request.POST.get("next_url_name")}'), notification])
-#
-#     return redirect(url)
-
-def delete_product(request):
+def delete_product(request, res=None, message=None):
     if request.method == 'POST':
         try:
 
@@ -191,16 +175,22 @@ def delete_product(request):
             xml_data = generate_xml_for_decommission(product, fsp)
 
             # Simulate the API call to the third-party system
-            response = send_to_third_party(xml_data)
+            # response = send_to_third_party(xml_data)
+
+            log_and_make_api_call(
+                message_type="PRODUCT_DECOMMISSION",
+                request_type="outward",
+                payload=xml_data,
+                signature="XYZ",  # Replace with actual signature if available
+                url="https://third-party-api.example.com/endpoint"
+                # Replace with actual endpoint URL
+            )
 
             ProductCatalog.objects.filter(pk=request.POST.get("id")).update(status=False)
 
-            if response.status_code == 200:
-                res = 'success'
-                message = 'Request Approved successfully, API call simulated.'
-            else:
-                res = 'error'
-                message = 'Failed to send data to third-party system.'
+            res = 'success'
+            message = 'Request Approved successful'
+
         except ProductCatalog.DoesNotExist:
             res = 'error'
             message = 'Product not found.'
@@ -216,10 +206,10 @@ def delete_product(request):
     return redirect(url)
 
 
-def delete_terms(request):
+def delete_terms(request, res=None, message=None):
     if request.method == 'POST':
         try:
-            terms = TermsCondition.objects.filter(pk=request.POST.get("id"))
+            terms = TermsCondition.objects.get(pk=request.POST.get("id"))
             terms.status = False
             terms.save()
             res = 'success'
@@ -235,11 +225,12 @@ def delete_terms(request):
 
     return redirect(url)
 
+
 def generate_xml_for_decommission(product, fsp):
     """
     Generate XML data for product decommission message.
     """
-        # Create the root element
+    # Create the root element
     document = Element("Document")
     data_elem = SubElement(document, "Data")
 
@@ -262,13 +253,3 @@ def generate_xml_for_decommission(product, fsp):
     xml_string = tostring(document, encoding="utf-8").decode("utf-8")
     return xml_string
 
-def send_to_third_party(xml_data):
-    """
-    Simulate sending data to a third-party system.
-    """
-    # Simulate the response
-    from unittest.mock import Mock
-    mock_response = Mock()
-    mock_response.status_code = 200  # Simulating a successful response
-    mock_response.content = "Data sent successfully (simulated)"
-    return mock_response
