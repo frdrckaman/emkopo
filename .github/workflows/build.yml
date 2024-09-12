@@ -52,7 +52,7 @@ jobs:
 
     - name: Run Migrations
       env:
-        SECRET_KEY: 'errtyuytfdhfss'
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DEBUG: 'false'
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/django_db
       run: |
@@ -60,7 +60,7 @@ jobs:
 
     - name: Run Tests
       env:
-        SECRET_KEY: 'drerfvjhkjffxd'
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DEBUG: 'false'
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/django_db
       run: |
