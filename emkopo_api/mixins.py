@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from xml.parsers.expat import ExpatError
 
+from emkopo_constants.constants import OUTGOING, INCOMING
 from emkopo_product.models import Fsp
 from .models import ApiRequest
 import uuid
@@ -38,7 +39,6 @@ def log_and_make_api_call(request_type, payload, signature, url):
             'status': 400,
             'error': f"Failed to parse XML or extract MessageType: {str(e)}"
         }
-
 
     # Log the initial API request
     api_request = ApiRequest.objects.create(
@@ -153,3 +153,38 @@ def call_decommission_api(product_id):
             'status': 500,
             'error': str(e)
         }
+
+
+def convert_to_xml(request_type, message_type, data, fsp, msg_id):
+    sender = fsp.name if request_type == OUTGOING else settings.EMKOPO_UTUMISHI_SYSNAME
+    receiver = settings.EMKOPO_UTUMISHI_SYSNAME if request_type == INCOMING else fsp.name
+    # Create the root element
+    document = Element("Document")
+    data_elem = SubElement(document, "Data")
+
+    # Create the header element
+    header = SubElement(data_elem, "Header")
+    SubElement(header, "Sender").text = sender  # Get Sender from Fsp model
+    SubElement(header, "Receiver").text = receiver
+    SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
+    SubElement(header, "MsgId").text = msg_id  # Use generated unique MsgId
+    SubElement(header, "MessageType").text = message_type
+
+    # Add each product as a MessageDetails element
+    for product in data:
+        message_details = SubElement(data_elem, "MessageDetails")
+        for key, value in product.items():
+            if key == 'terms_conditions':
+                for term in value:
+                    term_elem = SubElement(message_details, "TermsCondition")
+                    for term_key, term_value in term.items():
+                        SubElement(term_elem, term_key).text = str(term_value)
+            else:
+                SubElement(message_details, key).text = str(value)
+
+    # Add the Signature element
+    SubElement(document, "Signature").text = "XYZ"
+
+    # Convert the Element to a string
+    xml_string = tostring(document, encoding="utf-8").decode("utf-8")
+    return xml_string

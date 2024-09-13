@@ -4,12 +4,9 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import requests
 from xml.etree.ElementTree import Element, SubElement, tostring
-import xml.etree.ElementTree as ET
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from unittest.mock import Mock
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import ProductCatalogSerializer

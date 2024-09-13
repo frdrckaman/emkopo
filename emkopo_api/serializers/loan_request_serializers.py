@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from emkopo_loan.models import LoanChargeRequest
+
 
 class HeaderSerializer(serializers.Serializer):
     Sender = serializers.CharField(max_length=100)
@@ -32,3 +34,12 @@ class LoanChargeRequestDocumentSerializer(serializers.Serializer):
     Header = HeaderSerializer()
     MessageDetails = MessageDetailsSerializer()
     Signature = serializers.CharField(max_length=100)
+
+
+class LoanChargeRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoanChargeRequest
+        fields = ['CheckNumber', 'DesignationCode', 'DesignationName', 'BasicSalary',
+                  'NetSalary', 'OneThirdAmount', 'RequestedAmount', 'DeductibleAmount',
+                  'DesiredDeductibleAmount', 'RetirementDate', 'TermsOfEmployment', 'Tenure',
+                  'ProductCode', 'VoteCode', 'TotalEmployeeDeduction', 'JobClassCode']

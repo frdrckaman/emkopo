@@ -1,4 +1,5 @@
 import re
+import uuid
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -7,10 +8,13 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 import xmltodict
 
-from emkopo_api.mixins import log_and_make_api_call
-from emkopo_api.serializers import LoanChargeRequestDocumentSerializer
-from emkopo_constants.constants import INCOMING
-from emkopo_loan.models import LoanChargeRequest
+from emkopo_api.mixins import log_and_make_api_call, convert_to_xml
+from emkopo_api.serializers import LoanChargeRequestDocumentSerializer, \
+    LoanChargeResponseSerializer
+from emkopo_constants.constants import INCOMING, OUTGOING
+from emkopo_loan.loan_calculator import LoanCalculator
+from emkopo_loan.models import LoanChargeRequest, LoanChargeResponse
+from emkopo_product.models import Fsp
 
 
 class LoanChargesRequestAPIView(APIView):
@@ -71,7 +75,7 @@ class LoanChargesRequestAPIView(APIView):
         # Save the request data to the ApiRequest model
         try:
             log_and_make_api_call(
-                request_type="inward",
+                request_type=INCOMING,
                 payload=xml_data,
                 signature="XYZ",  # Replace with actual signature if available
                 url="https://third-party-api.example.com/endpoint"
@@ -95,7 +99,7 @@ class LoanChargesRequestAPIView(APIView):
 
         if serializer.is_valid():
             try:
-                LoanChargeRequest.objects.create(
+                loan_charge_request = LoanChargeRequest.objects.create(
                     CheckNumber=message_details.get('CheckNumber'),
                     DesignationCode=message_details.get('DesignationCode'),
                     DesignationName=message_details.get('DesignationName'),
@@ -123,6 +127,38 @@ class LoanChargesRequestAPIView(APIView):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     content_type='application/xml'
                 )
+
+            # Call LoanCalculator and calculate loan details
+            loan_calculator = LoanCalculator(loan_charge_request)
+            loan_response = loan_calculator.create_loan_response()
+
+            if not loan_response:
+                return Response(
+                    {'error': 'Failed to calculate loan response.'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content_type='application/xml'
+                    )
+
+            # Use the LoanChargeResponseSerializer to serialize the loan response data
+            l_response = LoanChargeResponse.objects.filter(pk=loan_response.pk)
+            response_serializer = LoanChargeResponseSerializer(l_response, many=True)
+
+            fsp = Fsp.objects.first()
+            if not fsp:
+                return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            msg_id = str(uuid.uuid4())
+            message_type = 'LOAN_CHARGES_RESPONSE'
+            xml_data = convert_to_xml(OUTGOING, message_type, response_serializer.data, fsp,
+                                      msg_id)
+
+            log_and_make_api_call(
+                request_type=OUTGOING,
+                payload=xml_data,
+                signature="XYZ",  # Replace with actual signature if available
+                url="https://third-party-api.example.com/endpoint"
+                # Replace with actual endpoint URL
+            )
 
             # Simulate successful processing of the request
             simulated_response = {
