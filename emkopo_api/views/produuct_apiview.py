@@ -46,7 +46,6 @@ class ProductCatalogXMLView(APIView):
         # response = self.send_to_third_party(xml_data)
 
         response = log_and_make_api_call(
-            message_type="PRODUCT_DETAIL",
             request_type="outward",
             payload=xml_data,
             signature="XYZ",  # Replace with actual signature if available
@@ -94,9 +93,7 @@ class ProductCatalogXMLView(APIView):
 
     @staticmethod
     def send_to_third_party(xml_data):
-
         response = log_and_make_api_call(
-            message_type="PRODUCT_DETAIL",
             request_type="outward",
             payload=xml_data,
             signature="XYZ",  # Replace with actual signature if available

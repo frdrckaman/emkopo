@@ -1,9 +1,11 @@
 import requests
+import xmltodict
 from django.conf import settings
 from django.utils import timezone
 from unittest.mock import Mock
 from rest_framework.response import Response
 from rest_framework import status
+from xml.parsers.expat import ExpatError
 
 from emkopo_product.models import Fsp
 from .models import ApiRequest
@@ -11,7 +13,7 @@ import uuid
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 
-def log_and_make_api_call(message_type, request_type, payload, signature, url):
+def log_and_make_api_call(request_type, payload, signature, url):
     """
     Logs the API request to the database, makes the API call, and updates the status.
 
@@ -25,6 +27,19 @@ def log_and_make_api_call(message_type, request_type, payload, signature, url):
     Returns:
         dict: A dictionary containing the response status and content.
     """
+
+    try:
+        # Parse the XML payload to a dictionary
+        xml_dict = xmltodict.parse(payload)
+        # Extract the MessageType from the XML
+        message_type = xml_dict['Document']['Data']['Header']['MessageType']
+    except (KeyError, ExpatError) as e:
+        return {
+            'status': 400,
+            'error': f"Failed to parse XML or extract MessageType: {str(e)}"
+        }
+
+
     # Log the initial API request
     api_request = ApiRequest.objects.create(
         MessageType=message_type,

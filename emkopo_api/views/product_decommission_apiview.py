@@ -51,7 +51,6 @@ class GenerateXMLForDecommissionView(APIView):
 
         # Call the helper function to log the request and simulate the API call
         response = log_and_make_api_call(
-            message_type="PRODUCT_DECOMMISSION",
             request_type="outward",
             payload=xml_data,
             signature="XYZ",  # Replace with actual signature if available

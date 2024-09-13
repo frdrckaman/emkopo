@@ -7,6 +7,7 @@ admin.site.site_header = settings.APP_NAME
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("dashboard/", include("emkopo_dashboard.urls")),
+    path("loan/", include("emkopo_loan.urls")),
     path("product/", include("emkopo_product.urls")),
     path("api/", include("emkopo_api.urls")),
     path("", include("emkopo_auth.urls"))

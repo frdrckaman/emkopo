@@ -178,7 +178,6 @@ def delete_product(request, res=None, message=None):
             # response = send_to_third_party(xml_data)
 
             log_and_make_api_call(
-                message_type="PRODUCT_DECOMMISSION",
                 request_type="outward",
                 payload=xml_data,
                 signature="XYZ",  # Replace with actual signature if available

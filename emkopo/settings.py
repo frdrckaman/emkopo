@@ -54,9 +54,11 @@ INSTALLED_APPS = [
     'emkopo_dashboard.apps.AppConfig',
     'emkopo_auth.apps.AppConfig',
     'emkopo_product.apps.AppConfig',
+    'emkopo_loan.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
+    'emkopo_api.middlewares.CacheRequestBodyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
