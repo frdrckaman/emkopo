@@ -63,7 +63,7 @@
                                             <td>{{ loan.MobileNumber }}</td>
                                             <td>{{ loan.EmailAddress }}</td>
                                             <td>{{ loan.LoanPurpose }}</td>
-                                            <td>{% loan_offer_details loan.id forloop.counter %}</td>
+                                            <td>{% loan_offer_details loan.id forloop.counter %} {% loan_offer_response loan.id forloop.counter %}</td>
                                         </tr>
 
                                     {% endfor %}
