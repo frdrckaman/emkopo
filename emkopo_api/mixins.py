@@ -156,8 +156,12 @@ def call_decommission_api(product_id):
 
 
 def convert_to_xml(request_type, message_type, data, fsp, msg_id):
-    sender = fsp.name if request_type == OUTGOING else settings.EMKOPO_UTUMISHI_SYSNAME
-    receiver = settings.EMKOPO_UTUMISHI_SYSNAME if request_type == INCOMING else fsp.name
+    if request_type == OUTGOING:
+        sender = fsp.name
+        receiver = settings.EMKOPO_UTUMISHI_SYSNAME
+    else:
+        sender = settings.EMKOPO_UTUMISHI_SYSNAME
+        receiver = fsp.name
     # Create the root element
     document = Element("Document")
     data_elem = SubElement(document, "Data")

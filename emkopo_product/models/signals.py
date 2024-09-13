@@ -4,8 +4,10 @@ from django.dispatch import receiver
 from rest_framework.test import APIRequestFactory
 import uuid
 
+from emkopo_api.mixins import convert_to_xml
 from emkopo_api.serializers import ProductCatalogSerializer
 from emkopo_api.views import ProductCatalogXMLView
+from emkopo_constants.constants import OUTGOING
 from emkopo_product.models import ProductCatalog, TermsCondition, Fsp
 
 
@@ -28,9 +30,10 @@ def send_product_catalog_to_third_party(sender, instance, created, **kwargs):
 
     # Generate a unique MsgId
     msg_id = str(uuid.uuid4())
+    message_type = 'PRODUCT_DETAIL'
 
     # Convert the serialized data to XML format
-    xml_data = ProductCatalogXMLView().convert_to_xml(serializer.data, fsp, msg_id)
+    xml_data = convert_to_xml(OUTGOING, message_type, serializer.data, fsp, msg_id)
 
     # Simulate sending the data to the third party
     response = ProductCatalogXMLView().send_to_third_party(xml_data)

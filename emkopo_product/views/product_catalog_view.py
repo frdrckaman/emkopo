@@ -140,9 +140,9 @@ def update_terms(request, res=None, message=None):
     if request.method == 'POST':
         try:
             terms = TermsCondition.objects.get(pk=request.POST.get("id"))
-            terms.TermsConditionNumber = request.POST['TermsConditionNumber'],
-            terms.Description = request.POST['Description'],
-            terms.TCEffectiveDate = convert_date_format(request.POST['TCEffectiveDate'])
+            terms.TermsConditionNumber = request.POST.get('TermsConditionNumber')
+            terms.Description = request.POST.get('Description')
+            terms.TCEffectiveDate = convert_date_format(request.POST.get('TCEffectiveDate'))
 
             terms.save()
 
