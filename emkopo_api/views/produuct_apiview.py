@@ -13,6 +13,7 @@ from unittest.mock import Mock
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import ProductCatalogSerializer
+from emkopo_constants.constants import OUTGOING
 from emkopo_product.models import ProductCatalog, Fsp
 
 
@@ -46,7 +47,7 @@ class ProductCatalogXMLView(APIView):
         # response = self.send_to_third_party(xml_data)
 
         response = log_and_make_api_call(
-            request_type="outward",
+            request_type=OUTGOING,
             payload=xml_data,
             signature="XYZ",  # Replace with actual signature if available
             url="https://third-party-api.example.com/endpoint"

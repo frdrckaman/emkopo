@@ -1,2 +1,2 @@
-INWARD = "inward"
-OUTWARD = "outward"
+INCOMING = "incoming"
+OUTGOING = "outgoing"

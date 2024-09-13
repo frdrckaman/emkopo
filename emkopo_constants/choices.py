@@ -1,6 +1,6 @@
-from emkopo_constants.constants import INWARD, OUTWARD
+from emkopo_constants.constants import INCOMING, OUTGOING
 
 REQUEST_TYPE = (
-    (INWARD, 'INWARD'),
-    (OUTWARD, 'OUTWARD'),
+    (INCOMING, 'INCOMING'),
+    (OUTGOING, 'OUTGOING'),
 )

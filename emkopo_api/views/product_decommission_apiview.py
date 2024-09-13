@@ -8,6 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from emkopo_api.mixins import log_and_make_api_call
+from emkopo_constants.constants import OUTGOING
 from emkopo_product.models import ProductCatalog, Fsp
 
 
@@ -51,7 +52,7 @@ class GenerateXMLForDecommissionView(APIView):
 
         # Call the helper function to log the request and simulate the API call
         response = log_and_make_api_call(
-            request_type="outward",
+            request_type=OUTGOING,
             payload=xml_data,
             signature="XYZ",  # Replace with actual signature if available
             url="https://third-party-api.example.com/endpoint"

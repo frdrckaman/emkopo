@@ -9,6 +9,8 @@ import xmltodict
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanChargeRequestDocumentSerializer
+from emkopo_constants.constants import INCOMING
+from emkopo_loan.models import LoanChargeRequest
 
 
 class LoanChargesRequestAPIView(APIView):
@@ -53,7 +55,7 @@ class LoanChargesRequestAPIView(APIView):
                 content_type='application/xml'
             )
 
-        # Extract data for saving to the ApiRequest model
+        # Extract data for saving to the Serializer
         document_data = data_dict.get('Document')
         if not document_data:
             return Response(
@@ -62,8 +64,11 @@ class LoanChargesRequestAPIView(APIView):
                 content_type='application/xml'
             )
 
-        # Save the request data to the ApiRequest model
+        # Extract data for LoanChargeRequest
+        message_details = document_data.get('Data', {}).get('MessageDetails', {})
+        header_data = document_data.get('Data', {}).get('Header', {})
 
+        # Save the request data to the ApiRequest model
         try:
             log_and_make_api_call(
                 request_type="inward",
@@ -89,6 +94,36 @@ class LoanChargesRequestAPIView(APIView):
         serializer = LoanChargeRequestDocumentSerializer(data=data_for_serialization)
 
         if serializer.is_valid():
+            try:
+                LoanChargeRequest.objects.create(
+                    CheckNumber=message_details.get('CheckNumber'),
+                    DesignationCode=message_details.get('DesignationCode'),
+                    DesignationName=message_details.get('DesignationName'),
+                    BasicSalary=message_details.get('BasicSalary'),
+                    NetSalary=message_details.get('NetSalary'),
+                    OneThirdAmount=message_details.get('OneThirdAmount'),
+                    RequestedAmount=message_details.get('RequestedAmount', None),
+                    DeductibleAmount=message_details.get('DeductibleAmount'),
+                    DesiredDeductibleAmount=message_details.get('DesiredDeductibleAmount',
+                                                                None),
+                    RetirementDate=message_details.get('RetirementDate'),
+                    TermsOfEmployment=message_details.get('TermsOfEmployment'),
+                    Tenure=message_details.get('Tenure', None),
+                    ProductCode=message_details.get('ProductCode'),
+                    VoteCode=message_details.get('VoteCode'),
+                    TotalEmployeeDeduction=message_details.get('TotalEmployeeDeduction', None),
+                    JobClassCode=message_details.get('JobClassCode'),
+                    MessageType=header_data.get('MessageType'),
+                    RequestType=INCOMING,
+                    status=1
+                )
+            except Exception as e:
+                return Response(
+                    {'error': f'Failed to save LoanChargeRequest: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content_type='application/xml'
+                )
+
             # Simulate successful processing of the request
             simulated_response = {
                 'message': 'Simulated: Loan charges request received and processed successfully.',
