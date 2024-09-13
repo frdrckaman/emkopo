@@ -1,4 +1,5 @@
-from .produuct_apiview import ProductCatalogXMLView
-from .product_decommission_apiview import GenerateXMLForDecommissionView
+from .produuct_catalog import ProductCatalogXMLView
+from .product_decommission import GenerateXMLForDecommissionView
 from .loan_charge_request import LoanChargesRequestAPIView
+from .loan_offer_request import LoanOfferRequestAPIView
 
