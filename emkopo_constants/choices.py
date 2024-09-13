@@ -1,5 +1,5 @@
 from emkopo_constants.constants import INCOMING, OUTGOING, NEW_LOAN, TOP_UP_LOAN, \
-    TAKE_OVER_LOAN
+    TAKE_OVER_LOAN, ACCEPT, REJECT, YES, NO
 
 REQUEST_TYPE = (
     (INCOMING, 'INCOMING'),
@@ -10,4 +10,14 @@ LOAN_TYPE = (
     (NEW_LOAN, 'NEW LOAN'),
     (TOP_UP_LOAN, 'TOP UP LOAN'),
     (TAKE_OVER_LOAN, 'TAKE OVER LOAN'),
+)
+
+OFFER_RESPONSE = (
+    (ACCEPT, 'REJECT'),
+    (REJECT, 'REJECT'),
+)
+
+YES_NO = (
+    (YES, 'Yes'),
+    (NO, 'No'),
 )
