@@ -21,8 +21,10 @@ register = template.Library()
 )
 def mobile_menu(context):
     title = None
+    org_acronym = settings.EMKOPO_ORG_ACRONYM
     return dict(
         title=title,
+        org_acronym=org_acronym,
     )
 
 
@@ -32,11 +34,13 @@ def mobile_menu(context):
 )
 def top_bar_menu(context, adm=False):
     title = None
+    org_acronym = settings.EMKOPO_ORG_ACRONYM
     admin_usr = str(settings.EMKOPO_ADMIN).split(",")
     usr = str(context.get('user'))
     return dict(
         title=title,
         frdrck=adm,
+        org_acronym=org_acronym,
         username=context.get('user'),
     )
 
@@ -49,6 +53,7 @@ def main_menu(context):
     software_active = None
     servers_active = None
     workstations_active = None
+    org_acronym = settings.EMKOPO_ORG_ACRONYM
     menu_category = context.get('menu_category')
     if menu_category == 'software':
         software_active = "top-menu--active"
@@ -58,6 +63,7 @@ def main_menu(context):
         workstations_active = "top-menu--active"
 
     return dict(
+        org_acronym=org_acronym,
         software_active=software_active,
         servers_active=servers_active,
         workstations_active=workstations_active,

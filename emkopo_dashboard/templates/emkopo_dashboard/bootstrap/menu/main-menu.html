@@ -18,5 +18,37 @@
                 <div class="top-menu__title"> PRODUCTS CATALOG </div>
             </a>
         </li>
+        <li>
+            <a href="javascript:;" class="top-menu">
+                <div class="top-menu__icon"> <i data-lucide="briefcase"></i> </div>
+                <div class="top-menu__title"> LOANS <i data-lucide="chevron-down" class="top-menu__sub-icon"></i> </div>
+            </a>
+            <ul class="">
+                <li>
+                    <a href="{% url 'emkopo_loan:offer-request' %}" class="top-menu">
+                        <div class="top-menu__icon"> <i data-lucide="file-minus"></i> </div>
+                        <div class="top-menu__title">  OFFERS PENDING ({{ org_acronym }})</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="top-menu">
+                        <div class="top-menu__icon"> <i data-lucide="credit-card"></i> </div>
+                        <div class="top-menu__title"> OFFERS PENDING (GoT)</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="top-menu">
+                        <div class="top-menu__icon"> <i data-lucide="clipboard"></i> </div>
+                        <div class="top-menu__title"> PENDING DISBURSEMENT </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="top-menu">
+                        <div class="top-menu__icon"> <i data-lucide="file-text"></i> </div>
+                        <div class="top-menu__title"> ALL LOANS </div>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </nav>

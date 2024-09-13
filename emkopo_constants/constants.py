@@ -1,2 +1,5 @@
 INCOMING = "incoming"
 OUTGOING = "outgoing"
+NEW_LOAN = "new_loan"
+TOP_UP_LOAN = "top_up_loan"
+TAKE_OVER_LOAN = "take_over_loan"

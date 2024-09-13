@@ -8,7 +8,7 @@ import re
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanOfferRequestSerializer
-from emkopo_constants.constants import INCOMING
+from emkopo_constants.constants import INCOMING, NEW_LOAN
 from emkopo_loan.models import LoanOfferRequest
 
 
@@ -134,9 +134,10 @@ class LoanOfferRequestAPIView(APIView):
                     LoanPurpose=serializer.validated_data.get('LoanPurpose'),
                     ContractStartDate=serializer.validated_data.get('ContractStartDate'),
                     ContractEndDate=serializer.validated_data.get('ContractEndDate'),
+                    LoanOfferType=NEW_LOAN,
                     MessageType=header_data.get('MessageType'),
                     RequestType=INCOMING,
-                    status=1
+                    status=0
                 )
             except Exception as e:
                 return Response(

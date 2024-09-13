@@ -50,6 +50,7 @@ class LoanOfferRequestAdmin(BaseSimpleHistoryAdmin):
                     "ContractEndDate",
                     "LoanNumber",
                     "SettlementAmount",
+                    "LoanOfferType",
                     "MessageType",
                     "RequestType",
                     "status",
@@ -60,6 +61,7 @@ class LoanOfferRequestAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_display = (
+        "LoanOfferType",
         "ApplicationNumber",
         "LoanNumber",
         "CheckNumber",
@@ -86,6 +88,7 @@ class LoanOfferRequestAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_filter = (
+        "LoanOfferType",
         "MessageType",
         "RequestType",
     )

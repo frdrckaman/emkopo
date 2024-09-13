@@ -1,0 +1,152 @@
+<a href="javascript:;" data-tw-toggle="modal" data-tw-target="#respond-loan-offer-{{ num }}" class="btn btn-primary mr-1 mb-1">More Details</a>
+<div id="respond-loan-offer-{{ num }}" class="modal" tabindex="-1" data-tw-backdrop="static"  aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="font-medium text-base mr-auto">LOAN OFFER REQUEST DETAILS</h2>
+            </div>
+            <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-1" class="form-label">Check Number</label>
+                    <input id="modal-form-1" type="text" value="{{ loan.CheckNumber }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-2" class="form-label">Full Name</label>
+                    <input id="modal-form-2" type="text" value="{{ loan.FirstName }} {{ loan.MiddleName }} {{ loan.LastName }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-3" class="form-label">Sex</label>
+                    <input id="modal-form-3" type="text" value="{{ loan.Sex }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-1" class="form-label">Marital Status</label>
+                    <input id="modal-form-1" type="text" value="{{ loan.MaritalStatus }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-4" class="form-label">Bank Account Number</label>
+                    <input id="modal-form-4" type="text" value="{{ loan.BankAccountNumber }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Employment Date</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.EmploymentDate }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-2" class="form-label">Confirmation Date</label>
+                    <input id="modal-form-2" type="text" value="{{ loan.ConfirmationDate }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-3" class="form-label">Nearest Branch Name</label>
+                    <input id="modal-form-3" type="text" value="{{ loan.NearestBranchName }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Vote Code</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.VoteCode }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-1" class="form-label">Vote Name</label>
+                    <input id="modal-form-1" type="text" value="{{ loan.VoteName }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-2" class="form-label">NIN</label>
+                    <input id="modal-form-2" type="text" value="{{ loan.NIN }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-3" class="form-label">Designation Code</label>
+                    <input id="modal-form-3" type="text" value="{{ loan.DesignationCode }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-4" class="form-label">Designation Name</label>
+                    <input id="modal-form-4" type="text" value="{{ loan.DesignationName }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-4" class="form-label">Total Employee Deduction</label>
+                    <input id="modal-form-4" type="text" value="{{ loan.TotalEmployeeDeduction }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Basic Salary</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.BasicSalary }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-1" class="form-label">Net Salary</label>
+                    <input id="modal-form-1" type="text" value="{{ loan.NetSalary }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-2" class="form-label">One Third Amount</label>
+                    <input id="modal-form-2" type="text" value="{{ loan.OneThirdAmount }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-3" class="form-label">Requested Amount</label>
+                    <input id="modal-form-3" type="text" value="{{ loan.RequestedAmount }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-4" class="form-label">Desired Deductible Amount</label>
+                    <input id="modal-form-4" type="text" value="{{ loan.DesiredDeductibleAmount }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Retirement Date</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.RetirementDate }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-1" class="form-label">Terms Of Employment</label>
+                    <input id="modal-form-1" type="text" value="{{ loan.TermsOfEmployment }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-2" class="form-label">Tenure</label>
+                    <input id="modal-form-2" type="text" value="{{ loan.Tenure }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-3" class="form-label">Product Code</label>
+                    <input id="modal-form-3" type="text" value="{{ loan.ProductCode }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-4" class="form-label">Interest Rate</label>
+                    <input id="modal-form-4" type="text" value="{{ loan.InterestRate }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Processing Fee</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.ProcessingFee }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-1" class="form-label">Insurance</label>
+                    <input id="modal-form-1" type="text" value="{{ loan.Insurance }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-2" class="form-label">Physical Address</label>
+                    <input id="modal-form-2" type="text" value="{{ loan.PhysicalAddress }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-3" class="form-label">Telephone Number</label>
+                    <input id="modal-form-3" type="text" value="{{ loan.TelephoneNumber }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-4" class="form-label">Email Address</label>
+                    <input id="modal-form-4" type="text" value="{{ loan.EmailAddress }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Mobile Number</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.MobileNumber }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Application Number</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.ApplicationNumber }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Loan Purpose</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.LoanPurpose }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Contract Start Date</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.ContractStartDate }}" class="form-control" disabled>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label for="modal-form-5" class="form-label">Contract End Date</label>
+                    <input id="modal-form-5" type="text" value="{{ loan.ContractEndDate }}" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Modal Content -->

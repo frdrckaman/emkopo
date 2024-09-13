@@ -1,7 +1,8 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
 
-from emkopo_constants.choices import REQUEST_TYPE
+from emkopo_constants.choices import REQUEST_TYPE, LOAN_TYPE
+from emkopo_constants.constants import NEW_LOAN
 from emkopo_mixins.model import BaseUuidModel
 
 
@@ -182,6 +183,12 @@ class LoanOfferRequest(BaseUuidModel):
         decimal_places=2,
         blank=True,
         null=True,
+    )
+    LoanOfferType = models.CharField(
+        verbose_name="Loan Offer Type",
+        max_length=45,
+        choices=LOAN_TYPE,
+        default=NEW_LOAN,
     )
     MessageType = models.CharField(
         verbose_name="Message Type",
