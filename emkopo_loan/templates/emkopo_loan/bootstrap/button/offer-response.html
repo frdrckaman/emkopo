@@ -34,12 +34,22 @@
                                     <label class="form-check-label"for="radio-switch-2">REJECT</label>
                                 </div>
                             </div><br>
+                            <div class="col-span-12 sm:col-span-12">
+                                <label for="fsp-name" class="form-label">Total Amount ToPay</label>
+                                <input id="fsp-name" name="TotalAmountToPay" type="number" class="form-control">
+                            </div><br>
+                            <div class="col-span-6 sm:col-span-6">
+                                <label for="fsp-name" class="form-label">Other Charges</label>
+                                <input id="fsp-name" name="OtherCharges" type="number" class="form-control">
+                            </div><br>
                             <div>
                                 <label for="regular-form-1" class="form-label">Reasons for this response</label>
                                 <textarea id="regular-form-1" name="reasons" type="text" class="form-control" placeholder="Provide reasons for this response" required></textarea>
                             </div><br>
                             <div>
                                 <input type="hidden" name="offer_id" value="{{ loan.id }}">
+                                <input type="hidden" name="staff_id" value="{{ staff }}">
+                                <input type="hidden" name="next_url_name" value="offer-request">
                                 <input type="submit" value="Submit" class="btn btn-primary w-1/2 sm:w-auto mr-2 pull-right">
                                 <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
                             </div>
