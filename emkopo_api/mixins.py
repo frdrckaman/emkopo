@@ -93,6 +93,9 @@ def log_and_make_api_call(request_type, payload, signature, url):
         mock_response.status_code = 200  # Simulate a 200 OK response
         mock_response.content = "Data Saved successfully"
 
+        api_request.Status = mock_response.status_code
+        api_request.save()
+
         return {
             'status': mock_response.status_code,
             'content': mock_response.content
