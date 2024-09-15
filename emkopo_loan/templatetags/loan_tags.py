@@ -1,6 +1,7 @@
 from django import template
 
 from emkopo_loan.models import LoanOfferRequest
+from emkopo_mixins.list_mixins import ListboardView
 
 register = template.Library()
 
@@ -11,11 +12,13 @@ register = template.Library()
 )
 def loan_offer_details(context, loan_id, num):
     title = None
-    loan = LoanOfferRequest.objects.get(id=loan_id)
+    loans = LoanOfferRequest.objects.filter(id=loan_id)
+    loan = ListboardView().get_wrapped_queryset(loans)
     return dict(
         num=num,
-        loan=loan,
+        loan=loan[0],
         title=title,
+        got_approval=True,
     )
 
 

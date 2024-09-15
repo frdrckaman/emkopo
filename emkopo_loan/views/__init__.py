@@ -1,1 +1,2 @@
 from .loan_offer_request import LoanOfferRequestView
+from .offer_got_approval import PendingGotApprovalView

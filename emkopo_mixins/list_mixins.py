@@ -47,7 +47,7 @@ class BaseListboardView:
     def get_wrapped_queryset(self, queryset, url=None):
         wrapped_objs = []
         for obj_qry in queryset:
-            user_response = UserResponse.objects.get(id=obj_qry.id)
+            user_response = UserResponse.objects.get(LoanOfferRequest=obj_qry.id)
             obj = self.get_model_dict(obj_qry)
             obj['FSPReferenceNumber'] = user_response.FSPReferenceNumber
             obj['LoanNumber'] = user_response.LoanNumber

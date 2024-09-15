@@ -142,6 +142,24 @@
                     <label for="modal-form-5" class="form-label">Contract End Date</label>
                     <input id="modal-form-5" type="text" value="{{ loan.ContractEndDate }}" class="form-control" disabled>
                 </div>
+                {% if got_approval %}
+                    <div class="col-span-12 sm:col-span-6">
+                        <label for="modal-form-5" class="form-label">FSPReferenceNumber</label>
+                        <input id="modal-form-5" type="text" value="{{ loan.FSPReferenceNumber }}" class="form-control" disabled>
+                    </div>
+                    <div class="col-span-12 sm:col-span-6">
+                        <label for="modal-form-5" class="form-label">Loan Number</label>
+                        <input id="modal-form-5" type="text" value="{{ loan.LoanNumber }}" class="form-control" disabled>
+                    </div>
+                    <div class="col-span-12 sm:col-span-6">
+                        <label for="modal-form-5" class="form-label">Total Amount To Pay</label>
+                        <input id="modal-form-5" type="text" value="{{ loan.TotalAmountToPay }}" class="form-control" disabled>
+                    </div>
+                    <div class="col-span-12 sm:col-span-6">
+                        <label for="modal-form-5" class="form-label">Other Charges</label>
+                        <input id="modal-form-5" type="text" value="{{ loan.OtherCharges }}" class="form-control" disabled>
+                    </div>
+                {% endif %}
             </div>
             <div class="modal-footer">
                 <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>

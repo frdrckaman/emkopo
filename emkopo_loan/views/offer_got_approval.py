@@ -4,7 +4,7 @@ from emkopo_loan.models import LoanOfferRequest
 from emkopo_mixins.list_mixins import ListboardView
 
 
-class LoanOfferRequestView(LoginMixin, ListboardView, TemplateView):
+class PendingGotApprovalView(LoginMixin, ListboardView, TemplateView):
     template_name = f"emkopo_loan/bootstrap/offer-got-approval.html"
 
     def get_context_data(self, **kwargs):
@@ -13,5 +13,6 @@ class LoanOfferRequestView(LoginMixin, ListboardView, TemplateView):
         loans = self.get_wrapped_queryset(loan)
         context.update(
             loans=loans,
+            got_approval=True,
         )
         return context
