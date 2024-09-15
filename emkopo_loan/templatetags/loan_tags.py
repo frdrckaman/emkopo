@@ -34,3 +34,17 @@ def loan_offer_response(context, loan_id, num):
         loan=loan,
         title=title,
     )
+
+
+@register.inclusion_tag(
+    f"emkopo_loan/bootstrap/button/loan-disbursement.html",
+    takes_context=True,
+)
+def loan_offer_response(context, loan_id, num):
+    title = None
+    loan = LoanOfferRequest.objects.get(id=loan_id)
+    return dict(
+        num=num,
+        loan=loan,
+        title=title,
+    )

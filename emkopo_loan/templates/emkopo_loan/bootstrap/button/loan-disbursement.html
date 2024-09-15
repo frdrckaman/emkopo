@@ -1,11 +1,11 @@
-<a href="javascript:;" data-tw-toggle="modal" data-tw-target="#offer-response-{{ num }}" class="btn btn-success mr-1 mb-1">Response</a>
-<div id="offer-response-{{ num }}" class="modal" tabindex="-1" data-tw-backdrop="static" aria-hidden="true">
+<a href="javascript:;" data-tw-toggle="modal" data-tw-target="#loan-disburse-{{ num }}" class="btn btn-success mr-1 mb-1">Disbursement</a>
+<div id="loan-disburse-{{ num }}" class="modal" tabindex="-1" data-tw-backdrop="static" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="intro-y box mt-5">
                 <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
                     <h2 class="font-medium text-base mr-auto">
-                        LOAN OFFER RESPONSE
+                        LOAN OFFER DISBURSEMENT
                     </h2>
                 </div>
                 <div id="input-groups" class="p-5">
@@ -24,23 +24,23 @@
                                 </div>
                             </div><br>
                             <div>
-                                <label>Offer Response?</label>
+                                <label>Did you successful disburse Loan to client account?</label>
                                 <div class="form-check mt-2">
-                                    <input id="radio-switch-1" class="form-check-input" type="radio" name="FspResponse" value="2" required>
-                                    <label class="form-check-label" for="radio-switch-1">ACCEPT</label>
+                                    <input id="radio-switch-1" class="form-check-input" type="radio" name="FspResponse" value="4" required>
+                                    <label class="form-check-label" for="radio-switch-1">Yes</label>
                                 </div>
                                 <div class="form-check mt-2">
-                                    <input id="radio-switch-2" class="form-check-input" type="radio" name="FspResponse" value="9" required>
-                                    <label class="form-check-label"for="radio-switch-2">REJECT</label>
+                                    <input id="radio-switch-2" class="form-check-input" type="radio" name="FspResponse" value="5" required>
+                                    <label class="form-check-label" for="radio-switch-2">No</label>
                                 </div>
                             </div><br>
                             <div class="col-span-12 sm:col-span-12">
                                 <label for="fsp-name" class="form-label">Total Amount ToPay</label>
                                 <input id="fsp-name" name="TotalAmountToPay" type="number" class="form-control">
                             </div><br>
-                            <div class="col-span-6 sm:col-span-6">
-                                <label for="fsp-name" class="form-label">Other Charges</label>
-                                <input id="fsp-name" name="OtherCharges" type="number" class="form-control">
+                            <div class="col-span-12 sm:col-span-6">
+                                <label for="fsp-name" class="form-label">Disbursement Date</label>
+                                 <input id="fsp-name" name="DisbursementDate" type="text" class="datepicker form-control" data-single-mode="true">
                             </div><br>
                             <div>
                                 <label for="regular-form-1" class="form-label">Reasons for this response</label>

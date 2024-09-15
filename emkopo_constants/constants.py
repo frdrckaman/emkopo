@@ -5,5 +5,7 @@ TOP_UP_LOAN = "top_up_loan"
 TAKE_OVER_LOAN = "take_over_loan"
 ACCEPT = '2'
 REJECT = '9'
+DISBURSED = '4'
+DISBURSED_EXCEPTION = '5'
 YES = "yes"
 NO = "no"

@@ -68,6 +68,10 @@ class UserResponse(BaseUuidModel):
         blank=True,
         null=True,
     )
+    DisbursementDate = models.DateTimeField(
+        verbose_name="Disbursement Date",
+        default=timezone.now,
+    )
     Timestamp = models.DateTimeField(
         verbose_name="Timestamp",
         default=timezone.now
