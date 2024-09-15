@@ -8,7 +8,7 @@ import uuid
 from emkopo_api.mixins import log_and_make_api_call, convert_to_xml
 from emkopo_api.serializers import UserResponseSerializer
 from emkopo_constants.constants import OUTGOING
-from emkopo_loan.models import UserResponse
+from emkopo_loan.models import UserResponse, LoanOfferResponse
 from emkopo_product.models import Fsp
 
 
@@ -64,12 +64,13 @@ class LoanOfferResponseAPIView(APIView):
             return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserResponseSerializer(user_response_data, many=True)
+        serialized_data = serializer.data
 
         msg_id = str(uuid.uuid4())
         message_type = 'LOAN_INITIAL_APPROVAL_NOTIFICATION'
 
         # Convert the data dictionary to an XML string
-        xml_data = convert_to_xml(OUTGOING, message_type, serializer.data, fsp, msg_id)
+        xml_data = convert_to_xml(OUTGOING, message_type, serialized_data, fsp, msg_id)
 
         # Send the POST request with the XML data
         response = log_and_make_api_call(
@@ -83,5 +84,18 @@ class LoanOfferResponseAPIView(APIView):
             loan_offer_request = user_response.LoanOfferRequest
             loan_offer_request.status = 2
             loan_offer_request.save()
+
+            LoanOfferResponse.objects.create(
+                ApplicationNumber=serialized_data[0]['ApplicationNumber'],
+                Reason=serialized_data[0]['Reason'],
+                FSPReferenceNumber=serialized_data[0]['FSPReferenceNumber'],
+                LoanNumber=serialized_data[0]['LoanNumber'],
+                TotalAmountToPay=serialized_data[0]['TotalAmountToPay'],
+                OtherCharges=serialized_data[0]['OtherCharges'] or 0,
+                Approval="APPROVED" if serialized_data[0]['FspResponse'] == "2" else "REJECTED",
+                MessageType="LOAN_INITIAL_APPROVAL_NOTIFICATION",
+                RequestType=OUTGOING,
+                status=0
+            )
 
         return response

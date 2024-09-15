@@ -32,6 +32,10 @@ class UserResponse(BaseUuidModel):
         choices=OFFER_RESPONSE,
         default='0'
     )
+    ApplicationNumber = models.CharField(
+        verbose_name="Application Number",
+        max_length=45,
+    )
     FSPReferenceNumber = models.CharField(
         verbose_name="FSP Reference number",
         max_length=8,
