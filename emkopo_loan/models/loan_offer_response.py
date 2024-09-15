@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from emkopo_constants.choices import REQUEST_TYPE
@@ -55,6 +56,10 @@ class LoanOfferResponse(BaseUuidModel):
         verbose_name="Request Type",
         max_length=45,
         choices=REQUEST_TYPE,
+    )
+    Timestamp = models.DateTimeField(
+        verbose_name="Timestamp",
+        default=timezone.now
     )
     status = models.IntegerField(
         verbose_name="Status",
