@@ -178,6 +178,12 @@ class LoanOfferRequest(BaseUuidModel):
         blank=True,
         null=True,
     )
+    FSPReferenceNumber = models.CharField(
+        verbose_name="FSP Reference Number",
+        max_length=45,
+        blank=True,
+        null=True,
+    )
     SettlementAmount = models.DecimalField(
         verbose_name="Settlement amount",
         max_digits=40,
