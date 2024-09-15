@@ -32,6 +32,7 @@ def add_disbursement_response(request, url=None):
             )
             loan_offer_request = LoanOfferRequest.objects.get(pk=request.POST.get(
                 'LoanOfferRequest'))
+            loan_offer_request.LoanNumber = request.POST.get('LoanNumber')
             loan_offer_request.status = request.POST.get('FspResponse')
             loan_offer_request.save()
 
