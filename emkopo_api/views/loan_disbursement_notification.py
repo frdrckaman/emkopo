@@ -69,15 +69,7 @@ class LoanDisbursementNotificationAPIView(APIView):
         if not fsp:
             return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        xml_data = self.loan_disbursement_notification(loan_offer_request, fsp)
-
-        response = log_and_make_api_call(
-            request_type=OUTGOING,
-            payload=xml_data,
-            signature="XYZ",  # Replace with actual signature if available
-            url="https://third-party-api.example.com/endpoint"
-            # Replace with actual endpoint URL
-        )
+        response = loan_disbursement_notification(loan_offer_request, fsp)
 
         if response.get('status') == 200:
             return Response({"message": "Data sent successfully"},
@@ -86,37 +78,46 @@ class LoanDisbursementNotificationAPIView(APIView):
             return Response({"error": response.get('error', 'Failed to send data')},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def loan_disbursement_notification(self, disburse_response, fsp):
-        """
-        Generate XML data for product decommission message.
-        """
-        # Create the root element
-        document = Element("Document")
-        data_elem = SubElement(document, "Data")
 
-        # Create the header element
-        header = SubElement(data_elem, "Header")
-        SubElement(header, "Sender").text = fsp.name  # Get Sender from Fsp model
-        SubElement(header, "Receiver").text = settings.EMKOPO_UTUMISHI_SYSNAME
-        SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
-        SubElement(header, "MsgId").text = str(uuid.uuid4())  # Generate unique MsgId
-        SubElement(header, "MessageType").text = "LOAN_DISBURSEMENT_NOTIFICATION"
+def loan_disbursement_notification(disburse_response, fsp):
+    """
+    Generate XML data for product decommission message.
+            """
+    # Create the root element
+    document = Element("Document")
+    data_elem = SubElement(document, "Data")
 
-        # Add the product code to the MessageDetails element
-        message_details = SubElement(data_elem, "MessageDetails")
-        SubElement(message_details,
-                   "ApplicationNumber").text = disburse_response.ApplicationNumber
-        SubElement(message_details, "Reason").text = 'disburse_response.ApplicationNumber'
-        SubElement(message_details,
-                   "FSPReferenceNumber").text = disburse_response.FSPReferenceNumber
-        SubElement(message_details, "LoanNumber").text = disburse_response.LoanNumber
-        SubElement(message_details, "TotalAmountToPay").text = "2500000"
-        SubElement(message_details, "DisbursementDate").text = "2022-05-26T21:32:52"
+    # Create the header element
+    header = SubElement(data_elem, "Header")
+    SubElement(header, "Sender").text = fsp.name  # Get Sender from Fsp model
+    SubElement(header, "Receiver").text = settings.EMKOPO_UTUMISHI_SYSNAME
+    SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
+    SubElement(header, "MsgId").text = str(uuid.uuid4())  # Generate unique MsgId
+    SubElement(header, "MessageType").text = "LOAN_DISBURSEMENT_NOTIFICATION"
 
-        # Add the Signature element
-        SubElement(document, "Signature").text = "XYZ"
+    # Add the product code to the MessageDetails element
+    message_details = SubElement(data_elem, "MessageDetails")
+    SubElement(message_details,
+               "ApplicationNumber").text = disburse_response.ApplicationNumber
+    SubElement(message_details, "Reason").text = 'disburse_response.ApplicationNumber'
+    SubElement(message_details,
+               "FSPReferenceNumber").text = disburse_response.FSPReferenceNumber
+    SubElement(message_details, "LoanNumber").text = disburse_response.LoanNumber
+    SubElement(message_details, "TotalAmountToPay").text = "2500000"
+    SubElement(message_details, "DisbursementDate").text = "2022-05-26T21:32:52"
 
-        # Convert the Element to a string
-        xml_string = tostring(document, encoding="utf-8").decode("utf-8")
+    # Add the Signature element
+    SubElement(document, "Signature").text = "XYZ"
 
-        return xml_string
+    # Convert the Element to a string
+    xml_string = tostring(document, encoding="utf-8").decode("utf-8")
+
+    response = log_and_make_api_call(
+        request_type=OUTGOING,
+        payload=xml_string,
+        signature="XYZ",  # Replace with actual signature if available
+        url="https://third-party-api.example.com/endpoint"
+        # Replace with actual endpoint URL
+    )
+
+    return response

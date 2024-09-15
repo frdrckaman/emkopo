@@ -1,10 +1,14 @@
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from django.urls import reverse
+
+from emkopo_api.views import LoanDisbursementNotificationAPIView
+from emkopo_api.views.loan_disbursement_notification import loan_disbursement_notification
 from emkopo_auth.mixins import LoginMixin
 from emkopo_loan.models import LoanOfferRequest, UserResponse
 from emkopo_mixins.date_mixins import convert_date_format
 from emkopo_mixins.list_mixins import ListboardView
+from emkopo_product.models import Fsp
 
 
 class LoanDisbursementRequestView(LoginMixin, ListboardView, TemplateView):
@@ -36,6 +40,10 @@ def add_disbursement_response(request, url=None):
             loan_offer_request.FSPReferenceNumber = request.POST.get('FSPReferenceNumber')
             loan_offer_request.status = request.POST.get('FspResponse')
             loan_offer_request.save()
+
+            fsp = Fsp.objects.all().first()
+            offer_request = LoanOfferRequest.objects.get(pk=request.POST.get('LoanOfferRequest'))
+            loan_disbursement_notification(offer_request, fsp)
 
             res = 'success'
             message = 'Request submitted successful'
