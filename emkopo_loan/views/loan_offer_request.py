@@ -2,7 +2,9 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from django.urls import reverse
 
+from emkopo_api.views import LoanOfferResponseAPIView
 from emkopo_auth.mixins import LoginMixin
+from emkopo_loan.mixins import generate_reference_number, generate_loan_id
 from emkopo_loan.models import LoanOfferRequest, UserResponse
 
 
@@ -11,24 +13,34 @@ class LoanOfferRequestView(LoginMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        loans = LoanOfferRequest.objects.filter(status=1)
+        loans = LoanOfferRequest.objects.filter(status=0)
         context.update(
-            staff=self.get_user,
+            Staff=self.get_user,
             loans=loans,
         )
         return context
 
 
-def add_response(request, url=None):
+def add_offer_response(request, url=None):
     if request.method == 'POST':
-        created = UserResponse.objects.update_or_create(
-            Staff=request.POST.get('staff_id'),
-            LoanOfferRequest=request.POST.get('LoanOfferRequest'),
+
+        reference_number = generate_reference_number()
+        loan_number = generate_loan_id()
+
+        instance, created = UserResponse.objects.update_or_create(
+            Staff_id=request.user.id,
+            LoanOfferRequest_id=request.POST.get('LoanOfferRequest'),
             FspComplies=request.POST.get('FspComplies'),
             FspResponse=request.POST.get('FspResponse'),
+            FSPReferenceNumber=reference_number,
+            LoanNumber=loan_number,
+            TotalAmountToPay=request.POST.get('TotalAmountToPay'),
+            OtherCharges=request.POST.get('OtherCharges'),
+            Reason=request.POST.get('Reason'),
         )
 
         if created:
+            LoanOfferResponseAPIView().offer_request_response(instance)
             res = 'success'
             message = 'Request submitted successful'
         else:

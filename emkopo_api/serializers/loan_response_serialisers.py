@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from emkopo_api.serializers import LoanChargeRequestSerializer
 from emkopo_loan.models import LoanChargeResponse
 
 

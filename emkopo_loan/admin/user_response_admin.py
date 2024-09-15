@@ -29,8 +29,8 @@ class UserResponseAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_display = (
-        "Staff",
         "LoanOfferRequest",
+        "Staff",
         "FspComplies",
         "FspResponse",
         "FSPReferenceNumber",
@@ -50,5 +50,6 @@ class UserResponseAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_filter = (
+        "FspResponse",
         "Timestamp",
     )

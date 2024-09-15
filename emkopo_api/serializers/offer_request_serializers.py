@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from emkopo_loan.models import LoanOfferRequest
+
 
 class LoanOfferRequestSerializer(serializers.Serializer):
     CheckNumber = serializers.IntegerField()
@@ -39,3 +41,19 @@ class LoanOfferRequestSerializer(serializers.Serializer):
     ContractStartDate = serializers.DateField()
     ContractEndDate = serializers.DateField()
     Signature = serializers.CharField(max_length=255)
+
+
+class LoanOffersRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoanOfferRequest
+        fields = [
+            'CheckNumber', 'FirstName', 'MiddleName', 'LastName', 'Sex', 'BankAccountNumber',
+            'EmploymentDate', 'MaritalStatus', 'ConfirmationDate', 'TotalEmployeeDeduction',
+            'NearestBranchName', 'VoteCode', 'VoteName', 'NIN', 'DesignationCode',
+            'DesignationName', 'BasicSalary', 'NetSalary', 'OneThirdAmount', 'RequestedAmount',
+            'DesiredDeductibleAmount', 'RetirementDate', 'TermsOfEmployment', 'Tenure',
+            'ProductCode', 'InterestRate', 'ProcessingFee', 'Insurance', 'PhysicalAddress',
+            'TelephoneNumber', 'EmailAddress', 'MobileNumber', 'ApplicationNumber',
+            'LoanPurpose', 'ContractStartDate', 'ContractEndDate', 'LoanNumber',
+            'SettlementAmount', 'LoanOfferType', 'MessageType', 'RequestType'
+        ]

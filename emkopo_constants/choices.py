@@ -13,7 +13,7 @@ LOAN_TYPE = (
 )
 
 OFFER_RESPONSE = (
-    (ACCEPT, 'REJECT'),
+    (ACCEPT, 'ACCEPT'),
     (REJECT, 'REJECT'),
 )
 

@@ -9,7 +9,7 @@ from emkopo_loan.models import UserResponse
 
 def generate_loan_id():
     # Fixed prefix
-    prefix = settings.LOAN_ID_PREFIX
+    prefix = settings.EMKOPO_LOAN_ID_PREFIX
 
     # Current date in YYYYMMDD format
     current_date = datetime.now().strftime('%Y%m%d')

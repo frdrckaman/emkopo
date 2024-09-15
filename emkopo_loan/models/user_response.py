@@ -72,7 +72,7 @@ class UserResponse(BaseUuidModel):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.LoanOfferRequest
+        return f"{self.LoanOfferRequest.CheckNumber} - {self.LoanOfferRequest.ApplicationNumber}"
 
     class Meta(BaseUuidModel.Meta):
         verbose_name = "User Response"

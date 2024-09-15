@@ -10,7 +10,7 @@
                 </div>
                 <div id="input-groups" class="p-5">
                     <div class="preview">
-                        <form action="" method="post">
+                        <form action="{% url 'emkopo_loan:add-offer-response' %}" method="post">
                             {% csrf_token %}
                             <div>
                                 <label>Have you reviewed this request to ensure that it complies with the business rules for acceptance or rejection?</label>
@@ -44,11 +44,11 @@
                             </div><br>
                             <div>
                                 <label for="regular-form-1" class="form-label">Reasons for this response</label>
-                                <textarea id="regular-form-1" name="reasons" type="text" class="form-control" placeholder="Provide reasons for this response" required></textarea>
+                                <textarea id="regular-form-1" name="Reason" type="text" class="form-control" placeholder="Provide reasons for this response" required></textarea>
                             </div><br>
                             <div>
-                                <input type="hidden" name="offer_id" value="{{ loan.id }}">
-                                <input type="hidden" name="staff_id" value="{{ staff }}">
+                                <input type="hidden" name="LoanOfferRequest" value="{{ loan.id }}">
+                                <input type="hidden" name="Staff" value="{{ Staff }}">
                                 <input type="hidden" name="next_url_name" value="offer-request">
                                 <input type="submit" value="Submit" class="btn btn-primary w-1/2 sm:w-auto mr-2 pull-right">
                                 <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
