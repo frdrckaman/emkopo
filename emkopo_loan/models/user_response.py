@@ -32,6 +32,12 @@ class UserResponse(BaseUuidModel):
         choices=OFFER_RESPONSE,
         default='0'
     )
+    FSPReferenceNumber = models.CharField(
+        verbose_name="FSP Reference number",
+        max_length=8,
+        blank=True,
+        null=True,
+    )
     LoanNumber = models.CharField(
         verbose_name="Loan Number",
         max_length=45,

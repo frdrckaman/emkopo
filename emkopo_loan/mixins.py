@@ -7,7 +7,7 @@ from django.conf import settings
 from emkopo_loan.models import UserResponse
 
 
-def generate_unique_loan_id():
+def generate_loan_id():
     # Fixed prefix
     prefix = settings.LOAN_ID_PREFIX
 
@@ -25,3 +25,14 @@ def generate_unique_loan_id():
         # Check if this ID already exists in the database
         if not UserResponse.objects.filter(LoanNumber=loan_id).exists():
             return loan_id
+
+
+def generate_reference_number():
+    # Loop until a unique reference number is found
+    while True:
+        # Generate a random 8-character string (letters and digits)
+        reference_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+        # Check if this reference number already exists in the database
+        if not UserResponse.objects.filter(FSPReferenceNumber=reference_number).exists():
+            return reference_number
