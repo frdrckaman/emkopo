@@ -1,0 +1,80 @@
+{% extends 'emkopo_dashboard/bootstrap/base.html' %}
+{% load loan_tags %}
+{% load product_tags %}
+{% load emkopo_extra %}
+{% block title %}
+    <title> e-MKOPO | LOAN </title>
+{% endblock %}
+{% block content %}
+    <div class="content content--top-nav"><br>
+        {% if request.GET.response == 'success' %}
+            <div class="alert alert-success-soft alert-dismissible show flex items-center mb-2" role="alert"> <i data-lucide="thumbs-up" class="w-6 h-6 mr-2"></i> {{ request.GET.message }} <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close"> <i data-lucide="x" class="w-4 h-4"></i> </button></div>
+        {% elif request.GET.response == 'error' %}
+            <div class="alert alert-danger-soft alert-dismissible show flex items-center mb-2" role="alert"> <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i> {{ request.GET.message }} <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close"> <i data-lucide="x" class="w-4 h-4"></i> </button></div>
+        {% endif %}
+        <div class="grid grid-cols-12 gap-6 mt-5">
+            <div class="intro-y col-span-12 lg:col-span-10">
+                <!-- BEGIN: Striped Rows -->
+                <div class="intro-y box mt-5">
+                    <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60">
+                        <h2 class="font-medium text-base mr-auto">
+                            LOAN DISBURSEMENT REQUESTS
+                        </h2>
+                    </div>
+                    <div class="p-5" id="striped-rows-table">
+                        <div class="preview">
+                            <div class="overflow-x-auto">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="whitespace-nowrap">#</th>
+                                        <th class="whitespace-nowrap">Loan Offer Type</th>
+                                        <th class="whitespace-nowrap">Check Number</th>
+                                        <th class="whitespace-nowrap">Application Number</th>
+                                        <th class="whitespace-nowrap">Full Name</th>
+                                        <th class="whitespace-nowrap">TotalEmployee Deduction</th>
+                                        <th class="whitespace-nowrap">Basic Salary</th>
+                                        <th class="whitespace-nowrap">Net Salary</th>
+                                        <th class="whitespace-nowrap">One Third Amount</th>
+                                        <th class="whitespace-nowrap">RequestedAmount</th>
+                                        <th class="whitespace-nowrap">DesiredDeductibleAmount</th>
+                                        <th class="whitespace-nowrap">Terms Of Employment</th>
+                                        <th class="whitespace-nowrap">Mobile Number</th>
+                                        <th class="whitespace-nowrap">Email Address</th>
+                                        <th class="whitespace-nowrap">Loan Purpose</th>
+                                        <th class="whitespace-nowrap">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for loan in loans %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ loan.LoanOfferType|upper }}</td>
+                                            <td>{{ loan.CheckNumber }}</td>
+                                            <td>{{ loan.ApplicationNumber }}</td>
+                                            <td>{{ loan.FirstName }} {{ loan.MiddleName }} {{ loan.LastName }} ({{ loan.Sex }}) </td>
+                                            <td>{{ loan.TotalEmployeeDeduction }}</td>
+                                            <td>{{ loan.BasicSalary }}</td>
+                                            <td>{{ loan.NetSalary }}</td>
+                                            <td>{{ loan.OneThirdAmount }}</td>
+                                            <td>{{ loan.RequestedAmount }}</td>
+                                            <td>{{ loan.DesiredDeductibleAmount }}</td>
+                                            <td>{{ loan.TermsOfEmployment }}</td>
+                                            <td>{{ loan.MobileNumber }}</td>
+                                            <td>{{ loan.EmailAddress }}</td>
+                                            <td>{{ loan.LoanPurpose }}</td>
+                                            <td>{% loan_offer_details loan.id forloop.counter %}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+{#                   {% pagination %}#}
+                </div><!-- END: Striped Rows -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
