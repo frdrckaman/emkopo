@@ -1,6 +1,6 @@
 from django import template
 
-from emkopo_loan.models import LoanOfferRequest
+from emkopo_loan.models import LoanOfferRequest, UserResponse
 from emkopo_mixins.list_mixins import ListboardView
 
 register = template.Library()
@@ -43,8 +43,10 @@ def loan_offer_response(context, loan_id, num):
 def loan_offer_response(context, loan_id, num):
     title = None
     loan = LoanOfferRequest.objects.get(id=loan_id)
+    offer_response = UserResponse.objects.get(LoanOfferRequest__ApplicationNumber=loan.ApplicationNumber)
     return dict(
         num=num,
         loan=loan,
         title=title,
+        offer_response=offer_response,
     )
