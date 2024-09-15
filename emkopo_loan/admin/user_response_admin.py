@@ -16,6 +16,10 @@ class UserResponseAdmin(BaseSimpleHistoryAdmin):
                     "LoanOfferRequest",
                     "FspComplies",
                     "FspResponse",
+                    "LoanNumber",
+                    "TotalAmountToPay",
+                    "OtherCharges",
+                    "Reason",
                     "Timestamp",
                 ),
             },
@@ -24,15 +28,21 @@ class UserResponseAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_display = (
-        "LoanOfferRequest",
         "Staff",
+        "LoanOfferRequest",
         "FspComplies",
+        "FspResponse",
+        "LoanNumber",
+        "TotalAmountToPay",
+        "OtherCharges",
+        "Reason",
         "Timestamp",
     )
 
     search_fields = (
         "LoanOfferRequest",
         "Staff",
+        "LoanNumber",
         "Timestamp",
     )
 

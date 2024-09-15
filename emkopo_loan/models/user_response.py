@@ -32,6 +32,32 @@ class UserResponse(BaseUuidModel):
         choices=OFFER_RESPONSE,
         default='0'
     )
+    LoanNumber = models.CharField(
+        verbose_name="Loan Number",
+        max_length=45,
+        blank=True,
+        null=True,
+    )
+    TotalAmountToPay = models.DecimalField(
+        verbose_name="Total Amount to Pay",
+        max_digits=40,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    OtherCharges = models.DecimalField(
+        verbose_name="Other Charges",
+        max_digits=40,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    Reason = models.CharField(
+        verbose_name="Reason",
+        max_length=255,
+        blank=True,
+        null=True,
+    )
     Timestamp = models.DateTimeField(
         verbose_name="Timestamp",
         default=timezone.now
