@@ -2,14 +2,12 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import xmltodict
-import requests
 import uuid
 from drf_yasg.utils import swagger_auto_schema
 from xml.etree.ElementTree import Element, SubElement, tostring
 from drf_yasg import openapi
 
-from emkopo_api.mixins import convert_to_xml, log_and_make_api_call
+from emkopo_api.mixins import log_and_make_api_call
 from emkopo_constants.constants import OUTGOING
 from emkopo_loan.models import LoanOfferRequest
 from emkopo_product.models import Fsp
