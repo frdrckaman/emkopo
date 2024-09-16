@@ -99,11 +99,10 @@ def loan_disbursement_notification(disburse_response, fsp):
     message_details = SubElement(data_elem, "MessageDetails")
     SubElement(message_details, "ApplicationNumber").text = disburse_response.ApplicationNumber
     SubElement(message_details, "Reason").text = disburse_response.Reason
-
     SubElement(message_details, "FSPReferenceNumber").text = (disburse_response.FSPReferenceNumber)
     SubElement(message_details, "LoanNumber").text = disburse_response.LoanNumber
-    SubElement(message_details, "TotalAmountToPay").text = "2500000"
-    SubElement(message_details, "DisbursementDate").text = "2022-05-26T21:32:52"
+    SubElement(message_details, "TotalAmountToPay").text = f'{disburse_response.TotalAmountToPay}'
+    SubElement(message_details, "DisbursementDate").text = disburse_response.DisbursementDate.strftime("%Y-%m-%dT%H:%M:%S")
 
     # Add the Signature element
     SubElement(document, "Signature").text = "XYZ"

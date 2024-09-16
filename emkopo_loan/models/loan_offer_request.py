@@ -197,6 +197,18 @@ class LoanOfferRequest(BaseUuidModel):
         choices=LOAN_TYPE,
         default=NEW_LOAN,
     )
+    TotalAmountToPay = models.DecimalField(
+        verbose_name="Total Amount to Pay",
+        max_digits=40,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    DisbursementDate = models.DateTimeField(
+        verbose_name="Disbursement date",
+        blank=True,
+        null=True,
+    )
     MessageType = models.CharField(
         verbose_name="Message Type",
         max_length=100,

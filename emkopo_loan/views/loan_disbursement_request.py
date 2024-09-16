@@ -5,7 +5,7 @@ from django.urls import reverse
 from emkopo_api.views.disbursement_notification import loan_disbursement_notification
 from emkopo_auth.mixins import LoginMixin
 from emkopo_loan.models import LoanOfferRequest, UserResponse
-from emkopo_mixins.date_mixins import convert_date_format
+from emkopo_mixins.date_mixins import convert_date_format, convert_datetime_format
 from emkopo_mixins.list_mixins import ListboardView
 from emkopo_product.models import Fsp
 
@@ -27,10 +27,9 @@ class LoanDisbursementRequestView(LoginMixin, ListboardView, TemplateView):
 def add_disbursement_response(request, url=None):
     if request.method == 'POST':
         try:
-            print(request.POST.get('FspResponse'))
             UserResponse.objects.filter(id=request.POST.get('id')).update(
                 FspResponse=request.POST.get('FspResponse'),
-                DisbursementDate=convert_date_format(request.POST.get('DisbursementDate')),
+                DisbursementDate=convert_datetime_format(request.POST.get('DisbursementDate')),
                 TotalAmountToPay=request.POST.get('TotalAmountToPay'),
                 Reason=request.POST.get('Reason'),
             )
@@ -38,6 +37,9 @@ def add_disbursement_response(request, url=None):
                 'LoanOfferRequest'))
             loan_offer_request.LoanNumber = request.POST.get('LoanNumber')
             loan_offer_request.FSPReferenceNumber = request.POST.get('FSPReferenceNumber')
+            loan_offer_request.TotalAmountToPay = request.POST.get('TotalAmountToPay')
+            loan_offer_request.DisbursementDate = convert_datetime_format(request.POST.get(
+                'DisbursementDate'))
             loan_offer_request.status = request.POST.get('FspResponse')
             if request.POST.get('FspResponse') == '4':
                 loan_offer_request.Reason = request.POST.get('Reason')
