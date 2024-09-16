@@ -8,6 +8,8 @@ from .disbursement_notification import LoanDisbursementNotificationAPIView
 from .fail_disbursement import LoanDisbursementFailureNotificationAPIView
 from .offer_cancellation import LoanOfferCancellationNotificationAPIView
 from .payoff_balance_request import LoanPayOffBalanceRequestAPIView
+from .settlement_balance_response import LoanSettlementBalanceResponseAPIView
+
 
 
 
