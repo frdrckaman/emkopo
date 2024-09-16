@@ -39,7 +39,8 @@
                                             <td><input type="checkbox" class="form-check-input"></td>
                                             <td>{{ fsp.name }}</td>
                                             <td>{{ fsp.code }}</td>
-                                            <td>{% update_fsp fsp.id %} {% delete_fsp fsp.id %}</td>
+                                            <td>{% update_fsp fsp.id forloop.counter %}
+                                                {% delete_fsp fsp.id forloop.counter %}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>

@@ -28,6 +28,7 @@
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
+                                        <th class="whitespace-nowrap">#</th>
                                         <th class="whitespace-nowrap">Product code</th>
                                         <th class="whitespace-nowrap">Product name</th>
                                         <th class="whitespace-nowrap">Product Description</th>
@@ -47,6 +48,7 @@
                                     <tbody>
                                     {% for product in products %}
                                         <tr>
+                                            <td>{{ forloop.counter }}</td>
                                             <td>{{ product.ProductCode }}</td>
                                             <td>{{ product.ProductName }}</td>
                                             <td>{{ product.ProductDescription }}</td>
