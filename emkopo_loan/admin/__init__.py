@@ -3,3 +3,5 @@ from .loan_charge_response_admin import LoanChargeResponseAdmin
 from .loan_offer_request_admin import LoanOfferRequestAdmin
 from .loan_offer_response_admin import LoanOfferResponseAdmin
 from .user_response_admin import UserResponseAdmin
+from .payoff_balance_request_admin import LoanPayOffBalanceRequestAdmin
+
