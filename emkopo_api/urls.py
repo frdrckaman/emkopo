@@ -6,7 +6,7 @@ from drf_yasg import openapi
 
 from emkopo_api.views import ProductCatalogXMLView, LoanChargesRequestAPIView, \
     LoanOfferRequestAPIView, LoanOfferResponseAPIView, LoanFinalApprovalNotificationAPIView, \
-    LoanDisbursementNotificationAPIView
+    LoanDisbursementNotificationAPIView, LoanDisbursementFailureNotificationAPIView
 from emkopo_api.views.product_decommission import GenerateXMLForDecommissionView
 
 schema_view = get_schema_view(
@@ -30,6 +30,8 @@ urlpatterns = [
     path('offer-final-approval/', LoanFinalApprovalNotificationAPIView.as_view(), name='offer-final-approval'),
     path('loan-disbursement-notification/', LoanDisbursementNotificationAPIView.as_view(),
          name='loan-disbursement-notification'),
+    path('fail-disbursement-notification/', LoanDisbursementFailureNotificationAPIView.as_view(),
+         name='fail-disbursement-notification'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

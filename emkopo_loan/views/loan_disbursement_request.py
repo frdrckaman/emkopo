@@ -27,6 +27,7 @@ class LoanDisbursementRequestView(LoginMixin, ListboardView, TemplateView):
 def add_disbursement_response(request, url=None):
     if request.method == 'POST':
         try:
+            print(request.POST.get('FspResponse'))
             UserResponse.objects.filter(id=request.POST.get('id')).update(
                 FspResponse=request.POST.get('FspResponse'),
                 DisbursementDate=convert_date_format(request.POST.get('DisbursementDate')),
@@ -38,6 +39,10 @@ def add_disbursement_response(request, url=None):
             loan_offer_request.LoanNumber = request.POST.get('LoanNumber')
             loan_offer_request.FSPReferenceNumber = request.POST.get('FSPReferenceNumber')
             loan_offer_request.status = request.POST.get('FspResponse')
+            if request.POST.get('FspResponse') == '4':
+                loan_offer_request.Reason = request.POST.get('Reason')
+            else:
+                loan_offer_request.FailureReason = request.POST.get('Reason')
             loan_offer_request.save()
 
             fsp = Fsp.objects.all().first()

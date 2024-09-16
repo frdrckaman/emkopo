@@ -206,6 +206,18 @@ class LoanOfferRequest(BaseUuidModel):
         max_length=45,
         choices=REQUEST_TYPE,
     )
+    Reason = models.CharField(
+        verbose_name="Reason",
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+    FailureReason = models.CharField(
+        verbose_name="Disbursement Failure Reason",
+        max_length=255,
+        blank=True,
+        null=True,
+    )
     Timestamp = models.DateTimeField(
         verbose_name="Timestamp",
         default=timezone.now

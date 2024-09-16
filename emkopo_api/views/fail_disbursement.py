@@ -13,7 +13,7 @@ from emkopo_loan.models import LoanOfferRequest
 from emkopo_product.models import Fsp
 
 
-class LoanDisbursementNotificationAPIView(APIView):
+class LoanDisbursementFailureNotificationAPIView(APIView):
     """
     API View to select a LoanOfferRequest and send disbursement notification to the third-party system.
     """
@@ -23,14 +23,11 @@ class LoanDisbursementNotificationAPIView(APIView):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'LoanNumber': openapi.Schema(type=openapi.TYPE_STRING,
-                                             description='Loan Number'),
                 'ApplicationNumber': openapi.Schema(type=openapi.TYPE_STRING,
                                                     description='Application Number')
             },
-            required=['LoanNumber', 'ApplicationNumber'],  # Correct usage of 'required'
+            required=['ApplicationNumber'],
             example={
-                'LoanNumber': '20070001',
                 'ApplicationNumber': '1002'
             }
         ),
@@ -44,24 +41,22 @@ class LoanDisbursementNotificationAPIView(APIView):
     )
     def post(self, request, *args, **kwargs):
         # Get parameters from request body
-        loan_number = request.data.get('LoanNumber')
         application_number = request.data.get('ApplicationNumber')
 
         # Validate parameters
-        if not loan_number or not application_number:
-            return Response({'error': 'LoanNumber and ApplicationNumber are required.'},
+        if not application_number:
+            return Response({'error': 'ApplicationNumber is required.'},
                             status=status.HTTP_400_BAD_REQUEST)
 
         try:
             # Fetch the LoanOfferRequest instance
             loan_offer_request = LoanOfferRequest.objects.get(
-                LoanNumber=loan_number,
                 ApplicationNumber=application_number,
-                status=4
+                status=5
             )
         except LoanOfferRequest.DoesNotExist:
             return Response({
-                'error': 'LoanOfferRequest not found with the provided LoanNumber and ApplicationNumber.'},
+                'error': 'LoanOfferRequest not found with the provided ApplicationNumber.'},
                 status=status.HTTP_404_NOT_FOUND)
 
         fsp = Fsp.objects.all().first()
@@ -93,18 +88,13 @@ def loan_disbursement_notification(disburse_response, fsp):
     SubElement(header, "Receiver").text = settings.EMKOPO_UTUMISHI_SYSNAME
     SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
     SubElement(header, "MsgId").text = str(uuid.uuid4())  # Generate unique MsgId
-    SubElement(header, "MessageType").text = "LOAN_DISBURSEMENT_NOTIFICATION"
+    SubElement(header, "MessageType").text = "LOAN_DISBURSEMENT_FAILURE_NOTIFICATION"
 
     # Add the product code to the MessageDetails element
     message_details = SubElement(data_elem, "MessageDetails")
-    SubElement(message_details, "ApplicationNumber").text = disburse_response.ApplicationNumber
-    SubElement(message_details, "Reason").text = disburse_response.Reason
-
-    SubElement(message_details, "FSPReferenceNumber").text = (disburse_response.FSPReferenceNumber)
-    SubElement(message_details, "LoanNumber").text = disburse_response.LoanNumber
-    SubElement(message_details, "TotalAmountToPay").text = "2500000"
-    SubElement(message_details, "DisbursementDate").text = "2022-05-26T21:32:52"
-
+    SubElement(message_details,
+               "ApplicationNumber").text = disburse_response.ApplicationNumber
+    SubElement(message_details, "Reason").text = disburse_response.FailureReason
     # Add the Signature element
     SubElement(document, "Signature").text = "XYZ"
 
