@@ -91,9 +91,6 @@ class LoanFinalApprovalNotificationAPIView(APIView):
 
                 application_number = message_details.get('ApplicationNumber')
                 approval = message_details.get('Approval')
-                reason = message_details.get('Reason')
-                fsp_reference_number = message_details.get('FSPReferenceNumber')
-                loan_number = message_details.get('LoanNumber')
 
                 if approval == 'APPROVED':
                     ln_status = 3
