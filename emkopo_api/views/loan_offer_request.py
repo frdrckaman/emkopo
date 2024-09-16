@@ -99,7 +99,6 @@ class LoanOfferRequestAPIView(APIView):
                 loan_offer_type = TOP_UP_LOAN
             else:
                 loan_offer_type = 'Unknown'
-            # Here, you can process the validated data, e.g., save it to the database, trigger further processing, etc.
 
             # Log the request data
             try:
