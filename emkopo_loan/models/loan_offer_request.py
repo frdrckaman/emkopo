@@ -230,6 +230,12 @@ class LoanOfferRequest(BaseUuidModel):
         blank=True,
         null=True,
     )
+    CancellationReason = models.CharField(
+        verbose_name="Offer Cancellation Reason Reason",
+        max_length=255,
+        blank=True,
+        null=True,
+    )
     Timestamp = models.DateTimeField(
         verbose_name="Timestamp",
         default=timezone.now
