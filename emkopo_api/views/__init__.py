@@ -7,6 +7,7 @@ from .loan_final_appproval import LoanFinalApprovalNotificationAPIView
 from .disbursement_notification import LoanDisbursementNotificationAPIView
 from .fail_disbursement import LoanDisbursementFailureNotificationAPIView
 from .offer_cancellation import LoanOfferCancellationNotificationAPIView
+from .payoff_balance_request import LoanPayOffBalanceRequestAPIView
 
 
 
