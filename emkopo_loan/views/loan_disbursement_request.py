@@ -5,7 +5,7 @@ from django.urls import reverse
 from emkopo_api.views.disbursement_notification import loan_disbursement_notification
 from emkopo_auth.mixins import LoginMixin
 from emkopo_loan.models import LoanOfferRequest, UserResponse
-from emkopo_mixins.date_mixins import convert_date_format, convert_datetime_format
+from emkopo_mixins.date_mixins import convert_datetime_format
 from emkopo_mixins.list_mixins import ListboardView
 from emkopo_product.models import Fsp
 
