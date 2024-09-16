@@ -6,7 +6,6 @@ from rest_framework import status
 import xmltodict
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from django.utils import timezone
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_constants.constants import INCOMING

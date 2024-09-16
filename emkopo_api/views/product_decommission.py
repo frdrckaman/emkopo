@@ -1,3 +1,5 @@
+import re
+
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -89,5 +91,6 @@ class GenerateXMLForDecommissionView(APIView):
         SubElement(document, "Signature").text = "XYZ"
 
         # Convert the Element to a string
-        xml_string = tostring(document, encoding="utf-8").decode("utf-8")
-        return xml_string
+        xml_string = tostring(document, encoding="utf-8").decode("utf-8").strip()
+        xml_data = re.sub(r'>\s+<', '><', xml_string)
+        return xml_data

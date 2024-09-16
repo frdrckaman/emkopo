@@ -1,3 +1,5 @@
+import re
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -55,7 +57,8 @@ class LoanFinalApprovalNotificationAPIView(APIView):
             # Handle XML payload
             try:
                 # Decode and parse the XML data
-                xml_data = request.body.decode('utf-8')
+                xml_data = request.body.decode('utf-8').strip()
+                xml_data = re.sub(r'>\s+<', '><', xml_data)
                 payload = xmltodict.parse(xml_data)
             except Exception as e:
                 return Response({'error': f'Invalid XML data: {str(e)}'},

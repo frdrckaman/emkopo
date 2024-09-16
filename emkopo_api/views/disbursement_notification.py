@@ -1,3 +1,5 @@
+import re
+
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -108,11 +110,12 @@ def loan_disbursement_notification(disburse_response, fsp):
     SubElement(document, "Signature").text = "XYZ"
 
     # Convert the Element to a string
-    xml_string = tostring(document, encoding="utf-8").decode("utf-8")
+    xml_string = tostring(document, encoding="utf-8").decode("utf-8").strip()
+    xml_data = re.sub(r'>\s+<', '><', xml_string)
 
     response = log_and_make_api_call(
         request_type=OUTGOING,
-        payload=xml_string,
+        payload=xml_data,
         signature="XYZ",  # Replace with actual signature if available
         url="https://third-party-api.example.com/endpoint"
         # Replace with actual endpoint URL

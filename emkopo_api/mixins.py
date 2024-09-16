@@ -1,3 +1,5 @@
+import re
+
 import requests
 import xmltodict
 from django.conf import settings
@@ -182,10 +184,10 @@ def convert_to_xml(request_type, message_type, data, fsp, msg_id):
 
     # Create the header element
     header = SubElement(data_elem, "Header")
-    SubElement(header, "Sender").text = sender  # Get Sender from Fsp model
+    SubElement(header, "Sender").text = sender
     SubElement(header, "Receiver").text = receiver
-    SubElement(header, "FSPCode").text = fsp.code  # Get FSPCode from Fsp model
-    SubElement(header, "MsgId").text = msg_id  # Use generated unique MsgId
+    SubElement(header, "FSPCode").text = fsp.code
+    SubElement(header, "MsgId").text = msg_id
     SubElement(header, "MessageType").text = message_type
 
     # Add each product as a MessageDetails element
@@ -204,5 +206,6 @@ def convert_to_xml(request_type, message_type, data, fsp, msg_id):
     SubElement(document, "Signature").text = "XYZ"
 
     # Convert the Element to a string
-    xml_string = tostring(document, encoding="utf-8").decode("utf-8")
-    return xml_string
+    xml_string = tostring(document, encoding="utf-8").decode("utf-8").strip()
+    xml_data = re.sub(r'>\s+<', '><', xml_string)
+    return xml_data

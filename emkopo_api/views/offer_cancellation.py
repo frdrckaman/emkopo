@@ -1,3 +1,5 @@
+import re
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -46,7 +48,8 @@ class LoanOfferCancellationNotificationAPIView(APIView):
 
         try:
             # Decode the XML data from the request body
-            xml_data = request.body.decode('utf-8')
+            xml_data = request.body.decode('utf-8').strip()
+            xml_data = re.sub(r'>\s+<', '><', xml_data)
 
             # Parse the XML data to a Python dictionary
             data_dict = xmltodict.parse(xml_data)
