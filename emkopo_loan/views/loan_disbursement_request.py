@@ -2,7 +2,6 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from emkopo_api.views import LoanDisbursementNotificationAPIView
 from emkopo_api.views.loan_disbursement_notification import loan_disbursement_notification
 from emkopo_auth.mixins import LoginMixin
 from emkopo_loan.models import LoanOfferRequest, UserResponse
