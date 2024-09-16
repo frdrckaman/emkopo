@@ -11,7 +11,7 @@ from drf_yasg import openapi
 from django.utils import timezone
 
 from emkopo_api.mixins import log_and_make_api_call
-from emkopo_constants.constants import INCOMING
+from emkopo_constants.constants import INCOMING, OUTGOING
 from emkopo_loan.models import LoanRestructuringRequest
 
 
@@ -138,4 +138,29 @@ def loan_restructuring_request(restructuring_request, fsp):
     xml_string = tostring(document, encoding="utf-8").decode("utf-8").strip()
     xml_data = re.sub(r'>\s+<', '><', xml_string)
 
-    return xml_data
+    try:
+        LoanRestructuringRequest.objects.create(
+            ApplicationNumber=restructuring_request.ApplicationNumber,
+            LoanNumber=restructuring_request.LoanNumber,
+            Comments=restructuring_request.Comments,
+            LoanOutstandingAmount=restructuring_request.LoanOutstandingAmount,
+            NewLoanAmount=restructuring_request.NewLoanAmount,
+            NewInstallmentAmount=restructuring_request.NewInstallmentAmount,
+            MessageType="LOAN_RESTRUCTURING_NOTIFICATION",
+            RequestType=INCOMING
+        )
+
+        response = log_and_make_api_call(
+            request_type=OUTGOING,
+            payload=xml_data,
+            signature="XYZ",  # Replace with actual signature if available
+            url="https://third-party-api.example.com/endpoint"
+            # Replace with actual endpoint URL
+        )
+
+    except Exception as e:
+        # Handle any exceptions that occur during XML parsing
+        return Response({'error': f'Invalid XML data: {str(e)}'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    return response
