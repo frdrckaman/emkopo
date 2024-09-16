@@ -59,6 +59,7 @@ def loan_offer_response(context, loan_id, num):
         offer_response=offer_response,
     )
 
+
 @register.inclusion_tag(
     f"emkopo_loan/bootstrap/button/loan-disbursement.html",
     takes_context=True,
