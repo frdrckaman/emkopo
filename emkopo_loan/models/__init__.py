@@ -4,4 +4,5 @@ from .loan_offer_request import LoanOfferRequest
 from .loan_offer_response import LoanOfferResponse
 from .user_response import UserResponse
 from .payoff_balance_request import LoanPayOffBalanceRequest
+from .settlement_balance_response import LoanSettlementBalanceResponse
 
