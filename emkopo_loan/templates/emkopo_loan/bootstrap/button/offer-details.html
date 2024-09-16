@@ -142,7 +142,7 @@
                     <label for="modal-form-5" class="form-label">Contract End Date</label>
                     <input id="modal-form-5" type="text" value="{{ loan.ContractEndDate }}" class="form-control" disabled>
                 </div>
-                {% if got_approval %}
+                {% if got_approval and usr_response %}
                     <div class="col-span-12 sm:col-span-6">
                         <label for="modal-form-5" class="form-label">FSPReferenceNumber</label>
                         <input id="modal-form-5" type="text" value="{{ loan.FSPReferenceNumber }}" class="form-control" disabled>

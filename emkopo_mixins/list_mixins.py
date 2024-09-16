@@ -47,12 +47,13 @@ class BaseListboardView:
     def get_wrapped_queryset(self, queryset, url=None):
         wrapped_objs = []
         for obj_qry in queryset:
-            user_response = UserResponse.objects.get(LoanOfferRequest=obj_qry.id)
             obj = self.get_model_dict(obj_qry)
-            obj['FSPReferenceNumber'] = user_response.FSPReferenceNumber
-            obj['LoanNumber'] = user_response.LoanNumber
-            obj['TotalAmountToPay'] = user_response.TotalAmountToPay
-            obj['OtherCharges'] = user_response.OtherCharges
+            if obj['status'] > 1:
+                user_response = UserResponse.objects.get(LoanOfferRequest=obj_qry.id)
+                obj['FSPReferenceNumber'] = user_response.FSPReferenceNumber
+                obj['LoanNumber'] = user_response.LoanNumber
+                obj['TotalAmountToPay'] = user_response.TotalAmountToPay
+                obj['OtherCharges'] = user_response.OtherCharges
             wrapped_objs.append(obj)
         return wrapped_objs
 

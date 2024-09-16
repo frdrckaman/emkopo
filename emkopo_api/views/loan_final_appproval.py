@@ -90,13 +90,21 @@ class LoanFinalApprovalNotificationAPIView(APIView):
                     message_details = payload
 
                 application_number = message_details.get('ApplicationNumber')
+                approval = message_details.get('Approval')
                 reason = message_details.get('Reason')
                 fsp_reference_number = message_details.get('FSPReferenceNumber')
                 loan_number = message_details.get('LoanNumber')
 
+                if approval == 'APPROVED':
+                    ln_status = 3
+                elif approval == 'REJECTED':
+                    ln_status = 9
+                else:
+                    ln_status = 8
+
                 loan_offer_request = LoanOfferRequest.objects.get(
                     ApplicationNumber=application_number)
-                loan_offer_request.status = 3  # Set status to 3
+                loan_offer_request.status = ln_status
                 loan_offer_request.save()
             except LoanOfferRequest.DoesNotExist:
                 return Response({

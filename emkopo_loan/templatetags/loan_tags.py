@@ -37,16 +37,47 @@ def loan_offer_response(context, loan_id, num):
 
 
 @register.inclusion_tag(
+    f"emkopo_loan/bootstrap/button/offer-response.html",
+    takes_context=True,
+)
+def loan_offer_response(context, loan_id, num):
+    title = None
+    loan = LoanOfferRequest.objects.get(id=loan_id)
+    if loan.status > 1:
+        usr_response = True
+        offer_responses = UserResponse.objects.get(
+            LoanOfferRequest__ApplicationNumber=loan.ApplicationNumber)
+    else:
+        usr_response = False
+        offer_responses = None
+    offer_response = offer_responses if offer_responses else None
+    return dict(
+        num=num,
+        loan=loan,
+        title=title,
+        usr_response=usr_response,
+        offer_response=offer_response,
+    )
+
+@register.inclusion_tag(
     f"emkopo_loan/bootstrap/button/loan-disbursement.html",
     takes_context=True,
 )
 def loan_offer_response(context, loan_id, num):
     title = None
     loan = LoanOfferRequest.objects.get(id=loan_id)
-    offer_response = UserResponse.objects.get(LoanOfferRequest__ApplicationNumber=loan.ApplicationNumber)
+    if loan.status > 1:
+        usr_response = True
+        offer_responses = UserResponse.objects.get(
+            LoanOfferRequest__ApplicationNumber=loan.ApplicationNumber)
+    else:
+        usr_response = False
+        offer_responses = None
+    offer_response = offer_responses if offer_responses else None
     return dict(
         num=num,
         loan=loan,
         title=title,
+        usr_response=usr_response,
         offer_response=offer_response,
     )

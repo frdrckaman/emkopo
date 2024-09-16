@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,7 +9,7 @@ import re
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanOfferRequestSerializer
-from emkopo_constants.constants import INCOMING, NEW_LOAN
+from emkopo_constants.constants import INCOMING, NEW_LOAN, TOP_UP_LOAN
 from emkopo_loan.models import LoanOfferRequest
 
 
@@ -92,6 +93,12 @@ class LoanOfferRequestAPIView(APIView):
         serializer = LoanOfferRequestSerializer(data=combined_data)
 
         if serializer.is_valid():
+            if header_data.get('MessageType') == settings.EMKOPO_NEW_LOAN_MSG:
+                loan_offer_type = NEW_LOAN
+            elif header_data.get('MessageType') == settings.EMKOPO_NEW_TOP_UP_MSG:
+                loan_offer_type = TOP_UP_LOAN
+            else:
+                loan_offer_type = 'Unknown'
             # Here, you can process the validated data, e.g., save it to the database, trigger further processing, etc.
 
             # Log the request data
@@ -134,7 +141,7 @@ class LoanOfferRequestAPIView(APIView):
                     LoanPurpose=serializer.validated_data.get('LoanPurpose'),
                     ContractStartDate=serializer.validated_data.get('ContractStartDate'),
                     ContractEndDate=serializer.validated_data.get('ContractEndDate'),
-                    LoanOfferType=NEW_LOAN,
+                    LoanOfferType=loan_offer_type,
                     MessageType=header_data.get('MessageType'),
                     RequestType=INCOMING,
                     status=0
