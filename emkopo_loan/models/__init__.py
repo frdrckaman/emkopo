@@ -6,4 +6,4 @@ from .user_response import UserResponse
 from .payoff_balance_request import LoanPayOffBalanceRequest
 from .settlement_balance_response import LoanSettlementBalanceResponse
 from .loan_restructuring_request import LoanRestructuringRequest
-
+from .loan_takeover_details import LoanTakeoverDetail
