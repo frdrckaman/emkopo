@@ -24,6 +24,10 @@ def add_fsp(request):
             name=request.POST['name'],
             code=request.POST['code'],
             sysName=request.POST.get("sysName"),
+            FSPBankAccount=request.POST.get("FSPBankAccount"),
+            FSPBankAccountName=request.POST.get("FSPBankAccountName"),
+            SWIFTCode=request.POST.get("SWIFTCode"),
+            MNOChannels=request.POST.get("MNOChannels"),
         )
 
         if created:
@@ -46,7 +50,12 @@ def update_fsp(request):
             Fsp.objects.filter(pk=request.POST.get("id")).update(
                 name=request.POST.get("name"),
                 code=request.POST.get("code"),
-                sysName=request.POST.get("sysName"))
+                sysName=request.POST.get("sysName"),
+                FSPBankAccount=request.POST.get("FSPBankAccount"),
+                FSPBankAccountName=request.POST.get("FSPBankAccountName"),
+                SWIFTCode=request.POST.get("SWIFTCode"),
+                MNOChannels=request.POST.get("MNOChannels"),
+            ),
 
             res = 'success'
             message = 'Request Approved successful'

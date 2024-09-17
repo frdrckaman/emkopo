@@ -30,6 +30,11 @@
                                         <th class="whitespace-nowrap">#</th>
                                         <th class="whitespace-nowrap">FSP Name</th>
                                         <th class="whitespace-nowrap">FSP Code</th>
+                                        <th class="whitespace-nowrap">System Name</th>
+                                        <th class="whitespace-nowrap">FSP Bank Account</th>
+                                        <th class="whitespace-nowrap">FSP Bank Account Name</th>
+                                        <th class="whitespace-nowrap">SWIFT Code</th>
+                                        <th class="whitespace-nowrap">MNO Channels</th>
                                         <th class="whitespace-nowrap">Actions</th>
                                     </tr>
                                     </thead>
@@ -39,6 +44,11 @@
                                             <td><input type="checkbox" class="form-check-input"></td>
                                             <td>{{ fsp.name }}</td>
                                             <td>{{ fsp.code }}</td>
+                                            <td>{{ fsp.sysName }}</td>
+                                            <td>{{ fsp.FSPBankAccount }}</td>
+                                            <td>{{ fsp.FSPBankAccountName }}</td>
+                                            <td>{{ fsp.SWIFTCode }}</td>
+                                            <td>{{ fsp.MNOChannels }}</td>
                                             <td>{% update_fsp fsp.id forloop.counter %}
                                                 {% delete_fsp fsp.id forloop.counter %}</td>
                                         </tr>
