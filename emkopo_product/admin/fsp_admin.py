@@ -15,6 +15,10 @@ class FspAdmin(BaseSimpleHistoryAdmin):
                     "name",
                     "code",
                     "sysName",
+                    "FSPBankAccount",
+                    "FSPBankAccountName",
+                    "SWIFTCode",
+                    "MNOChannels",
                     "status",
                 ),
             },
@@ -26,6 +30,10 @@ class FspAdmin(BaseSimpleHistoryAdmin):
         "name",
         "code",
         "sysName",
+        "FSPBankAccount",
+        "FSPBankAccountName",
+        "SWIFTCode",
+        "MNOChannels",
         "status",
     )
 
@@ -33,7 +41,8 @@ class FspAdmin(BaseSimpleHistoryAdmin):
         "name",
         "code",
         "sysName",
-        "status",
+        "SWIFTCode",
+        "FSPBankAccount",
     )
 
     list_filter = (

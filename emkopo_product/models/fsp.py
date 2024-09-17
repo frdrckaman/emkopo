@@ -18,6 +18,30 @@ class Fsp(BaseUuidModel):
         verbose_name="FSP Code",
         max_length=10,
     )
+    FSPBankAccount = models.CharField(
+        verbose_name="FSP Bank Account",
+        max_length=45,
+        blank=True,
+        null=True,
+    )
+    FSPBankAccountName = models.CharField(
+        verbose_name="FSP Bank Account Name",
+        max_length=45,
+        blank=True,
+        null=True,
+    )
+    SWIFTCode = models.CharField(
+        verbose_name="SWIFT Code",
+        max_length=45,
+        blank=True,
+        null=True,
+    )
+    MNOChannels = models.CharField(
+        verbose_name="MNO Channels",
+        max_length=45,
+        blank=True,
+        null=True,
+    )
     status = models.IntegerField(
         verbose_name="FSP Status",
         default=1,
