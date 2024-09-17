@@ -23,25 +23,25 @@ class ProductCatalog(BaseUuidModel):
         verbose_name="For Executive",
     )
     MinimumTenure = models.IntegerField(
-        verbose_name="Minimum repayment period",
+        verbose_name="Minimum Tenure",
     )
     MaximumTenure = models.IntegerField(
-        verbose_name="Maximum repayment period",
+        verbose_name="Maximum Tenure",
     )
     InterestRate = models.DecimalField(
-        verbose_name="Percentage charged on loan amount",
+        verbose_name="Interest Rate",
         max_digits=5,
         decimal_places=2,
     )
     ProcessFee = models.DecimalField(
-        verbose_name="Cost of loan processing percentage",
+        verbose_name="Process Fee",
         max_digits=5,
         decimal_places=2,
         blank=True,
         null=True,
     )
     Insurance = models.DecimalField(
-        verbose_name="Loan cover percentage",
+        verbose_name="Insurance",
         max_digits=5,
         decimal_places=2,
     )
@@ -56,7 +56,7 @@ class ProductCatalog(BaseUuidModel):
         decimal_places=2,
     )
     RepaymentType = models.CharField(
-        verbose_name="Frequency of loan repayment",
+        verbose_name="Repayment Type",
         max_length=10,
         blank=True,
         null=True,
