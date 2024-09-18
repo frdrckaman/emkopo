@@ -4,6 +4,7 @@ import requests
 import xmltodict
 from django.conf import settings
 from django.utils import timezone
+from django.forms.models import model_to_dict
 from unittest.mock import Mock
 from rest_framework.response import Response
 from rest_framework import status
@@ -209,3 +210,9 @@ def convert_to_xml(request_type, message_type, data, fsp, msg_id):
     xml_string = tostring(document, encoding="utf-8").decode("utf-8").strip()
     xml_data = re.sub(r'>\s+<', '><', xml_string)
     return xml_data
+
+
+def model_instance_to_dict(instance):
+    if not hasattr(instance, 'pk'):
+        raise ValueError("Provided instance is not a valid Django model instance.")
+    return model_to_dict(instance)

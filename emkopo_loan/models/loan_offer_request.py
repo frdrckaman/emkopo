@@ -209,6 +209,12 @@ class LoanOfferRequest(BaseUuidModel):
         blank=True,
         null=True,
     )
+    PaymentReferenceNumber = models.CharField(
+        verbose_name="Payment Reference Number",
+        max_length=45,
+        blank=True,
+        null=True,
+    )
     MessageType = models.CharField(
         verbose_name="Message Type",
         max_length=100,

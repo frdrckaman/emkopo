@@ -10,6 +10,8 @@ from .offer_cancellation import LoanOfferCancellationNotificationAPIView
 from .payoff_balance_request import LoanPayOffBalanceRequestAPIView
 from .settlement_balance_response import LoanSettlementBalanceResponseAPIView
 from .loan_restructuring import LoanRestructuringRequestAPIView
+from .loan_takeover_details import LoanTakeOverDetailsAPIView
+
 
 
 
