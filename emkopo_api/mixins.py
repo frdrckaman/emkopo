@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from xml.parsers.expat import ExpatError
 
-from emkopo_constants.constants import OUTGOING, INCOMING
+from emkopo_constants.constants import OUTGOING
 from emkopo_product.models import Fsp
 from .models import ApiRequest
 import uuid

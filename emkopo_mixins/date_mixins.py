@@ -8,8 +8,8 @@ def convert_date(date_str):
 
 
 def convert_date_format(date_string):
-    input_format = "%d %b, %Y"  # Format of the input date string
-    output_format = "%Y-%m-%d"  # Desired output date format
+    input_format = "%d %b, %Y"
+    output_format = "%Y-%m-%d"
     try:
         date_obj = datetime.strptime(date_string, input_format)
         formatted_date = date_obj.strftime(output_format)
@@ -20,8 +20,8 @@ def convert_date_format(date_string):
 
 
 def convert_datetime_format(date_string):
-    input_format = "%d %b, %Y"  # Format of the input date string
-    output_format = "%Y-%m-%d"  # Desired output date format
+    input_format = "%d %b, %Y"
+    output_format = "%Y-%m-%d"
     try:
         date_obj = datetime.strptime(date_string, input_format)
         formatted_date = date_obj.strftime(output_format)
