@@ -71,7 +71,7 @@ class LoanTakeOverDetailsAPIView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
 
             # Retrieve FSP data
-            fsp = Fsp.objects.all().first()  # Adjust the code based on your needs
+            fsp = Fsp.objects.all().first()
 
             if not fsp:
                 return Response({'error': 'FSP not found.'}, status=status.HTTP_404_NOT_FOUND)
