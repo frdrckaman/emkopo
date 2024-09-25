@@ -9,7 +9,7 @@ import re
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanOfferRequestSerializer
-from emkopo_constants.constants import INCOMING, NEW_LOAN, TOP_UP_LOAN
+from emkopo_constants.constants import INCOMING, NEW_LOAN, TOP_UP_LOAN, TAKE_OVER_LOAN
 from emkopo_loan.models import LoanOfferRequest
 
 
@@ -69,7 +69,7 @@ class LoanOfferRequestAPIView(APIView):
         # Extract Header and MessageDetails
         header_data = document_data.get('Data', {}).get('Header', {})
         message_details = document_data.get('Data', {}).get('MessageDetails', {})
-
+        # print('frdrck 1')
         try:
             log_and_make_api_call(
                 request_type=INCOMING,
@@ -97,6 +97,8 @@ class LoanOfferRequestAPIView(APIView):
                 loan_offer_type = NEW_LOAN
             elif header_data.get('MessageType') == settings.EMKOPO_NEW_TOP_UP_MSG:
                 loan_offer_type = TOP_UP_LOAN
+            elif header_data.get('MessageType') == settings.EMKOPO_NEW_TAKEOVER_MSG:
+                loan_offer_type = TAKE_OVER_LOAN
             else:
                 loan_offer_type = 'Unknown'
 
@@ -140,6 +142,17 @@ class LoanOfferRequestAPIView(APIView):
                     LoanPurpose=serializer.validated_data.get('LoanPurpose'),
                     ContractStartDate=serializer.validated_data.get('ContractStartDate'),
                     ContractEndDate=serializer.validated_data.get('ContractEndDate'),
+                    FSP1Code=serializer.validated_data.get('FSP1Code'),
+                    FSP1LoanNumber=serializer.validated_data.get('FSP1LoanNumber'),
+                    TakeOverBalance=serializer.validated_data.get('TakeOverBalance'),
+                    FSP1EndDate=serializer.validated_data.get('FSP1EndDate'),
+                    FSP1LastDeductionDate=serializer.validated_data.get('FSP1LastDeductionDate'),
+                    FSP1BankAccount=serializer.validated_data.get('FSP1BankAccount'),
+                    FSP1BankAccountName=serializer.validated_data.get('FSP1BankAccountName'),
+                    FSP1SWIFTCode=serializer.validated_data.get('FSP1SWIFTCode'),
+                    FSP1MNOChannels=serializer.validated_data.get('FSP1MNOChannels'),
+                    FSP1PaymentReferenceNumber=serializer.validated_data.get('FSP1PaymentReferenceNumber'),
+                    FSP1FinalPaymentDate=serializer.validated_data.get('FSP1FinalPaymentDate'),
                     LoanOfferType=loan_offer_type,
                     MessageType=header_data.get('MessageType'),
                     RequestType=INCOMING,

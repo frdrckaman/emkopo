@@ -25,19 +25,27 @@ class LoanOfferRequest(BaseUuidModel):
     )
     Sex = models.CharField(
         verbose_name="Sex",
-        max_length=1
+        max_length=1,
+        blank=True,
+        null=True,
     )
     BankAccountNumber = models.CharField(
         verbose_name="Bank Account Number",
         max_length=20,
+        blank=True,
+        null=True,
     )
     EmploymentDate = models.CharField(
         verbose_name="Employment Date",
         max_length=10,
+        blank=True,
+        null=True,
     )
     MaritalStatus = models.CharField(
         verbose_name="Marital Status",
         max_length=10,
+        blank=True,
+        null=True,
     )
     ConfirmationDate = models.CharField(
         verbose_name="Confirmation Date",
@@ -49,6 +57,8 @@ class LoanOfferRequest(BaseUuidModel):
         verbose_name="Total Employee Deduction",
         max_digits=40,
         decimal_places=2,
+        blank=True,
+        null=True,
     )
     NearestBranchName = models.CharField(
         verbose_name="Nearest Branch Name",
@@ -105,8 +115,11 @@ class LoanOfferRequest(BaseUuidModel):
         blank=True,
         null=True,
     )
-    RetirementDate = models.IntegerField(
+    RetirementDate = models.CharField(
         verbose_name="Retirement date",
+        max_length=12,
+        blank=True,
+        null=True,
     )
     TermsOfEmployment = models.CharField(
         verbose_name="Terms of employment",
@@ -160,7 +173,7 @@ class LoanOfferRequest(BaseUuidModel):
     )
     ApplicationNumber = models.CharField(
         verbose_name="Application number",
-        max_length=8,
+        max_length=12,
     )
     LoanPurpose = models.CharField(
         verbose_name="Loan Purpose",
