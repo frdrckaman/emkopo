@@ -24,14 +24,7 @@ class LoanOfferCancellationNotificationAPIView(APIView):
             description="XML payload containing loan cancellation notification",
         ),
         responses={
-            200: openapi.Response(
-                description="Successful Response",
-                examples={
-                    'application/json': {
-                        'message': 'Loan offer request updated successfully.'
-                    }
-                }
-            ),
+            200: openapi.Response(description="Successful Response"),
             400: openapi.Response(description="Invalid XML data or missing required fields"),
             404: openapi.Response(description="LoanOfferRequest not found"),
             500: openapi.Response(description="Internal Server Error"),
