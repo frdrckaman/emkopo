@@ -83,6 +83,8 @@ class LoanOfferResponseAPIView(APIView):
         if response.get('status') == 200:
             loan_offer_request = user_response.LoanOfferRequest
             loan_offer_request.status = 2
+            loan_offer_request.LoanNumber = serialized_data[0]['LoanNumber']
+            loan_offer_request.FSPReferenceNumber = serialized_data[0]['FSPReferenceNumber']
             loan_offer_request.save()
 
             LoanOfferResponse.objects.create(
