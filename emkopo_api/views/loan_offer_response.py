@@ -56,7 +56,7 @@ class LoanOfferResponseAPIView(APIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @staticmethod
-    def offer_request_response(user_response):
+    def offer_request_response(user_response, msg_type=None):
         user_response_data = [user_response]
         fsp = Fsp.objects.first()
 
@@ -67,7 +67,7 @@ class LoanOfferResponseAPIView(APIView):
         serialized_data = serializer.data
 
         msg_id = str(uuid.uuid4())
-        message_type = 'LOAN_INITIAL_APPROVAL_NOTIFICATION'
+        message_type = msg_type if msg_type else 'LOAN_INITIAL_APPROVAL_NOTIFICATION'
 
         # Convert the data dictionary to an XML string
         xml_data = convert_to_xml(OUTGOING, message_type, serialized_data, fsp, msg_id)

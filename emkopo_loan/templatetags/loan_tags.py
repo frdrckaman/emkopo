@@ -64,7 +64,7 @@ def loan_offer_response(context, loan_id, num):
     f"emkopo_loan/bootstrap/button/loan-disbursement.html",
     takes_context=True,
 )
-def loan_offer_response(context, loan_id, num):
+def loan_disbursement_response(context, loan_id, num):
     title = None
     loan = LoanOfferRequest.objects.get(id=loan_id)
     if loan.status > 1:

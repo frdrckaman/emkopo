@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from emkopo_api.views import LoanOfferResponseAPIView
 from emkopo_auth.mixins import LoginMixin
+from emkopo_constants.constants import TAKE_OVER_LOAN
 from emkopo_loan.mixins import generate_reference_number, generate_loan_id
 from emkopo_loan.models import LoanOfferRequest, UserResponse
 
@@ -40,7 +41,9 @@ def add_offer_response(request, url=None):
         )
 
         if created:
-            LoanOfferResponseAPIView().offer_request_response(instance)
+            loan_offer_type = 'LOAN_TAKEOVER_APPROVAL_NOTIFICATION_FSP2' if (
+                    request.POST.get('LoanOfferType') == TAKE_OVER_LOAN) else None
+            LoanOfferResponseAPIView().offer_request_response(instance, loan_offer_type)
             res = 'success'
             message = 'Request submitted successful'
         else:
