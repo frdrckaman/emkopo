@@ -137,6 +137,8 @@ class LoanOfferRequest(BaseUuidModel):
     PhysicalAddress = models.CharField(
         verbose_name="Physical address",
         max_length=50,
+        blank=True,
+        null=True,
     )
     TelephoneNumber = models.CharField(
         verbose_name="Telephone number",
@@ -147,10 +149,14 @@ class LoanOfferRequest(BaseUuidModel):
     EmailAddress = models.CharField(
         verbose_name="Email address",
         max_length=50,
+        blank=True,
+        null=True,
     )
     MobileNumber = models.CharField(
         verbose_name="Mobile number",
         max_length=12,
+        blank=True,
+        null=True,
     )
     ApplicationNumber = models.CharField(
         verbose_name="Application number",
@@ -159,6 +165,8 @@ class LoanOfferRequest(BaseUuidModel):
     LoanPurpose = models.CharField(
         verbose_name="Loan Purpose",
         max_length=250,
+        blank=True,
+        null=True,
     )
     ContractStartDate = models.CharField(
         verbose_name="Contract Start Date",
@@ -212,6 +220,70 @@ class LoanOfferRequest(BaseUuidModel):
     PaymentReferenceNumber = models.CharField(
         verbose_name="Payment Reference Number",
         max_length=45,
+        blank=True,
+        null=True,
+    )
+    FSP1Code = models.CharField(
+        verbose_name="FSP1 Code",
+        max_length=8,
+        blank=True,
+        null=True,
+    )
+    FSP1LoanNumber = models.CharField(
+        verbose_name="FSP1 Loan Number",
+        max_length=8,
+        blank=True,
+        null=True,
+    )
+    TakeOverBalance = models.DecimalField(
+        verbose_name="Take over balance",
+        max_digits=40,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    FSP1EndDate = models.DateTimeField(
+        verbose_name="FSP1 End Date",
+        blank=True,
+        null=True,
+    )
+    FSP1LastDeductionDate = models.DateTimeField(
+        verbose_name="FSP1 Last Deduction",
+        blank=True,
+        null=True,
+    )
+    FSP1BankAccount = models.CharField(
+        verbose_name="FSP1 Bank Account",
+        max_length=20,
+        blank=True,
+        null=True,
+    )
+    FSP1BankAccountName = models.CharField(
+        verbose_name="FSP1 Bank Account Name",
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    FSP1SWIFTCode = models.CharField(
+        verbose_name="FSP1 SWIFT Code",
+        max_length=20,
+        blank=True,
+        null=True,
+    )
+    FSP1MNOChannels = models.CharField(
+        verbose_name="FSP1 MNO Channels",
+        max_length=20,
+        blank=True,
+        null=True,
+    )
+    FSP1PaymentReferenceNumber = models.CharField(
+        verbose_name="FSP1 Payment Reference Number",
+        max_length=10,
+        blank=True,
+        null=True,
+    )
+    FSP1FinalPaymentDate = models.DateTimeField(
+        verbose_name="FSP1 Final Payment Date",
         blank=True,
         null=True,
     )
