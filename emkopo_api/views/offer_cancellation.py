@@ -29,7 +29,7 @@ class LoanOfferCancellationNotificationAPIView(APIView):
             404: openapi.Response(description="LoanOfferRequest not found"),
             500: openapi.Response(description="Internal Server Error"),
         },
-        consumes=['application/xml'],  # Indicate that the API consumes XML
+        consumes=['application/xml'],
     )
     def post(self, request, *args, **kwargs):
         # Ensure the content type is XML

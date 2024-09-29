@@ -46,7 +46,7 @@ class LoanFinalApprovalNotificationAPIView(APIView):
             400: openapi.Response(description="Invalid data"),
             500: openapi.Response(description="Failed to send data to third-party system")
         },
-        consumes=['application/json', 'application/xml'],  # Accept both JSON and XML
+        consumes=['application/json', 'application/xml'],
     )
     def post(self, request, *args, **kwargs):
         # Determine the content type
