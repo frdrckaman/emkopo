@@ -6,3 +6,5 @@ from .loan_response_serialisers import LoanChargeResponseSerializer
 from .offer_request_serializers import LoanOfferRequestSerializer
 from .offer_request_serializers import LoanOffersRequestSerializer
 from .user_response_serializers import UserResponseSerializer
+from .liquidation_request_serializers import LoanLiquidationRequestSerializer
+

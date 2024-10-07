@@ -57,7 +57,7 @@ class LoanLiquidationRequest(BaseUuidModel):
     )
     Reserved3 = models.CharField(
         verbose_name="Reserved3",
-        max_length=6,
+        max_length=45,
     )
     TermsAndConditionsNumber = models.CharField(
         verbose_name="Terms And Conditions Number",

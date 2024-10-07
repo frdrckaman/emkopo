@@ -44,6 +44,7 @@ class LoanLiquidationRequestAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_display = (
+        "ApplicationNumber",
         "ProductCode",
         "LoanAmount",
         "DeductionAmount",
@@ -58,7 +59,6 @@ class LoanLiquidationRequestAdmin(BaseSimpleHistoryAdmin):
         "PaymentRate",
         "Reserved3",
         "TermsAndConditionsNumber",
-        "ApplicationNumber",
         "FSPReferenceNumber",
         "ApproverName",
         "ApproverDesignation",
