@@ -68,7 +68,6 @@ class LoanLiquidationNotificationAdmin(BaseSimpleHistoryAdmin):
     search_fields = (
         "CheckNumber",
         "ApplicationNumber",
-        "ApplicationNumber",
         "PaymentReference",
     )
 
