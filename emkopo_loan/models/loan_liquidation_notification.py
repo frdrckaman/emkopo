@@ -13,7 +13,7 @@ class LoanLiquidationNotification(BaseUuidModel):
     )
     ApplicationNumber = models.CharField(
         verbose_name="Application Number",
-        max_length=45,
+        max_length=60,
     )
     ApproverName = models.CharField(
         verbose_name="Approver Name",
@@ -21,22 +21,26 @@ class LoanLiquidationNotification(BaseUuidModel):
     )
     ApproverDesignation = models.CharField(
         verbose_name="Approver Designation",
-        max_length=45,
+        max_length=60,
     )
     ApproverWorkstation = models.CharField(
         verbose_name="Approver Workstation",
-        max_length=255,
+        max_length=60,
+        blank=True,
+        null=True,
     )
     ApproverInstitution = models.CharField(
         verbose_name="Approver Institution",
-        max_length=45,
+        max_length=255,
     )
     ActionDateAndTime = models.DateTimeField(
         verbose_name="Action Date And Time",
     )
     ContactPerson = models.CharField(
         verbose_name="Contact Person",
-        max_length=45,
+        max_length=60,
+        blank=True,
+        null=True,
     )
     MonthlyPrincipal = models.DecimalField(
         verbose_name="Monthly Principal",
@@ -63,6 +67,8 @@ class LoanLiquidationNotification(BaseUuidModel):
     )
     DeductionEndDate = models.DateTimeField(
         verbose_name="Deduction End Date",
+        blank=True,
+        null=True,
     )
     FSPReferenceNumber = models.CharField(
         verbose_name="FSPReferenceNumber",
@@ -90,7 +96,7 @@ class LoanLiquidationNotification(BaseUuidModel):
     )
     VoteName = models.CharField(
         verbose_name="Vote Name",
-        max_length=45,
+        max_length=255,
     )
     NIN = models.CharField(
         verbose_name="NIN",
