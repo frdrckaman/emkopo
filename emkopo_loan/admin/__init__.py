@@ -8,4 +8,4 @@ from .settlement_balance_response_admin import LoanSettlementBalanceResponseAdmi
 from .loan_restructuring_admin import LoanRestructuringAdmin
 from .loan_takeover_details_admin import LoanTakeoverDetailAdmin
 from .loan_liquidation_request_admin import LoanLiquidationRequestAdmin
-
+from .loan_notification_employer_admin import LoanNotificationEmployer
