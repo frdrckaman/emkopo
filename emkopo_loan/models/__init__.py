@@ -9,3 +9,4 @@ from .loan_restructuring_request import LoanRestructuringRequest
 from .loan_takeover_details import LoanTakeoverDetail
 from .loan_liquidation_request import LoanLiquidationRequest
 from .loan_notification_employer import LoanNotificationEmployer
+from .loan_liquidation_notification import LoanLiquidationNotification
