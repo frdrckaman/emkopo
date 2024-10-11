@@ -2,13 +2,9 @@ import xmltodict
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from xml.etree.ElementTree import fromstring
-from django.utils.dateparse import parse_datetime
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-import html
 import re
-import datetime
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanLiquidationNotificationSerializer
