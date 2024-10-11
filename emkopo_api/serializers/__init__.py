@@ -7,4 +7,4 @@ from .offer_request_serializers import LoanOfferRequestSerializer
 from .offer_request_serializers import LoanOffersRequestSerializer
 from .user_response_serializers import UserResponseSerializer
 from .liquidation_request_serializers import LoanLiquidationRequestSerializer
-
+from .liquidation_notification_serializers import LoanLiquidationNotificationSerializer

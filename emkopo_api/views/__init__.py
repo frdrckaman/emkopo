@@ -13,6 +13,7 @@ from .loan_restructuring import LoanRestructuringRequestAPIView
 from .loan_takeover_details import LoanTakeOverDetailsAPIView
 from .loan_liquidation_request import LoanLiquidationRequestAPIView
 from .loan_notification_employer import LoanNotificationToEmployerAPIView
+from .loan_liquidation_notification import LoanLiquidationNotificationAPIView
 
 
 
