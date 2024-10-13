@@ -13,3 +13,5 @@ from .loan_liquidation_notification import LoanLiquidationNotification
 from .loan_takeover_disb_notification import LoanTakeoverDisbursementNotification
 from .loan_repayment_request import LoanRepaymentRequest
 from .repayment_offbalance_request import LoanRepaymentOffBalanceRequest
+from .payoff_payment_response import LoanPayoffPaymentResponse
+
