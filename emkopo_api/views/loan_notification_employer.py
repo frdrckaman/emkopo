@@ -54,15 +54,7 @@ class LoanNotificationToEmployerAPIView(APIView):
         message_type = 'NOTIFICATION_FROM_FSP1_TO_EMPLOYER'
 
         # Generate XML data for the API call
-        xml_data = generate_xml_for_notification(loan_offer_request, fsp)
-
-        response = log_and_make_api_call(
-            request_type=OUTGOING,
-            payload=xml_data,
-            signature="XYZ",  # Replace with actual signature if available
-            url="https://third-party-api.example.com/endpoint"
-            # Replace with actual endpoint URL
-        )
+        response = generate_xml_for_notification(loan_offer_request, fsp)
 
         if response.get('status') == 200:
             # After sending the payload, insert data into the LoanNotificationEmployer model
@@ -143,4 +135,12 @@ def generate_xml_for_notification(loan_offer_request, fsp):
 
     # Convert the ElementTree to a string
     xml_string = tostring(document, encoding="utf-8").decode("utf-8")
-    return xml_string
+
+    response = log_and_make_api_call(
+        request_type=OUTGOING,
+        payload=xml_string,
+        signature="XYZ",  # Replace with actual signature if available
+        url="https://third-party-api.example.com/endpoint"
+        # Replace with actual endpoint URL
+    )
+    return response

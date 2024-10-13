@@ -11,7 +11,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_constants.constants import OUTGOING
-from emkopo_loan.models import LoanSettlementBalanceResponse
+from emkopo_loan.models import LoanSettlementBalanceResponse, LoanTakeoverDetail
 from emkopo_product.models import Fsp
 
 
@@ -34,14 +34,7 @@ class LoanTakeOverDetailsAPIView(APIView):
             required=['LoanNumber', 'FSPReferenceNumber']
         ),
         responses={
-            200: openapi.Response(
-                description="Successful Response",
-                examples={
-                    'application/json': {
-                        'message': 'Loan takeover details processed and sent successfully.'
-                    }
-                }
-            ),
+            200: openapi.Response(description="Successful Response"),
             400: openapi.Response(description="Invalid data or missing required fields"),
             500: openapi.Response(description="Internal Server Error"),
         },
@@ -79,6 +72,31 @@ class LoanTakeOverDetailsAPIView(APIView):
             response = generate_response_xml(settlement_response, fsp)
 
             if response.get('status') == 200:
+                try:
+                    LoanTakeoverDetail.objects.create(
+                        LoanNumber=settlement_response.LoanNumber,
+                        FSPReferenceNumber=settlement_response.FSPReferenceNumber,
+                        PaymentReferenceNumber=settlement_response.PaymentReferenceNumber,
+                        TotalPayoffAmount=settlement_response.TotalPayoffAmount,
+                        OutstandingBalance=settlement_response.OutstandingBalance,
+                        FSPBankAccount=fsp.FSPBankAccount,
+                        FSPBankAccountName=fsp.FSPBankAccountName,
+                        SWIFTCode=fsp.SWIFTCode,
+                        MNOChannels=fsp.MNOChannels,
+                        FinalPaymentDate=settlement_response.FinalPaymentDate,
+                        LastDeductionDate=settlement_response.LastDeductionDate,
+                        LastPayDate=settlement_response.LastPayDate,
+                        EndDate=settlement_response.EndDate,
+                        status=1,
+                        MessageType="NOTIFICATION_FROM_FSP1_TO_EMPLOYER",
+                        RequestType=OUTGOING,
+                    )
+                except Exception as e:
+                    return Response(
+                        {'error': f'Failed to save LoanTakeoverDetail: {str(e)}'},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        content_type='application/xml'
+                    )
                 return Response(
                     {'message': 'Loan takeover details processed and sent successfully.'},
                     status=status.HTTP_200_OK)
