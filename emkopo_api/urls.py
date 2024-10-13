@@ -12,7 +12,8 @@ from emkopo_api.views import ProductCatalogXMLView, LoanChargesRequestAPIView, \
     LoanTakeOverDetailsAPIView, LoanLiquidationRequestAPIView, \
     LoanNotificationToEmployerAPIView, LoanLiquidationNotificationAPIView, \
     LoanTakeoverDisbursementNotificationAPIView, LoanRepaymentRequestAPIView, \
-    LoanRepaymentOffBalanceRequestAPIView, LoanPayoffPaymentResponseAPIView
+    LoanRepaymentOffBalanceRequestAPIView, LoanPayoffPaymentResponseAPIView, \
+    FullLoanRepaymentNotificationAPIView
 from emkopo_api.views.product_decommission import GenerateXMLForDecommissionView
 
 schema_view = get_schema_view(
@@ -55,6 +56,8 @@ urlpatterns = [
     path('loan-repayment-off-balance-request/', LoanRepaymentOffBalanceRequestAPIView.as_view(), name='loan-repayment-off-balance-request'),
     path('loan-payoff-payment-response/', LoanPayoffPaymentResponseAPIView.as_view(),
          name='loan-payoff-payment-response'),
+    path('full-loan-repayment-notification/', FullLoanRepaymentNotificationAPIView.as_view(),
+         name='full-loan-repayment-notification'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

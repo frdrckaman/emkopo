@@ -18,6 +18,7 @@ from .loan_takeover_disb_notification import LoanTakeoverDisbursementNotificatio
 from .loan_repayment_request import LoanRepaymentRequestAPIView
 from .repayment_offbalance_request import LoanRepaymentOffBalanceRequestAPIView
 from .payoff_payment_response import LoanPayoffPaymentResponseAPIView
+from .full_loan_repayment_notification import FullLoanRepaymentNotificationAPIView
 
 
 

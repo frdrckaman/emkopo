@@ -12,19 +12,20 @@ class FullLoanRepaymentNotification(BaseUuidModel):
         max_length=45,
     )
     ApplicationNumber = models.CharField(
-        verbose_name="First Name",
+        verbose_name="Application Number",
         max_length=45,
     )
     LoanNumber = models.CharField(
-        verbose_name="Middle Name",
+        verbose_name="Loan Number",
         max_length=45,
     )
     PaymentReference = models.CharField(
-        verbose_name="Last Name",
+        verbose_name="Payment Reference",
         max_length=45,
     )
-    DeductionCode = models.DateTimeField(
-        verbose_name="Payment Date",
+    DeductionCode = models.CharField(
+        verbose_name="Deduction Code",
+        max_length=45,
     )
     PaymentDescription = models.CharField(
         verbose_name="Payment Description",
