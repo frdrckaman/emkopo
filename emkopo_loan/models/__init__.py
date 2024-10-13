@@ -15,4 +15,5 @@ from .loan_repayment_request import LoanRepaymentRequest
 from .repayment_offbalance_request import LoanRepaymentOffBalanceRequest
 from .payoff_payment_response import LoanPayoffPaymentResponse
 from .full_loan_repayment_notification import FullLoanRepaymentNotification
+from .full_loan_repayment_request import FullLoanRepaymentRequest
 
