@@ -11,9 +11,10 @@ class LoanPayoffPaymentResponse(BaseUuidModel):
         verbose_name="Loan Number",
         max_length=20,
     )
-    TotalPayOffAmount = models.CharField(
-        verbose_name="First Name",
-        max_length=30,
+    TotalPayOffAmount = models.DecimalField(
+        verbose_name="Total Pay Off Amount",
+        max_digits=40,
+        decimal_places=2,
     )
     LastDeductionDate = models.DateTimeField(
         verbose_name="Last Deduction Date",
@@ -64,5 +65,5 @@ class LoanPayoffPaymentResponse(BaseUuidModel):
         return f'{self.LoanNumber}'
 
     class Meta(BaseUuidModel.Meta):
-        verbose_name = "Payoff Payment Response"
-        verbose_name_plural = "Payoff Payment Response"
+        verbose_name = "Loan Payoff Payment Response"
+        verbose_name_plural = "Loan Payoff Payment Response"
