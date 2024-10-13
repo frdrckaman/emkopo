@@ -11,4 +11,5 @@ from .loan_liquidation_request import LoanLiquidationRequest
 from .loan_notification_employer import LoanNotificationEmployer
 from .loan_liquidation_notification import LoanLiquidationNotification
 from .loan_takeover_disb_notification import LoanTakeoverDisbursementNotification
+from .loan_repayment_request import LoanRepaymentRequest
 
