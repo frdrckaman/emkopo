@@ -15,6 +15,7 @@ from .loan_liquidation_request import LoanLiquidationRequestAPIView
 from .loan_notification_employer import LoanNotificationToEmployerAPIView
 from .loan_liquidation_notification import LoanLiquidationNotificationAPIView
 from .loan_takeover_disb_notification import LoanTakeoverDisbursementNotificationAPIView
+from .loan_repayment_request import LoanRepaymentRequestAPIView
 
 
 
