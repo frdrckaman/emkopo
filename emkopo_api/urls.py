@@ -14,7 +14,7 @@ from emkopo_api.views import ProductCatalogXMLView, LoanChargesRequestAPIView, \
     LoanTakeoverDisbursementNotificationAPIView, LoanRepaymentRequestAPIView, \
     LoanRepaymentOffBalanceRequestAPIView, LoanPayoffPaymentResponseAPIView, \
     FullLoanRepaymentNotificationAPIView, FullLoanRepaymentRequestAPIView, \
-    LoanRepaymentNotificationAPIView
+    LoanRepaymentNotificationAPIView, LoanDefaulterDetailEmployerAPIView
 from emkopo_api.views.partial_loan_repayment_request import PartialLoanRepaymentRequestAPIView
 from emkopo_api.views.partial_loan_repayment_response import \
     PartialLoanRepaymentResponseAPIView
@@ -70,6 +70,8 @@ urlpatterns = [
          name='partial-loan-repayment-response'),
     path('loan-repayment-notification/', LoanRepaymentNotificationAPIView.as_view(),
          name='loan-repayment-notification'),
+    path('loan-defaulter-detail-employer/', LoanDefaulterDetailEmployerAPIView.as_view(),
+         name='loan-defaulter-detail-employer'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

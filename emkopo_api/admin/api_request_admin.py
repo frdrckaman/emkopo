@@ -40,5 +40,6 @@ class ApiRequestAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_filter = (
+        "RequestType",
         "TimeStamp",
     )
