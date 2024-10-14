@@ -40,8 +40,5 @@ class ApiRequestAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_filter = (
-        "RequestType",
-        "Status",
         "TimeStamp",
-        "MessageType",
     )
