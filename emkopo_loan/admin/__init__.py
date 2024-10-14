@@ -17,3 +17,5 @@ from .payoff_payment_response_admin import LoanPayoffPaymentResponseAdmin
 from .full_loan_repayment_notification_admin import FullLoanRepaymentNotificationAdmin
 from .full_loan_repayment_request_admin import FullLoanRepaymentRequestAdmin
 from .partial_loan_repayment_request_admin import PartialLoanRepaymentRequestAdmin
+from .partial_repayment_response_admin import PartialLoanRepaymentResponseAdmin
+

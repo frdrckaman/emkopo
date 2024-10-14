@@ -17,5 +17,6 @@ from .payoff_payment_response import LoanPayoffPaymentResponse
 from .full_loan_repayment_notification import FullLoanRepaymentNotification
 from .full_loan_repayment_request import FullLoanRepaymentRequest
 from .partial_loan_repayment_request import PartialLoanRepaymentRequest
+from .partial_loan_repayment_response import PartialLoanRepaymentResponse
 
 
