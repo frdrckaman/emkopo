@@ -20,4 +20,5 @@ from .partial_loan_repayment_request_admin import PartialLoanRepaymentRequestAdm
 from .partial_repayment_response_admin import PartialLoanRepaymentResponseAdmin
 from .loan_repayment_notification_admin import LoanRepaymentNotificationAdmin
 from .defaulter_detail_employer_admin import LoanDefaulterDetailEmployerAdmin
+from .loan_defaulter_detail_admin import LoanDefaulterDetailAdmin
 
