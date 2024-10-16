@@ -21,5 +21,6 @@ from .partial_loan_repayment_response import PartialLoanRepaymentResponse
 from .loan_repayment_notification import LoanRepaymentNotification
 from .defaulter_detail_employer import LoanDefaulterDetailEmployer
 from .loan_defaulter_detail import LoanDefaulterDetail
-
+from .account_validation_request import AccountValidationRequest
+from .account_validation_response import AccountValidationResponse
 
