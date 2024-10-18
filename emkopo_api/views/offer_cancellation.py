@@ -99,5 +99,4 @@ class LoanOfferCancellationNotificationAPIView(APIView):
             return Response({'message': 'Loan offer request updated successfully.'}, status=status.HTTP_200_OK)
 
         except Exception as e:
-            # Handle any exceptions that occur during XML parsing
             return Response({'error': f'Invalid XML data: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
