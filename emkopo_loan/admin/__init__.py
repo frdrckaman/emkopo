@@ -22,5 +22,6 @@ from .loan_repayment_notification_admin import LoanRepaymentNotificationAdmin
 from .defaulter_detail_employer_admin import LoanDefaulterDetailEmployerAdmin
 from .loan_defaulter_detail_admin import LoanDefaulterDetailAdmin
 from .account_validation_admin_request import AccountValidationRequestAdmin
+from .loan_monthly_deduction_admin import LoanDeductionRecordAdmin
 
 
