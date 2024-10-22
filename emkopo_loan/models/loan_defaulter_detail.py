@@ -25,14 +25,20 @@ class LoanDefaulterDetail(BaseUuidModel):
     EmploymentStatus = models.CharField(
         verbose_name="Employment Status",
         max_length=45,
+        blank=True,
+        null=True,
     )
     PhysicalAddress = models.CharField(
         verbose_name="Physical Address",
         max_length=255,
+        blank=True,
+        null=True,
     )
     TelephoneNumber = models.CharField(
         verbose_name="Telephone Number",
         max_length=45,
+        blank=True,
+        null=True,
     )
     EmailAddress = models.CharField(
         verbose_name="Email Address",
@@ -49,6 +55,12 @@ class LoanDefaulterDetail(BaseUuidModel):
     ContactPerson = models.CharField(
         verbose_name="Contact Person",
         max_length=120,
+    )
+    Institution = models.CharField(
+        verbose_name="Institution",
+        max_length=255,
+        blank=True,
+        null=True,
     )
     MessageType = models.CharField(
         verbose_name="Message Type",

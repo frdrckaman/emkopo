@@ -22,6 +22,7 @@ from .full_loan_repayment_notification import FullLoanRepaymentNotificationAPIVi
 from .full_loan_repayment_request import FullLoanRepaymentRequestAPIView
 from .loan_repayment_notification import LoanRepaymentNotificationAPIView
 from .defaulter_detail_employer import LoanDefaulterDetailEmployerAPIView
+from .defaulter_detail import LoanDefaulterDetailAPIView
 
 
 
