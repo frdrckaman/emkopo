@@ -8,6 +8,7 @@ from django.utils.dateparse import parse_date
 import html
 import re
 
+from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanDeductionRecordSerializer
 from emkopo_constants.constants import INCOMING
 
@@ -40,6 +41,21 @@ class LoanMonthlyDeductionRecordAPIView(APIView):
             xml_data = fromstring(cleaned_xml)  # Parse the cleaned XML
         except Exception as e:
             return Response({"error": "Invalid XML format", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            log_and_make_api_call(
+                request_type=INCOMING,
+                payload=cleaned_xml,
+                signature="XYZ",  # Replace with actual signature if available
+                url="https://third-party-api.example.com/endpoint"
+                # Replace with actual endpoint URL
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to save API request: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content_type='application/xml'
+            )
 
         # Extract the relevant fields and map them to the request data
         try:

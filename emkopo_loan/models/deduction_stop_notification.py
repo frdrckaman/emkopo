@@ -71,9 +71,17 @@ class LoanDeductionStopNotification(BaseUuidModel):
     StopDate = models.DateField(
         verbose_name="Stop Date",
     )
+    StopReason = models.CharField(
+        verbose_name="Stop Reason",
+        max_length=255,
+        blank=True,
+        null=True,
+    )
     StopPayReason = models.CharField(
         verbose_name="Stop pay reason",
         max_length=255,
+        blank=True,
+        null=True,
     )
     Timestamp = models.DateTimeField(
         verbose_name="Timestamp",
