@@ -145,13 +145,13 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',  # Log all levels (DEBUG and above)
             'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'django.log'),
+            'filename': os.path.join(LOG_DIR, 'emkopo.log'),
             'formatter': 'verbose',
         },
         'error_file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'django_error.log'),
+            'filename': os.path.join(LOG_DIR, 'emkopo_error.log'),
             'formatter': 'verbose',
         },
         'console': {
