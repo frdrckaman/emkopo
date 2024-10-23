@@ -1,3 +1,4 @@
+from emkopo_loan.admin import FullLoanRepaymentNotificationAdmin
 from .produuct_catalog import ProductCatalogXMLView
 from .product_decommission import GenerateXMLForDecommissionView
 from .loan_charge_request import LoanChargesRequestAPIView
@@ -23,6 +24,8 @@ from .full_loan_repayment_request import FullLoanRepaymentRequestAPIView
 from .loan_repayment_notification import LoanRepaymentNotificationAPIView
 from .defaulter_detail_employer import LoanDefaulterDetailEmployerAPIView
 from .defaulter_detail import LoanDefaulterDetailAPIView
+from .account_validation_request import AccountValidationRequestAPIView
+from .account_validation_response import AccountValidationResponseAPIView
 
 
 

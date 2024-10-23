@@ -12,6 +12,7 @@ class AccountValidationResponseAdmin(BaseSimpleHistoryAdmin):
             None,
             {
                 "fields": (
+                    "AccountNumber",
                     "Valid",
                     "Reason",
                 ),
@@ -21,6 +22,7 @@ class AccountValidationResponseAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_display = (
+        "AccountNumber",
         "Valid",
         "Reason",
         "RequestType",
@@ -28,7 +30,7 @@ class AccountValidationResponseAdmin(BaseSimpleHistoryAdmin):
     )
 
     search_fields = (
-
+        "AccountNumber"
     )
 
     list_filter = (

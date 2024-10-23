@@ -7,6 +7,10 @@ from emkopo_mixins.model import BaseUuidModel
 
 
 class AccountValidationResponse(BaseUuidModel):
+    AccountNumber = models.CharField(
+        verbose_name="Account Number",
+        max_length=45,
+    )
     Valid = models.BooleanField(
         verbose_name="Valid",
     )
