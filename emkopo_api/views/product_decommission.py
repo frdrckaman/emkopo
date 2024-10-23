@@ -56,8 +56,8 @@ class GenerateXMLForDecommissionView(APIView):
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_data,
-            signature="XYZ",  # Replace with actual signature if available
-            url="https://third-party-api.example.com/endpoint"
+            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            url=settings.ESS_UTUMISHI_API
             # Replace with actual endpoint URL
         )
 
