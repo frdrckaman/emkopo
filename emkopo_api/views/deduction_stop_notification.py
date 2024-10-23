@@ -1,21 +1,16 @@
-import uuid
-
 import xmltodict
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from xml.etree.ElementTree import fromstring
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from django.utils.dateparse import parse_date
-import html
 import re
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanDeductionStopNotificationSerializer
 from emkopo_constants.constants import INCOMING
 from emkopo_loan.models import LoanDeductionStopNotification
-from emkopo_product.models import Fsp
 
 
 class LoanDeductionStopNotificationAPIView(APIView):
@@ -81,8 +76,8 @@ class LoanDeductionStopNotificationAPIView(APIView):
             log_and_make_api_call(
                 request_type=INCOMING,
                 payload=xml_data,
-                signature="XYZ",  # Replace with actual signature if available
-                url="https://third-party-api.example.com/endpoint"
+                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+                url=settings.ESS_UTUMISHI_API
                 # Replace with actual endpoint URL
             )
         except Exception as e:

@@ -1,5 +1,8 @@
-DJANGO_SECRET_KEY=
+DJANGO_SECRET_KEY=django-insecure-_oml0mn5f5i(g3kk=6#9#x+&ehsmp4+xke3496($0+^(=x8h#%gwgwj
 DJANGO_DEBUG=True
+EMKOPO_UAT=False
+EMKOPO_SIT=True
+EMKOPO_PROD=False
 DJANGO_EMKOPO_BOOTSTRAP=4
 DJANGO_LOGIN_REDIRECT_URL=emkopo_dashboard:welcome
 DEBUG_TOOLBAR=False
@@ -18,3 +21,5 @@ EMKOPO_NEW_TOP_UP_MSG=TOP_UP_OFFER_REQUEST
 EMKOPO_NEW_TAKEOVER_MSG=TAKEOVER_EMPLOYEE_DETAILS_TO_FSP2
 EMKOPO_TERMS_SERVICE_URL=https://www.stanbicbank.co.tz/tanzania/personal/about-us/legal/Conditions-of-access
 EMKOPO_PRODUCT_DECOMMISSION_API=http://localhost:8000/api/product-decommission/
+ESS_UTUMISHI_API=http://154.118.230.140:9802/ess-loans/mvtyztwq/consume
+ESS_SIGNATURE=

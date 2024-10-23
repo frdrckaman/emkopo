@@ -1,4 +1,5 @@
 import xmltodict
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -73,8 +74,8 @@ class GeneralResponseAPIView(APIView):
             response = log_and_make_api_call(
                 request_type=INCOMING,
                 payload=xml_data,
-                signature="XYZ",  # Replace with actual signature if available
-                url="https://third-party-api.example.com/endpoint"
+                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+                url=settings.ESS_UTUMISHI_API
                 # Replace with actual endpoint URL
             )
             if response.get('status') == 200:

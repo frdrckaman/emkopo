@@ -58,30 +58,31 @@ def log_and_make_api_call(request_type, payload, signature, url):
 
         # Make the API call
         try:
-            # headers = {'Content-Type': 'application/xml', 'Signature': signature}
-            # response = requests.post(url, data=payload, headers=headers)
-            #
-            # # Update the ApiRequest object with the response status
-            # api_request.Status = response.status_code
-            # api_request.save()
+            if settings.EMKOPO_PROD or settings.EMKOPO_UAT:
+                headers = {'Content-Type': 'application/xml', 'Signature': signature}
+                response = requests.post(url, data=payload, headers=headers)
 
-            # return {
-            #     'status': response.status_code,
-            #     'content': response.content
-            # }
+                # Update the ApiRequest object with the response status
+                api_request.Status = response.status_code
+                api_request.save()
 
-            mock_response = Mock()
-            mock_response.status_code = 200  # Simulate a 200 OK response
-            mock_response.content = "Data sent successfully (simulated)"
+                return {
+                    'status': response.status_code,
+                    'content': response.content
+                }
+            else:
+                mock_response = Mock()
+                mock_response.status_code = 200  # Simulate a 200 OK response
+                mock_response.content = "Data sent successfully (simulated)"
 
-            # Update the ApiRequest object with the simulated response status
-            api_request.Status = mock_response.status_code
-            api_request.save()
+                # Update the ApiRequest object with the simulated response status
+                api_request.Status = mock_response.status_code
+                api_request.save()
 
-            return {
-                'status': mock_response.status_code,
-                'content': mock_response.content
-            }
+                return {
+                    'status': mock_response.status_code,
+                    'content': mock_response.content
+                }
         except requests.exceptions.RequestException as e:
             # Log the error in the database
             api_request.Status = 500  # Assuming 500 for internal errors
