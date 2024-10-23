@@ -66,10 +66,14 @@ class LoanDeductionRecord(BaseUuidModel):
     )
     HasStopPay = models.BooleanField(
         verbose_name="Has stop pay",
+        blank=True,
+        null=True,
     )
     StopPayReason = models.CharField(
         verbose_name="Stop pay reason",
         max_length=255,
+        blank=True,
+        null=True,
     )
     CheckDate = models.DateField(
         verbose_name="Check date",

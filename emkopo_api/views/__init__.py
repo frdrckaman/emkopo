@@ -26,6 +26,11 @@ from .defaulter_detail_employer import LoanDefaulterDetailEmployerAPIView
 from .defaulter_detail import LoanDefaulterDetailAPIView
 from .account_validation_request import AccountValidationRequestAPIView
 from .account_validation_response import AccountValidationResponseAPIView
+from .loan_monthly_deduction import LoanMonthlyDeductionRecordAPIView
+from .partial_loan_repayment_response import PartialLoanRepaymentResponseAPIView
+from .partial_loan_repayment_request import PartialLoanRepaymentRequestAPIView
+from .partial_loan_repayment_response import PartialLoanRepaymentResponseAPIView
+
 
 
 
