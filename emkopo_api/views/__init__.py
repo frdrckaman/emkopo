@@ -31,6 +31,7 @@ from .partial_loan_repayment_response import PartialLoanRepaymentResponseAPIView
 from .partial_loan_repayment_request import PartialLoanRepaymentRequestAPIView
 from .partial_loan_repayment_response import PartialLoanRepaymentResponseAPIView
 from .deduction_stop_notification import LoanDeductionStopNotificationAPIView
+from .general_response import GeneralResponseAPIView
 
 
 
