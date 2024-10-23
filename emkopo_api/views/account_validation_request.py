@@ -71,7 +71,6 @@ class AccountValidationRequestAPIView(APIView):
         # Extract Header and MessageDetails
         header_data = document_data.get('Data', {}).get('Header', {})
         message_details = document_data.get('Data', {}).get('MessageDetails', {})
-        # print('frdrck 1')
         try:
             log_and_make_api_call(
                 request_type=INCOMING,
