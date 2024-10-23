@@ -1,3 +1,4 @@
+from .branch_serializers import BranchSerializer
 from .terms_serializers import TermsConditionSerializer
 from .product_serializers import ProductCatalogSerializer
 from .loan_request_serializers import LoanChargeRequestSerializer

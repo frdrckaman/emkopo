@@ -1,4 +1,4 @@
-from emkopo_loan.admin import FullLoanRepaymentNotificationAdmin
+from .branch import BranchDetailsAPIView
 from .produuct_catalog import ProductCatalogXMLView
 from .product_decommission import GenerateXMLForDecommissionView
 from .loan_charge_request import LoanChargesRequestAPIView

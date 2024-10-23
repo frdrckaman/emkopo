@@ -32,4 +32,4 @@ class Branch(BaseUuidModel):
 
     class Meta(BaseUuidModel.Meta):
         verbose_name = "Branch"
-        verbose_name_plural = "Branchs"
+        verbose_name_plural = "Branches"
