@@ -34,6 +34,11 @@ class ApiRequest(BaseUuidModel):
         verbose_name="Status",
         default=200,
     )
+    response = models.TextField(
+        verbose_name="Response",
+        blank=True,
+        null=True,
+    )
 
     history = HistoricalRecords()
 
