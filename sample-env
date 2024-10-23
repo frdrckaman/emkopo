@@ -1,4 +1,4 @@
-DJANGO_SECRET_KEY=django-insecure-_oml0mn5f5i(g3kk=6#9#x+&ehsmp4+xke3496($0+^(=x8h#%gwgwj
+DJANGO_SECRET_KEY=gsfdguihgweug
 DJANGO_DEBUG=True
 EMKOPO_UAT=False
 EMKOPO_SIT=True
