@@ -23,7 +23,9 @@ class ProductCatalogXMLView(APIView):
         },
     )
     def get(self, request):
-        # Fetch the Sender and FSPCode from the Fsp model where name = 'Sender' and code = 'FSPCode'
+        return self.product_catalog(request)
+
+    def product_catalog(self, request):
         fsp = Fsp.objects.first()
 
         if not fsp:
@@ -44,9 +46,8 @@ class ProductCatalogXMLView(APIView):
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_data,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
 
         if response.get('status') == 200:
@@ -60,9 +61,8 @@ class ProductCatalogXMLView(APIView):
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_data,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
 
         if response.get('status') == 200:

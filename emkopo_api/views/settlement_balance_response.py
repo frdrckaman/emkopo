@@ -47,71 +47,71 @@ class LoanSettlementBalanceResponseAPIView(APIView):
             # Decode the XML data from the request body
             xml_data = request.body.decode('utf-8').strip()
             xml_data = re.sub(r'>\s+<', '><', xml_data)
-
             # Parse the XML data to a Python dictionary
             data_dict = xmltodict.parse(xml_data)
 
-            # Extract data from the parsed dictionary
-            document = data_dict.get('Document', {})
-            data = document.get('Data', {})
-            message_details = data.get('MessageDetails', {})
-
-            # Extract specific fields from the XML payload
-            loan_number = message_details.get('LoanNumber')
-            fsp_reference_number = message_details.get('FSPReferenceNumber')
-            payment_reference_number = message_details.get('PaymentReferenceNumber')
-            total_payoff_amount = message_details.get('TotalPayoffAmount')
-            outstanding_balance = message_details.get('OutstandingBalance')
-            final_payment_date = message_details.get('FinalPaymentDate')
-            last_deduction_date = message_details.get('LastDeductionDate')
-            last_pay_date = message_details.get('LastPayDate')
-            end_date = message_details.get('EndDate')
-
-            # Validate required fields
-            if not loan_number or not fsp_reference_number or not payment_reference_number:
-                return Response(
-                    {
-                        'error': 'LoanNumber, FSPReferenceNumber, and PaymentReferenceNumber are required fields.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Create a new LoanSettlementBalanceResponse object
-            LoanSettlementBalanceResponse.objects.create(
-                LoanNumber=loan_number,
-                FSPReferenceNumber=fsp_reference_number,
-                PaymentReferenceNumber=payment_reference_number,
-                TotalPayoffAmount=total_payoff_amount,
-                OutstandingBalance=outstanding_balance,
-                FinalPaymentDate=final_payment_date,
-                LastDeductionDate=last_deduction_date,
-                LastPayDate=last_pay_date,
-                EndDate=end_date,
-                Timestamp=timezone.now(),
-                MessageType="LOAN_TOP_UP_BALANCE_RESPONSE",
-                RequestType=INCOMING
-            )
-
-            response = log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
-            )
-
-            if response.get('status') == 200:
-                return Response({
-                    'message': 'Settlement balance response processed and sent successfully.'},
-                    status=status.HTTP_200_OK)
-            else:
-                return Response(
-                    {'error': 'Failed to send response to the third-party system.'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return settlement_balance_response(data_dict, xml_data)
 
         except Exception as e:
-            # Handle any exceptions that occur during XML parsing
             return Response({'error': f'Invalid XML data: {str(e)}'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+def settlement_balance_response(data_dict, xml_data):
+    document = data_dict.get('Document', {})
+    data = document.get('Data', {})
+    message_details = data.get('MessageDetails', {})
+
+    # Extract specific fields from the XML payload
+    loan_number = message_details.get('LoanNumber')
+    fsp_reference_number = message_details.get('FSPReferenceNumber')
+    payment_reference_number = message_details.get('PaymentReferenceNumber')
+    total_payoff_amount = message_details.get('TotalPayoffAmount')
+    outstanding_balance = message_details.get('OutstandingBalance')
+    final_payment_date = message_details.get('FinalPaymentDate')
+    last_deduction_date = message_details.get('LastDeductionDate')
+    last_pay_date = message_details.get('LastPayDate')
+    end_date = message_details.get('EndDate')
+
+    # Validate required fields
+    if not loan_number or not fsp_reference_number or not payment_reference_number:
+        return Response(
+            {
+                'error': 'LoanNumber, FSPReferenceNumber, and PaymentReferenceNumber are required fields.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Create a new LoanSettlementBalanceResponse object
+    LoanSettlementBalanceResponse.objects.create(
+        LoanNumber=loan_number,
+        FSPReferenceNumber=fsp_reference_number,
+        PaymentReferenceNumber=payment_reference_number,
+        TotalPayoffAmount=total_payoff_amount,
+        OutstandingBalance=outstanding_balance,
+        FinalPaymentDate=final_payment_date,
+        LastDeductionDate=last_deduction_date,
+        LastPayDate=last_pay_date,
+        EndDate=end_date,
+        Timestamp=timezone.now(),
+        MessageType="LOAN_TOP_UP_BALANCE_RESPONSE",
+        RequestType=INCOMING
+    )
+
+    response = log_and_make_api_call(
+        request_type=INCOMING,
+        payload=xml_data,
+        signature=settings.ESS_SIGNATURE,
+        url=settings.ESS_UTUMISHI_API
+    )
+
+    if response.get('status') == 200:
+        return Response({
+            'message': 'Settlement balance response processed and sent successfully.'},
+            status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {'error': 'Failed to send response to the third-party system.'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 def loan_settlement_balance_response(settlement_response, fsp):
@@ -150,7 +150,7 @@ def loan_settlement_balance_response(settlement_response, fsp):
     SubElement(message_details, "EndDate").text = settlement_response.EndDate.isoformat()
 
     # Add the Signature element
-    SubElement(document, "Signature").text = "XYZ"
+    SubElement(document, "Signature").text = settings.ESS_SIGNATURE
 
     # Convert the Element to a string
     xml_string = tostring(document, encoding="utf-8").decode("utf-8").strip()
@@ -174,13 +174,11 @@ def loan_settlement_balance_response(settlement_response, fsp):
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_data,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
 
     except Exception as e:
-        # Handle any exceptions that occur during XML parsing
         return Response({'error': f'Invalid XML data: {str(e)}'},
                         status=status.HTTP_400_BAD_REQUEST)
     return response

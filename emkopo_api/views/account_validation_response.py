@@ -38,45 +38,46 @@ class AccountValidationResponseAPIView(APIView):
         }
     )
     def post(self, request):
-        # Extract AccountNumber from the query parameters
-        account_number = request.data.get("AccountNumber")
-        if not account_number:
-            return Response({"error": "AccountNumber parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        return account_validation_response(request)
 
-        # Check if the AccountNumber exists in the LoanOfferRequest model
-        try:
-            client_account = LoanOfferRequest.objects.get(BankAccountNumber=account_number)
-        except LoanOfferRequest.DoesNotExist:
-            return Response(
-                {"error": f"AccountNumber '{account_number}' not found in LoanOfferRequest."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
 
-        # Parse the request data
-        request_data = {
-            "AccountNumber": client_account.BankAccountNumber,
-            "Valid": "true",
-            "Reason": "Account number blocked",
-            "MessageType": "ACCOUNT_VALIDATION_RESPONSE",
-            "RequestType": OUTGOING,
-        }
+def account_validation_response(request):
+    account_number = request.data.get("AccountNumber")
+    if not account_number:
+        return Response({"error": "AccountNumber parameter is required."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
-        fsp = Fsp.objects.first()
+    # Check if the AccountNumber exists in the LoanOfferRequest model
+    try:
+        client_account = LoanOfferRequest.objects.get(BankAccountNumber=account_number)
+    except LoanOfferRequest.DoesNotExist:
+        return Response(
+            {"error": f"AccountNumber '{account_number}' not found in LoanOfferRequest."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
-        if not fsp:
-            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+    # Parse the request data
+    request_data = {
+        "AccountNumber": client_account.BankAccountNumber,
+        "Valid": "true",
+        "Reason": "Account number blocked",
+        "MessageType": "ACCOUNT_VALIDATION_RESPONSE",
+        "RequestType": OUTGOING,
+    }
 
-        msg_id = str(uuid.uuid4())
-        message_type = 'ACCOUNT_VALIDATION_RESPONSE'
+    fsp = Fsp.objects.first()
 
-        response = generate_xml_for_validation_response(request_data, fsp)
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        if response.get('status') == 200:
-            return Response({"message": "Data successfully sent and inserted."},
-                            status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Failed to send data to the third-party system."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    response = generate_xml_for_validation_response(request_data, fsp)
+
+    if response.get('status') == 200:
+        return Response({"message": "Data successfully sent and inserted."},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Failed to send data to the third-party system."},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def generate_xml_for_validation_response(request_data, fsp):

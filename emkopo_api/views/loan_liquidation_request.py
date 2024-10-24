@@ -59,82 +59,85 @@ class LoanLiquidationRequestAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 content_type='application/xml'
             )
+        return loan_liquidation_request(data_dict, xml_data)
 
-        # Extract 'Document' data to pass to the serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
-            return Response(
-                {'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST,
-                content_type='application/xml'
-            )
+def loan_liquidation_request(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
 
-        # Extract Header and MessageDetails
-        header_data = document_data.get('Data', {}).get('Header', {})
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
+    # Extract Header and MessageDetails
+    header_data = document_data.get('Data', {}).get('Header', {})
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
 
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            url=settings.ESS_UTUMISHI_API
+            # Replace with actual endpoint URL
+        )
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to save API request: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type='application/xml'
+        )
+
+    # Combine Header and MessageDetails for serialization
+    combined_data = {**header_data, **message_details,
+                     'Signature': document_data.get('Signature', '')}
+
+    # Validate the data using the serializer
+    serializer = LoanLiquidationRequestSerializer(data=combined_data)
+
+    if serializer.is_valid():
         try:
-            log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
+            LoanLiquidationRequest.objects.create(
+                ProductCode=serializer.validated_data.get('ProductCode'),
+                LoanAmount=serializer.validated_data.get('LoanAmount'),
+                DeductionAmount=serializer.validated_data.get('DeductionAmount'),
+                TakeOverBalance=serializer.validated_data.get('TakeOverBalance'),
+                FSP1Code=serializer.validated_data.get('FSP1Code'),
+                FSP1Name=serializer.validated_data.get('FSP1Name'),
+                FSP1LoanNumber=serializer.validated_data.get('FSP1LoanNumber'),
+                FSP1PaymentReferenceNumber=serializer.validated_data.get(
+                    'FSP1PaymentReferenceNumber'),
+                NetLoanAmount=serializer.validated_data.get('NetLoanAmount'),
+                TotalAmountToPay=serializer.validated_data.get('TotalAmountToPay'),
+                PaymentRate=serializer.validated_data.get('PaymentRate'),
+                Reserved3=serializer.validated_data.get('Reserved3'),
+                TermsAndConditionsNumber=serializer.validated_data.get(
+                    'TermsAndConditionsNumber'),
+                ApplicationNumber=serializer.validated_data.get('ApplicationNumber'),
+                FSPReferenceNumber=serializer.validated_data.get('FSPReferenceNumber'),
+                ApproverName=serializer.validated_data.get('ApproverName'),
+                ApproverDesignation=serializer.validated_data.get('ApproverDesignation'),
+                ApproverWorkstation=serializer.validated_data.get('ApproverWorkstation'),
+                ApproverInstitution=serializer.validated_data.get('ApproverInstitution'),
+                ActionDateAndTime=serializer.validated_data.get('ActionDateAndTime'),
+                ContactPerson=serializer.validated_data.get('ContactPerson'),
+                ApprovalReferenceNumber=serializer.validated_data.get(
+                    'ApprovalReferenceNumber'),
+                Status=serializer.validated_data.get('Status'),
+                Reason=serializer.validated_data.get('Reason'),
+                Comments=serializer.validated_data.get('AdditionalComment'),
+                MessageType=header_data.get('MessageType'),
+                RequestType=INCOMING,
             )
-        except Exception as e:
+
             return Response(
-                {'error': f'Failed to save API request: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content_type='application/xml'
-            )
+                {"message": "Data successfully inserted into LoanLiquidationRequest."},
+                status=status.HTTP_200_OK)
 
-        # Combine Header and MessageDetails for serialization
-        combined_data = {**header_data, **message_details,
-                         'Signature': document_data.get('Signature', '')}
-
-        # Validate the data using the serializer
-        serializer = LoanLiquidationRequestSerializer(data=combined_data)
-
-        if serializer.is_valid():
-            try:
-                LoanLiquidationRequest.objects.create(
-                    ProductCode=serializer.validated_data.get('ProductCode'),
-                    LoanAmount=serializer.validated_data.get('LoanAmount'),
-                    DeductionAmount=serializer.validated_data.get('DeductionAmount'),
-                    TakeOverBalance=serializer.validated_data.get('TakeOverBalance'),
-                    FSP1Code=serializer.validated_data.get('FSP1Code'),
-                    FSP1Name=serializer.validated_data.get('FSP1Name'),
-                    FSP1LoanNumber=serializer.validated_data.get('FSP1LoanNumber'),
-                    FSP1PaymentReferenceNumber=serializer.validated_data.get(
-                        'FSP1PaymentReferenceNumber'),
-                    NetLoanAmount=serializer.validated_data.get('NetLoanAmount'),
-                    TotalAmountToPay=serializer.validated_data.get('TotalAmountToPay'),
-                    PaymentRate=serializer.validated_data.get('PaymentRate'),
-                    Reserved3=serializer.validated_data.get('Reserved3'),
-                    TermsAndConditionsNumber=serializer.validated_data.get('TermsAndConditionsNumber'),
-                    ApplicationNumber=serializer.validated_data.get('ApplicationNumber'),
-                    FSPReferenceNumber=serializer.validated_data.get('FSPReferenceNumber'),
-                    ApproverName=serializer.validated_data.get('ApproverName'),
-                    ApproverDesignation=serializer.validated_data.get('ApproverDesignation'),
-                    ApproverWorkstation=serializer.validated_data.get('ApproverWorkstation'),
-                    ApproverInstitution=serializer.validated_data.get('ApproverInstitution'),
-                    ActionDateAndTime=serializer.validated_data.get('ActionDateAndTime'),
-                    ContactPerson=serializer.validated_data.get('ContactPerson'),
-                    ApprovalReferenceNumber=serializer.validated_data.get('ApprovalReferenceNumber'),
-                    Status=serializer.validated_data.get('Status'),
-                    Reason=serializer.validated_data.get('Reason'),
-                    Comments=serializer.validated_data.get('AdditionalComment'),
-                    MessageType=header_data.get('MessageType'),
-                    RequestType=INCOMING,
-                )
-
-                return Response(
-                    {"message": "Data successfully inserted into LoanLiquidationRequest."},
-                    status=status.HTTP_200_OK)
-
-            except AttributeError as e:
-                return Response({"error": "Missing required fields", "details": str(e)},
-                                status=status.HTTP_400_BAD_REQUEST)
-        else:
-            # Return validation errors
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except AttributeError as e:
+            return Response({"error": "Missing required fields", "details": str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
+    else:
+        # Return validation errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

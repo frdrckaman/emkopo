@@ -57,36 +57,34 @@ class GeneralResponseAPIView(APIView):
                 content_type='application/xml'
             )
 
-        # Extract 'Document' data to pass to the serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
-            return Response(
-                {'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST,
-                content_type='application/xml'
-            )
+        return general_response(data_dict, xml_data)
 
-        # Extract Header and MessageDetails
-        header_data = document_data.get('Data', {}).get('Header', {})
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
 
-        try:
-            response = log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
-            )
-            if response.get('status') == 200:
-                return Response({"message": "Data sent successfully"},
-                                status=status.HTTP_200_OK)
-            else:
-                return Response({"error": response.get('error', 'Failed to send data')},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except Exception as e:
-            return Response(
-                {'error': f'Failed to save API request: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content_type='application/xml'
-            )
+def general_response(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
+
+    try:
+        response = log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,
+            url=settings.ESS_UTUMISHI_API
+        )
+        if response.get('status') == 200:
+            return Response({"message": "Data sent successfully"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"error": response.get('error', 'Failed to send data')},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to save API request: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type='application/xml'
+        )

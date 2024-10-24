@@ -40,47 +40,47 @@ class LoanRepaymentOffBalanceRequestAPIView(APIView):
         }
     )
     def post(self, request):
-        # Get the loan_takeover_detail_id from the request body
-        loan_takeover_detail_id = request.data.get("LoanNumber")
+        return repayment_offbalance_request(request)
 
-        # Fetch the LoanTakeoverDetail instance
-        try:
-            loan_takeover_detail = LoanTakeoverDetail.objects.get(LoanNumber=loan_takeover_detail_id)
-        except LoanTakeoverDetail.DoesNotExist:
-            return Response({"error": "LoanTakeoverDetail not found."}, status=status.HTTP_404_NOT_FOUND)
+def repayment_offbalance_request(request):
+    loan_takeover_detail_id = request.data.get("LoanNumber")
 
-        # Prepare the data for the serializer
-        request_data = {
-            "TotalPayoffAmount": loan_takeover_detail.TotalPayoffAmount,
-            "LoanNumber": loan_takeover_detail.LoanNumber,
-            "LastDeductionDate": loan_takeover_detail.LastDeductionDate,
-            "FSPBankAccount": loan_takeover_detail.FSPBankAccount,
-            "FSPBankAccountName": loan_takeover_detail.FSPBankAccountName,
-            "SWIFTCode": loan_takeover_detail.SWIFTCode,
-            "MNOChannels": loan_takeover_detail.MNOChannels,
-            "FinalPaymentDate": loan_takeover_detail.FinalPaymentDate,
-            "EndDate": loan_takeover_detail.EndDate,
-            "MessageType": "REPAYMENT_0FF_BALANCE_REQUEST_TO_FSP",
-            "RequestType": "OUTWARD_REPAYMENT",
-        }
+    try:
+        loan_takeover_detail = LoanTakeoverDetail.objects.get(
+            LoanNumber=loan_takeover_detail_id)
+    except LoanTakeoverDetail.DoesNotExist:
+        return Response({"error": "LoanTakeoverDetail not found."},
+                        status=status.HTTP_404_NOT_FOUND)
 
-        fsp = Fsp.objects.first()
+    # Prepare the data for the serializer
+    request_data = {
+        "TotalPayoffAmount": loan_takeover_detail.TotalPayoffAmount,
+        "LoanNumber": loan_takeover_detail.LoanNumber,
+        "LastDeductionDate": loan_takeover_detail.LastDeductionDate,
+        "FSPBankAccount": loan_takeover_detail.FSPBankAccount,
+        "FSPBankAccountName": loan_takeover_detail.FSPBankAccountName,
+        "SWIFTCode": loan_takeover_detail.SWIFTCode,
+        "MNOChannels": loan_takeover_detail.MNOChannels,
+        "FinalPaymentDate": loan_takeover_detail.FinalPaymentDate,
+        "EndDate": loan_takeover_detail.EndDate,
+        "MessageType": "REPAYMENT_0FF_BALANCE_REQUEST_TO_FSP",
+        "RequestType": "OUTWARD_REPAYMENT",
+    }
 
-        if not fsp:
-            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+    fsp = Fsp.objects.first()
 
-        msg_id = str(uuid.uuid4())
-        message_type = 'REPAYMENT_0FF_BALANCE_REQUEST_TO_FSP'
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Generate the XML payload
-        response = generate_xml_for_request(request_data, fsp)
+    # Generate the XML payload
+    response = generate_xml_for_request(request_data, fsp)
 
-        if response.get('status') == 200:
-            return Response({"message": "Data successfully sent and inserted."},
-                            status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Failed to send data to the third-party system."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if response.get('status') == 200:
+        return Response({"message": "Data successfully sent and inserted."},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Failed to send data to the third-party system."},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def generate_xml_for_request(data, fsp):
     """
@@ -124,9 +124,8 @@ def generate_xml_for_request(data, fsp):
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_string,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
         return response
     else:

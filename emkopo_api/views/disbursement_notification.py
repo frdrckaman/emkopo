@@ -45,41 +45,42 @@ class LoanDisbursementNotificationAPIView(APIView):
         consumes=['application/json']
     )
     def post(self, request, *args, **kwargs):
-        # Get parameters from request body
-        loan_number = request.data.get('LoanNumber')
-        application_number = request.data.get('ApplicationNumber')
+        return disbursement_notification(request)
 
-        # Validate parameters
-        if not loan_number or not application_number:
-            return Response({'error': 'LoanNumber and ApplicationNumber are required.'},
-                            status=status.HTTP_400_BAD_REQUEST)
+def disbursement_notification(request):
+    loan_number = request.data.get('LoanNumber')
+    application_number = request.data.get('ApplicationNumber')
 
-        try:
-            # Fetch the LoanOfferRequest instance
-            loan_offer_request = LoanOfferRequest.objects.get(
-                LoanNumber=loan_number,
-                ApplicationNumber=application_number,
-                status=4
-            )
-        except LoanOfferRequest.DoesNotExist:
-            return Response({
-                'error': 'LoanOfferRequest not found with the provided LoanNumber and ApplicationNumber.'},
-                status=status.HTTP_404_NOT_FOUND)
+    # Validate parameters
+    if not loan_number or not application_number:
+        return Response({'error': 'LoanNumber and ApplicationNumber are required.'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
-        fsp = Fsp.objects.all().first()
+    try:
+        # Fetch the LoanOfferRequest instance
+        loan_offer_request = LoanOfferRequest.objects.get(
+            LoanNumber=loan_number,
+            ApplicationNumber=application_number,
+            status=4
+        )
+    except LoanOfferRequest.DoesNotExist:
+        return Response({
+            'error': 'LoanOfferRequest not found with the provided LoanNumber and ApplicationNumber.'},
+            status=status.HTTP_404_NOT_FOUND)
 
-        if not fsp:
-            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+    fsp = Fsp.objects.all().first()
 
-        response = loan_disbursement_notification(loan_offer_request, fsp)
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        if response.get('status') == 200:
-            return Response({"message": "Data sent successfully"},
-                            status=status.HTTP_200_OK)
-        else:
-            return Response({"error": response.get('error', 'Failed to send data')},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    response = loan_disbursement_notification(loan_offer_request, fsp)
 
+    if response.get('status') == 200:
+        return Response({"message": "Data sent successfully"},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({"error": response.get('error', 'Failed to send data')},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def loan_disbursement_notification(disburse_response, fsp):
     """
@@ -116,9 +117,8 @@ def loan_disbursement_notification(disburse_response, fsp):
     response = log_and_make_api_call(
         request_type=OUTGOING,
         payload=xml_data,
-        signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+        signature=settings.ESS_SIGNATURE,
         url=settings.ESS_UTUMISHI_API
-        # Replace with actual endpoint URL
     )
 
     return response

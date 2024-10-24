@@ -49,58 +49,58 @@ class LoanRestructuringRequestAPIView(APIView):
 
             # Parse the XML data to a Python dictionary
             data_dict = xmltodict.parse(xml_data)
-
             # Extract data from the parsed dictionary
-            document = data_dict.get('Document', {})
-            data = document.get('Data', {})
-            message_details = data.get('MessageDetails', {})
-
-            # Extract specific fields from the XML payload
-            application_number = message_details.get('ApplicationNumber')
-            comments = message_details.get('Comments')
-            loan_number = message_details.get('LoanNumber')
-            loan_outstanding_amount = message_details.get('LoanOutstandingAmount')
-            new_loan_amount = message_details.get('NewLoanAmount')
-            new_installment_amount = message_details.get('NewInstallmentAmount')
-
-            # Validate required fields
-            if not application_number or not loan_number or not loan_outstanding_amount or not new_loan_amount or not new_installment_amount:
-                return Response(
-                    {
-                        'error': 'ApplicationNumber, LoanNumber, LoanOutstandingAmount, NewLoanAmount, and NewInstallmentAmount are required fields.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Create a new LoanRestructuringRequest object
-            LoanRestructuringRequest.objects.create(
-                ApplicationNumber=application_number,
-                LoanNumber=loan_number,
-                Comments=comments,
-                LoanOutstandingAmount=loan_outstanding_amount,
-                NewLoanAmount=new_loan_amount,
-                NewInstallmentAmount=new_installment_amount,
-                Timestamp=timezone.now(),
-                MessageType="LOAN_RESTRUCTURING_NOTIFICATION",
-                RequestType=INCOMING
-            )
-
-            response = log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
-            )
-
-            if response.get('status') == 200:
-                return Response({
-                    'message': 'Settlement balance response processed and sent successfully.'},
-                    status=status.HTTP_200_OK)
-
+            return loan_restructuring(data_dict, xml_data)
         except Exception as e:
-            # Handle any exceptions that occur during XML parsing
             return Response({'error': f'Invalid XML data: {str(e)}'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_400_BAD_REQUEST)
+
+def loan_restructuring(data_dict, xml_data):
+    document = data_dict.get('Document', {})
+    data = document.get('Data', {})
+    message_details = data.get('MessageDetails', {})
+
+    # Extract specific fields from the XML payload
+    application_number = message_details.get('ApplicationNumber')
+    comments = message_details.get('Comments')
+    loan_number = message_details.get('LoanNumber')
+    loan_outstanding_amount = message_details.get('LoanOutstandingAmount')
+    new_loan_amount = message_details.get('NewLoanAmount')
+    new_installment_amount = message_details.get('NewInstallmentAmount')
+
+    # Validate required fields
+    if not application_number or not loan_number or not loan_outstanding_amount or not new_loan_amount or not new_installment_amount:
+        return Response(
+            {
+                'error': 'ApplicationNumber, LoanNumber, LoanOutstandingAmount, NewLoanAmount, and NewInstallmentAmount are required fields.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Create a new LoanRestructuringRequest object
+    LoanRestructuringRequest.objects.create(
+        ApplicationNumber=application_number,
+        LoanNumber=loan_number,
+        Comments=comments,
+        LoanOutstandingAmount=loan_outstanding_amount,
+        NewLoanAmount=new_loan_amount,
+        NewInstallmentAmount=new_installment_amount,
+        Timestamp=timezone.now(),
+        MessageType="LOAN_RESTRUCTURING_NOTIFICATION",
+        RequestType=INCOMING
+    )
+
+    response = log_and_make_api_call(
+        request_type=INCOMING,
+        payload=xml_data,
+        signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+        url=settings.ESS_UTUMISHI_API
+        # Replace with actual endpoint URL
+    )
+
+    if response.get('status') == 200:
+        return Response({
+            'message': 'Settlement balance response processed and sent successfully.'},
+            status=status.HTTP_200_OK)
 
 
 def loan_restructuring_request(restructuring_request, fsp):

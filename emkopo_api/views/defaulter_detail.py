@@ -59,64 +59,67 @@ class LoanDefaulterDetailAPIView(APIView):
                 content_type='application/xml'
             )
 
-        # Extract 'Document' data to pass to the serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
+        return defaulter_detail(data_dict, xml_data)
+
+
+def defaulter_detail(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
+
+    # Extract Header and MessageDetails
+    header_data = document_data.get('Data', {}).get('Header', {})
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,
+            url=settings.ESS_UTUMISHI_API
+        )
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to save API request: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type='application/xml'
+        )
+
+    # Combine Header and MessageDetails for serialization
+    combined_data = {**header_data, **message_details,
+                     'Signature': document_data.get('Signature', '')}
+
+    # Extract the relevant fields from the XML and map them to the request data
+    try:
+        # Pass the dictionary data to the serializer
+        serializer = LoanDefaulterDetailSerializer(data=combined_data)
+
+        # Validate and save the data
+        if serializer.is_valid():
+            LoanDefaulterDetail.objects.create(
+                CheckNumber=serializer.validated_data.get('CheckNumber'),
+                LoanNumber=serializer.validated_data.get('LoanNumber'),
+                FSPCode=serializer.validated_data.get('FSPCode'),
+                LastPaymentDate=serializer.validated_data.get('LastPaymentDate'),
+                EmploymentStatus=serializer.validated_data.get('EmploymentStatus'),
+                PhysicalAddress=serializer.validated_data.get('PysicalAddress'),
+                TelephoneNumber=serializer.validated_data.get('TelephoneNumber'),
+                EmailAddress=serializer.validated_data.get('EmailAddress'),
+                Fax=serializer.validated_data.get('Fax'),
+                MobileNumber=serializer.validated_data.get('MobileNumber'),
+                ContactPerson=serializer.validated_data.get('ContactPerson'),
+                MessageType=header_data.get('MessageType'),
+                RequestType=INCOMING,
+            )
             return Response(
-                {'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST,
-                content_type='application/xml'
-            )
+                {"message": "Data successfully inserted into LoanDefaulterDetail."},
+                status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Extract Header and MessageDetails
-        header_data = document_data.get('Data', {}).get('Header', {})
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
-        # print('frdrck 1')
-        try:
-            log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
-            )
-        except Exception as e:
-            return Response(
-                {'error': f'Failed to save API request: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content_type='application/xml'
-            )
-
-        # Combine Header and MessageDetails for serialization
-        combined_data = {**header_data, **message_details,
-                         'Signature': document_data.get('Signature', '')}
-
-        # Extract the relevant fields from the XML and map them to the request data
-        try:
-            # Pass the dictionary data to the serializer
-            serializer = LoanDefaulterDetailSerializer(data=combined_data)
-
-            # Validate and save the data
-            if serializer.is_valid():
-                LoanDefaulterDetail.objects.create(
-                    CheckNumber=serializer.validated_data.get('CheckNumber'),
-                    LoanNumber=serializer.validated_data.get('LoanNumber'),
-                    FSPCode=serializer.validated_data.get('FSPCode'),
-                    LastPaymentDate=serializer.validated_data.get('LastPaymentDate'),
-                    EmploymentStatus=serializer.validated_data.get('EmploymentStatus'),
-                    PhysicalAddress=serializer.validated_data.get('PysicalAddress'),
-                    TelephoneNumber=serializer.validated_data.get('TelephoneNumber'),
-                    EmailAddress=serializer.validated_data.get('EmailAddress'),
-                    Fax=serializer.validated_data.get('Fax'),
-                    MobileNumber=serializer.validated_data.get('MobileNumber'),
-                    ContactPerson=serializer.validated_data.get('ContactPerson'),
-                    MessageType=header_data.get('MessageType'),
-                    RequestType=INCOMING,
-                )
-                return Response({"message": "Data successfully inserted into LoanDefaulterDetail."},
-                                status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        except AttributeError as e:
-            return Response({"error": "Missing required fields", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    except AttributeError as e:
+        return Response({"error": "Missing required fields", "details": str(e)},
+                        status=status.HTTP_400_BAD_REQUEST)

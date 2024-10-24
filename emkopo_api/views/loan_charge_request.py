@@ -60,112 +60,115 @@ class LoanChargesRequestAPIView(APIView):
                 content_type='application/xml'
             )
 
-        # Extract data for saving to the Serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
-            return Response(
-                {'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST,
-                content_type='application/xml'
-            )
+        return loan_charge(data_dict, xml_data)
 
-        # Extract data for LoanChargeRequest
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
-        header_data = document_data.get('Data', {}).get('Header', {})
 
-        # Save the request data to the ApiRequest model
+def loan_charge(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
+
+    # Extract data for LoanChargeRequest
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
+    header_data = document_data.get('Data', {}).get('Header', {})
+
+    # Save the request data to the ApiRequest model
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature="XYZ",  # Replace with actual signature if available
+            url=settings.ESS_UTUMISHI_API
+            # Replace with actual endpoint URL
+        )
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to save API request: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type='application/xml'
+        )
+
+    data_for_serialization = {
+        'Header': document_data.get('Data', {}).get('Header', {}),
+        'MessageDetails': document_data.get('Data', {}).get('MessageDetails', {}),
+        'Signature': document_data.get('Signature', '')
+    }
+
+    # Validate the extracted data using the serializer
+    serializer = LoanChargeRequestDocumentSerializer(data=data_for_serialization)
+
+    if serializer.is_valid():
         try:
-            log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature="XYZ",  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
+            loan_charge_request = LoanChargeRequest.objects.create(
+                CheckNumber=message_details.get('CheckNumber'),
+                DesignationCode=message_details.get('DesignationCode'),
+                DesignationName=message_details.get('DesignationName'),
+                BasicSalary=message_details.get('BasicSalary'),
+                NetSalary=message_details.get('NetSalary'),
+                OneThirdAmount=message_details.get('OneThirdAmount'),
+                RequestedAmount=message_details.get('RequestedAmount', None),
+                DeductibleAmount=message_details.get('DeductibleAmount'),
+                DesiredDeductibleAmount=message_details.get('DesiredDeductibleAmount',
+                                                            None),
+                RetirementDate=message_details.get('RetirementDate'),
+                TermsOfEmployment=message_details.get('TermsOfEmployment'),
+                Tenure=message_details.get('Tenure', None),
+                ProductCode=message_details.get('ProductCode'),
+                VoteCode=message_details.get('VoteCode'),
+                TotalEmployeeDeduction=message_details.get('TotalEmployeeDeduction', None),
+                JobClassCode=message_details.get('JobClassCode'),
+                MessageType=header_data.get('MessageType'),
+                RequestType=INCOMING,
+                status=1
             )
         except Exception as e:
             return Response(
-                {'error': f'Failed to save API request: {str(e)}'},
+                {'error': f'Failed to save LoanChargeRequest: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content_type='application/xml'
             )
 
-        data_for_serialization = {
-            'Header': document_data.get('Data', {}).get('Header', {}),
-            'MessageDetails': document_data.get('Data', {}).get('MessageDetails', {}),
-            'Signature': document_data.get('Signature', '')
-        }
+        # Call LoanCalculator and calculate loan details
+        loan_calculator = LoanCalculator(loan_charge_request)
+        loan_response = loan_calculator.create_loan_response()
 
-        # Validate the extracted data using the serializer
-        serializer = LoanChargeRequestDocumentSerializer(data=data_for_serialization)
-
-        if serializer.is_valid():
-            try:
-                loan_charge_request = LoanChargeRequest.objects.create(
-                    CheckNumber=message_details.get('CheckNumber'),
-                    DesignationCode=message_details.get('DesignationCode'),
-                    DesignationName=message_details.get('DesignationName'),
-                    BasicSalary=message_details.get('BasicSalary'),
-                    NetSalary=message_details.get('NetSalary'),
-                    OneThirdAmount=message_details.get('OneThirdAmount'),
-                    RequestedAmount=message_details.get('RequestedAmount', None),
-                    DeductibleAmount=message_details.get('DeductibleAmount'),
-                    DesiredDeductibleAmount=message_details.get('DesiredDeductibleAmount',
-                                                                None),
-                    RetirementDate=message_details.get('RetirementDate'),
-                    TermsOfEmployment=message_details.get('TermsOfEmployment'),
-                    Tenure=message_details.get('Tenure', None),
-                    ProductCode=message_details.get('ProductCode'),
-                    VoteCode=message_details.get('VoteCode'),
-                    TotalEmployeeDeduction=message_details.get('TotalEmployeeDeduction', None),
-                    JobClassCode=message_details.get('JobClassCode'),
-                    MessageType=header_data.get('MessageType'),
-                    RequestType=INCOMING,
-                    status=1
-                )
-            except Exception as e:
-                return Response(
-                    {'error': f'Failed to save LoanChargeRequest: {str(e)}'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content_type='application/xml'
-                )
-
-            # Call LoanCalculator and calculate loan details
-            loan_calculator = LoanCalculator(loan_charge_request)
-            loan_response = loan_calculator.create_loan_response()
-
-            if not loan_response:
-                return Response(
-                    {'error': 'Failed to calculate loan response.'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content_type='application/xml'
-                    )
-
-            # Use the LoanChargeResponseSerializer to serialize the loan response data
-            l_response = LoanChargeResponse.objects.filter(pk=loan_response.pk)
-            response_serializer = LoanChargeResponseSerializer(l_response, many=True)
-
-            fsp = Fsp.objects.first()
-            if not fsp:
-                return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
-
-            msg_id = str(uuid.uuid4())
-            message_type = 'LOAN_CHARGES_RESPONSE'
-            xml_data = convert_to_xml(OUTGOING, message_type, response_serializer.data, fsp,
-                                      msg_id)
-
-            log_and_make_api_call(
-                request_type=OUTGOING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
+        if not loan_response:
+            return Response(
+                {'error': 'Failed to calculate loan response.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content_type='application/xml'
             )
 
-            # Simulate successful processing of the request
-            simulated_response = {
-                'message': 'Simulated: Loan charges request received and processed successfully.',
-                'received_data': document_data  # Display the received data
-            }
-            return Response(simulated_response, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Use the LoanChargeResponseSerializer to serialize the loan response data
+        l_response = LoanChargeResponse.objects.filter(pk=loan_response.pk)
+        response_serializer = LoanChargeResponseSerializer(l_response, many=True)
+
+        fsp = Fsp.objects.first()
+        if not fsp:
+            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        msg_id = str(uuid.uuid4())
+        message_type = 'LOAN_CHARGES_RESPONSE'
+        xml_data = convert_to_xml(OUTGOING, message_type, response_serializer.data, fsp,
+                                  msg_id)
+
+        log_and_make_api_call(
+            request_type=OUTGOING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,
+            url=settings.ESS_UTUMISHI_API
+        )
+
+        # Simulate successful processing of the request
+        simulated_response = {
+            'message': 'Simulated: Loan charges request received and processed successfully.',
+            'received_data': document_data  # Display the received data
+        }
+        return Response(simulated_response, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

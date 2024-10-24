@@ -59,75 +59,78 @@ class LoanDeductionStopNotificationAPIView(APIView):
                 content_type='application/xml'
             )
 
-        # Extract 'Document' data to pass to the serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
-            return Response(
-                {'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST,
-                content_type='application/xml'
-            )
+        return deduction_stop_notification(data_dict, xml_data)
 
-        # Extract Header and MessageDetails
-        header_data = document_data.get('Data', {}).get('Header', {})
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
+
+
+def deduction_stop_notification(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
+
+    # Extract Header and MessageDetails
+    header_data = document_data.get('Data', {}).get('Header', {})
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
+
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            url=settings.ESS_UTUMISHI_API
+            # Replace with actual endpoint URL
+        )
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to save API request: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type='application/xml'
+        )
+    # Combine Header and MessageDetails for serialization
+    combined_data = {**header_data, **message_details,
+                     'Signature': document_data.get('Signature', '')}
+
+    serializer = LoanDeductionStopNotificationSerializer(data=combined_data)
+
+    if serializer.is_valid():
 
         try:
-            log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
+            LoanDeductionStopNotification.objects.create(
+                FSPReferenceNumber=serializer.validated_data.get('FSPReferenceNumber'),
+                CheckNumber=serializer.validated_data.get('CheckNumber'),
+                LoanNumber=serializer.validated_data.get('LoanNumber'),
+                FirstName=serializer.validated_data.get('FirstName'),
+                MiddleName=serializer.validated_data.get('MiddleName'),
+                LastName=serializer.validated_data.get('LastName'),
+                VoteCode=serializer.validated_data.get('VoteCode'),
+                VoteName=serializer.validated_data.get('VoteName'),
+                DepartmentCode=serializer.validated_data.get('DepartmentCode'),
+                DepartmentName=serializer.validated_data.get('DepartmentName'),
+                DeductionCode=serializer.validated_data.get('DeductionCode'),
+                DeductionDescription=serializer.validated_data.get('DeductionDescription'),
+                DeductionAmount=serializer.validated_data.get('DeductionAmount'),
+                BalanceAmount=serializer.validated_data.get('BalanceAmount'),
+                StopDate=serializer.validated_data.get('StopDate'),
+                StopPayReason=serializer.validated_data.get('StopPayReason'),
+                MessageType=header_data.get('MessageType'),
+                RequestType=INCOMING,
+            )
+            return Response(
+                {'message': 'Loan offer request processed successfully'},
+                status=status.HTTP_200_OK,
+                content_type='application/xml'
             )
         except Exception as e:
+            print(str(e))
             return Response(
-                {'error': f'Failed to save API request: {str(e)}'},
+                {'error': f'Failed to save FullLoanRepaymentRequest: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content_type='application/xml'
             )
-        # Combine Header and MessageDetails for serialization
-        combined_data = {**header_data, **message_details,
-                         'Signature': document_data.get('Signature', '')}
-
-        serializer = LoanDeductionStopNotificationSerializer(data=combined_data)
-
-        if serializer.is_valid():
-
-            try:
-                LoanDeductionStopNotification.objects.create(
-                    FSPReferenceNumber=serializer.validated_data.get('FSPReferenceNumber'),
-                    CheckNumber=serializer.validated_data.get('CheckNumber'),
-                    LoanNumber=serializer.validated_data.get('LoanNumber'),
-                    FirstName=serializer.validated_data.get('FirstName'),
-                    MiddleName=serializer.validated_data.get('MiddleName'),
-                    LastName=serializer.validated_data.get('LastName'),
-                    VoteCode=serializer.validated_data.get('VoteCode'),
-                    VoteName=serializer.validated_data.get('VoteName'),
-                    DepartmentCode=serializer.validated_data.get('DepartmentCode'),
-                    DepartmentName=serializer.validated_data.get('DepartmentName'),
-                    DeductionCode=serializer.validated_data.get('DeductionCode'),
-                    DeductionDescription=serializer.validated_data.get('DeductionDescription'),
-                    DeductionAmount=serializer.validated_data.get('DeductionAmount'),
-                    BalanceAmount=serializer.validated_data.get('BalanceAmount'),
-                    StopDate=serializer.validated_data.get('StopDate'),
-                    StopPayReason=serializer.validated_data.get('StopPayReason'),
-                    MessageType=header_data.get('MessageType'),
-                    RequestType=INCOMING,
-                )
-                return Response(
-                    {'message': 'Loan offer request processed successfully'},
-                    status=status.HTTP_200_OK,
-                    content_type='application/xml'
-                )
-            except Exception as e:
-                print(str(e))
-                return Response(
-                    {'error': f'Failed to save FullLoanRepaymentRequest: {str(e)}'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content_type='application/xml'
-                )
-        else:
-            # Return validation errors
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    else:
+        # Return validation errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

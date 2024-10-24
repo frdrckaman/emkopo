@@ -35,10 +35,11 @@ class GenerateXMLForDecommissionView(APIView):
         }
     )
     def post(self, request):
-        # Get the product ID from the request data
+        return self.product_decommission(request)
+
+    def product_decommission(self, request):
         product_id = request.data.get("id")
 
-        # Retrieve the Fsp instance dynamically
         fsp = Fsp.objects.all().first()
 
         if not fsp:
@@ -52,13 +53,11 @@ class GenerateXMLForDecommissionView(APIView):
         product.status = False
         product.save()
 
-        # Call the helper function to log the request and simulate the API call
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_data,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
 
         if response.get('status') == 200:

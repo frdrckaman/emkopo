@@ -41,49 +41,50 @@ class LoanDefaulterDetailEmployerAPIView(APIView):
     )
     def post(self, request):
         # Get the loan_takeover_detail_id from the request body
-        loan_takeover_detail_id = request.data.get("LoanNumber")
+        return defaulter_detail_employer(request)
 
-        # Fetch the LoanTakeoverDetail instance
-        try:
-            loan_takeover_detail = LoanTakeoverDetail.objects.get(LoanNumber=loan_takeover_detail_id)
-        except LoanTakeoverDetail.DoesNotExist:
-            return Response({"error": "LoanTakeoverDetail not found."}, status=status.HTTP_404_NOT_FOUND)
+def defaulter_detail_employer(request):
+    loan_takeover_detail_id = request.data.get("LoanNumber")
 
-        # Prepare the data for the serializer
-        request_data = {
-            "CheckNumber": "9723101",
-            "LoanNumber": loan_takeover_detail.LoanNumber,
-            "VoteName": "Utumishi",  # Static value or fetched from another source if applicable
-            "FirstName": "Simba<",
-            "MiddleName": "Mapunda<",
-            "LastName": "Nguchiro",
-            "InstallationAmount": loan_takeover_detail.TotalPayoffAmount,  # Example mapping
-            "DeductionAmount": loan_takeover_detail.TotalPayoffAmount,  # Example mapping
-            "DeductionCode": "00101",  # Example static code
-            "DeductionName": "Salary Loan",  # Example static deduction name
-            "OutstandingBalance": loan_takeover_detail.OutstandingBalance,
-            "LastPayDate": "2022-05-26T21:32:52",
-            "MessageType": "DEFAULTER_DETAILS_TO_EMPLOYER",
-            "RequestType": OUTGOING,
-        }
+    # Fetch the LoanTakeoverDetail instance
+    try:
+        loan_takeover_detail = LoanTakeoverDetail.objects.get(
+            LoanNumber=loan_takeover_detail_id)
+    except LoanTakeoverDetail.DoesNotExist:
+        return Response({"error": "LoanTakeoverDetail not found."},
+                        status=status.HTTP_404_NOT_FOUND)
 
-        fsp = Fsp.objects.first()
+    # Prepare the data for the serializer
+    request_data = {
+        "CheckNumber": "9723101",
+        "LoanNumber": loan_takeover_detail.LoanNumber,
+        "VoteName": "Utumishi",  # Static value or fetched from another source if applicable
+        "FirstName": "Simba<",
+        "MiddleName": "Mapunda<",
+        "LastName": "Nguchiro",
+        "InstallationAmount": loan_takeover_detail.TotalPayoffAmount,  # Example mapping
+        "DeductionAmount": loan_takeover_detail.TotalPayoffAmount,  # Example mapping
+        "DeductionCode": "00101",  # Example static code
+        "DeductionName": "Salary Loan",  # Example static deduction name
+        "OutstandingBalance": loan_takeover_detail.OutstandingBalance,
+        "LastPayDate": "2022-05-26T21:32:52",
+        "MessageType": "DEFAULTER_DETAILS_TO_EMPLOYER",
+        "RequestType": OUTGOING,
+    }
 
-        if not fsp:
-            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+    fsp = Fsp.objects.first()
 
-        msg_id = str(uuid.uuid4())
-        message_type = 'DEFAULTER_DETAILS_TO_EMPLOYER'
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        response = generate_xml_for_defaulter(request_data, fsp)
+    response = generate_xml_for_defaulter(request_data, fsp)
 
-        if response.get('status') == 200:
-            return Response({"message": "Data successfully sent and inserted."},
-                            status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Failed to send data to the third-party system."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    if response.get('status') == 200:
+        return Response({"message": "Data successfully sent and inserted."},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Failed to send data to the third-party system."},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def generate_xml_for_defaulter(request_data, fsp):
     """

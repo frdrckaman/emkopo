@@ -72,47 +72,50 @@ class LoanFinalApprovalNotificationAPIView(APIView):
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
             )
 
-        response = log_and_make_api_call(
-            request_type=INCOMING,
-            payload=xml_data,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-            url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
-        )
+        return log_and_make_api_call(payload, xml_data)
 
-        if response.get('status') == 200:
-            try:
-                if content_type == 'application/xml':
-                    # Adjust the path for XML structure
-                    data = payload.get('Document', {}).get('Data', {})
-                    message_details = data.get('MessageDetails', {})
-                else:
-                    # Directly use JSON structure
-                    message_details = payload
+def loan_final_appproval(payload, xml_data):
+    content_type = 'application/xml'
+    response = log_and_make_api_call(
+        request_type=INCOMING,
+        payload=xml_data,
+        signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+        url=settings.ESS_UTUMISHI_API
+        # Replace with actual endpoint URL
+    )
 
-                application_number = message_details.get('ApplicationNumber')
-                approval = message_details.get('Approval')
+    if response.get('status') == 200:
+        try:
+            if content_type == 'application/xml':
+                # Adjust the path for XML structure
+                data = payload.get('Document', {}).get('Data', {})
+                message_details = data.get('MessageDetails', {})
+            else:
+                # Directly use JSON structure
+                message_details = payload
 
-                if approval == 'APPROVED':
-                    ln_status = 3
-                elif approval == 'REJECTED':
-                    ln_status = 9
-                else:
-                    ln_status = 8
+            application_number = message_details.get('ApplicationNumber')
+            approval = message_details.get('Approval')
 
-                loan_offer_request = LoanOfferRequest.objects.get(
-                    ApplicationNumber=application_number)
-                loan_offer_request.status = ln_status
-                loan_offer_request.save()
-            except LoanOfferRequest.DoesNotExist:
-                return Response({
-                                    'error': f'LoanOfferRequest with ApplicationNumber '
-                                             f'{application_number} not found.'},
-                                status=status.HTTP_404_NOT_FOUND)
+            if approval == 'APPROVED':
+                ln_status = 3
+            elif approval == 'REJECTED':
+                ln_status = 9
+            else:
+                ln_status = 8
 
-            return Response({"message": "Data sent successfully"}, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": response.get('error', 'Failed to send data')},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            loan_offer_request = LoanOfferRequest.objects.get(
+                ApplicationNumber=application_number)
+            loan_offer_request.status = ln_status
+            loan_offer_request.save()
+        except LoanOfferRequest.DoesNotExist:
+            return Response({
+                'error': f'LoanOfferRequest with ApplicationNumber '
+                         f'{application_number} not found.'},
+                status=status.HTTP_404_NOT_FOUND)
 
+        return Response({"message": "Data sent successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": response.get('error', 'Failed to send data')},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

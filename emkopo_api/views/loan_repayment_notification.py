@@ -41,47 +41,48 @@ class LoanRepaymentNotificationAPIView(APIView):
         }
     )
     def post(self, request):
-        # Get the loan_takeover_detail_id from the request body
-        loan_takeover_detail_id = request.data.get("ApplicationNumber")
+        return loan_repayment_notification(request)
 
-        # Fetch the LoanTakeoverDetail instance
-        try:
-            loan_takeover_detail = LoanNotificationEmployer.objects.get(ApplicationNumber=loan_takeover_detail_id)
-        except LoanNotificationEmployer.DoesNotExist:
-            return Response({"error": "LoanNotificationEmployer not found."}, status=status.HTTP_404_NOT_FOUND)
+def loan_repayment_notification(request):
+    loan_takeover_detail_id = request.data.get("ApplicationNumber")
 
-        # Prepare the data for the serializer
-        request_data = {
-            "CheckNumber": loan_takeover_detail.CheckNumber,
-            "ApplicationNumber": loan_takeover_detail.ApplicationNumber,
-            "LoanNumber": "SBT-0001",
-            "PaymentReference": loan_takeover_detail.PaymentReference,
-            "DeductionCode": "003",  # Example value
-            "PaymentDescription": "Loan repayment notification",  # Example description
-            "PaymentDate": "2022-05-26T21:32:52",
-            "MaturityDate": "2022-05-26T21:32:52",
-            "PaymentAmount": 100000.00,
-            "LoanBalance": 120000.00,
-            "MessageType": "PARTIAL_LOAN_REPAYMENT_NOTIFICATION",
-            "RequestType": OUTGOING,
-        }
+    # Fetch the LoanTakeoverDetail instance
+    try:
+        loan_takeover_detail = LoanNotificationEmployer.objects.get(
+            ApplicationNumber=loan_takeover_detail_id)
+    except LoanNotificationEmployer.DoesNotExist:
+        return Response({"error": "LoanNotificationEmployer not found."},
+                        status=status.HTTP_404_NOT_FOUND)
 
-        fsp = Fsp.objects.first()
+    # Prepare the data for the serializer
+    request_data = {
+        "CheckNumber": loan_takeover_detail.CheckNumber,
+        "ApplicationNumber": loan_takeover_detail.ApplicationNumber,
+        "LoanNumber": "SBT-0001",
+        "PaymentReference": loan_takeover_detail.PaymentReference,
+        "DeductionCode": "003",  # Example value
+        "PaymentDescription": "Loan repayment notification",  # Example description
+        "PaymentDate": "2022-05-26T21:32:52",
+        "MaturityDate": "2022-05-26T21:32:52",
+        "PaymentAmount": 100000.00,
+        "LoanBalance": 120000.00,
+        "MessageType": "PARTIAL_LOAN_REPAYMENT_NOTIFICATION",
+        "RequestType": OUTGOING,
+    }
 
-        if not fsp:
-            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+    fsp = Fsp.objects.first()
 
-        msg_id = str(uuid.uuid4())
-        message_type = 'FULL_REPAYMENT_0FF_BALANCE_RESPONSE'
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        response = generate_xml_for_repayment(request_data, fsp)
+    response = generate_xml_for_repayment(request_data, fsp)
 
-        if response.get('status') == 200:
-            return Response({"message": "Data successfully sent and inserted."},
-                            status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Failed to send data to the third-party system."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if response.get('status') == 200:
+        return Response({"message": "Data successfully sent and inserted."},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Failed to send data to the third-party system."},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def generate_xml_for_repayment(request_data, fsp):
     """

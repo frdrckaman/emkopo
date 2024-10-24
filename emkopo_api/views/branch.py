@@ -26,29 +26,27 @@ class BranchDetailsAPIView(APIView):
         }
     )
     def get(self, request):
-        # Fetch the Branch data grouped by District
-        districts = District.objects.prefetch_related('branch_set').all()
+        return branch()
 
-        if not districts:
-            return Response({"error": "No districts found."}, status=status.HTTP_404_NOT_FOUND)
+def branch():
+    districts = District.objects.prefetch_related('branch_set').all()
 
-        # Generate the XML payload
-        fsp = Fsp.objects.first()
+    if not districts:
+        return Response({"error": "No districts found."}, status=status.HTTP_404_NOT_FOUND)
 
-        if not fsp:
-            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+    fsp = Fsp.objects.first()
 
-        msg_id = str(uuid.uuid4())
-        message_type = 'ACCOUNT_VALIDATION_RESPONSE'
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        response = generate_xml_for_branch_details(districts, fsp)
+    response = generate_xml_for_branch_details(districts, fsp)
 
-        if response.get('status') == 200:
-            return Response({"message": "Data successfully sent and inserted."},
-                            status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Failed to send data to the third-party system."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if response.get('status') == 200:
+        return Response({"message": "Data successfully sent and inserted."},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Failed to send data to the third-party system."},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def generate_xml_for_branch_details(districts, fsp):
     """

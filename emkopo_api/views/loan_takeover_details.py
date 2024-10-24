@@ -41,73 +41,75 @@ class LoanTakeOverDetailsAPIView(APIView):
         consumes=['application/json'],
     )
     def post(self, request, *args, **kwargs):
-        # Extract LoanNumber and FSPReferenceNumber from the request body
-        loan_number = request.data.get('LoanNumber')
-        fsp_reference_number = request.data.get('FSPReferenceNumber')
+        return loan_takeover_details(request)
 
-        # Validate required fields
-        if not loan_number or not fsp_reference_number:
+def loan_takeover_details(request):
+    loan_number = request.data.get('LoanNumber')
+    fsp_reference_number = request.data.get('FSPReferenceNumber')
+
+    # Validate required fields
+    if not loan_number or not fsp_reference_number:
+        return Response(
+            {'error': 'LoanNumber and FSPReferenceNumber are required fields.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        # Retrieve data from LoanSettlementBalanceResponse
+        settlement_response = LoanSettlementBalanceResponse.objects.get(
+            LoanNumber=loan_number,
+            FSPReferenceNumber=fsp_reference_number
+        )
+
+        if not settlement_response:
+            return Response({'error': 'Loan settlement response not found.'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        # Retrieve FSP data
+        fsp = Fsp.objects.all().first()
+
+        if not fsp:
+            return Response({'error': 'FSP not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        response = generate_response_xml(settlement_response, fsp)
+
+        if response.get('status') == 200:
+            try:
+                LoanTakeoverDetail.objects.create(
+                    LoanNumber=settlement_response.LoanNumber,
+                    FSPReferenceNumber=settlement_response.FSPReferenceNumber,
+                    PaymentReferenceNumber=settlement_response.PaymentReferenceNumber,
+                    TotalPayoffAmount=settlement_response.TotalPayoffAmount,
+                    OutstandingBalance=settlement_response.OutstandingBalance,
+                    FSPBankAccount=fsp.FSPBankAccount,
+                    FSPBankAccountName=fsp.FSPBankAccountName,
+                    SWIFTCode=fsp.SWIFTCode,
+                    MNOChannels=fsp.MNOChannels,
+                    FinalPaymentDate=settlement_response.FinalPaymentDate,
+                    LastDeductionDate=settlement_response.LastDeductionDate,
+                    LastPayDate=settlement_response.LastPayDate,
+                    EndDate=settlement_response.EndDate,
+                    status=1,
+                    MessageType="NOTIFICATION_FROM_FSP1_TO_EMPLOYER",
+                    RequestType=OUTGOING,
+                )
+            except Exception as e:
+                return Response(
+                    {'error': f'Failed to save LoanTakeoverDetail: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content_type='application/xml'
+                )
             return Response(
-                {'error': 'LoanNumber and FSPReferenceNumber are required fields.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                {'message': 'Loan takeover details processed and sent successfully.'},
+                status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {'error': 'Failed to send response to the third-party system.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        try:
-            # Retrieve data from LoanSettlementBalanceResponse
-            settlement_response = LoanSettlementBalanceResponse.objects.get(
-                LoanNumber=loan_number,
-                FSPReferenceNumber=fsp_reference_number
-            )
-
-            if not settlement_response:
-                return Response({'error': 'Loan settlement response not found.'},
-                                status=status.HTTP_404_NOT_FOUND)
-
-            # Retrieve FSP data
-            fsp = Fsp.objects.all().first()
-
-            if not fsp:
-                return Response({'error': 'FSP not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-            response = generate_response_xml(settlement_response, fsp)
-
-            if response.get('status') == 200:
-                try:
-                    LoanTakeoverDetail.objects.create(
-                        LoanNumber=settlement_response.LoanNumber,
-                        FSPReferenceNumber=settlement_response.FSPReferenceNumber,
-                        PaymentReferenceNumber=settlement_response.PaymentReferenceNumber,
-                        TotalPayoffAmount=settlement_response.TotalPayoffAmount,
-                        OutstandingBalance=settlement_response.OutstandingBalance,
-                        FSPBankAccount=fsp.FSPBankAccount,
-                        FSPBankAccountName=fsp.FSPBankAccountName,
-                        SWIFTCode=fsp.SWIFTCode,
-                        MNOChannels=fsp.MNOChannels,
-                        FinalPaymentDate=settlement_response.FinalPaymentDate,
-                        LastDeductionDate=settlement_response.LastDeductionDate,
-                        LastPayDate=settlement_response.LastPayDate,
-                        EndDate=settlement_response.EndDate,
-                        status=1,
-                        MessageType="NOTIFICATION_FROM_FSP1_TO_EMPLOYER",
-                        RequestType=OUTGOING,
-                    )
-                except Exception as e:
-                    return Response(
-                        {'error': f'Failed to save LoanTakeoverDetail: {str(e)}'},
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        content_type='application/xml'
-                    )
-                return Response(
-                    {'message': 'Loan takeover details processed and sent successfully.'},
-                    status=status.HTTP_200_OK)
-            else:
-                return Response(
-                    {'error': 'Failed to send response to the third-party system.'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        except Exception as e:
-            return Response({'error': f'Error processing request: {str(e)}'},
-                            status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': f'Error processing request: {str(e)}'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 def generate_response_xml(settlement_response, fsp):

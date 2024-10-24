@@ -48,8 +48,7 @@ class LoanRepaymentRequestAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 content_type='application/xml'
             )
-
-            # Convert XML data to a dictionary
+        # Convert XML data to a dictionary
         try:
             data_dict = xmltodict.parse(xml_data)
         except Exception as e:
@@ -58,66 +57,69 @@ class LoanRepaymentRequestAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 content_type='application/xml'
             )
+        return loan_repayment_request(data_dict, xml_data)
 
-            # Extract 'Document' data to pass to the serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
-            return Response(
-                {'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST,
-                content_type='application/xml'
-            )
 
-        # Extract Header and MessageDetails
-        header_data = document_data.get('Data', {}).get('Header', {})
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
+def loan_repayment_request(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
 
+    # Extract Header and MessageDetails
+    header_data = document_data.get('Data', {}).get('Header', {})
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
+
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            url=settings.ESS_UTUMISHI_API
+            # Replace with actual endpoint URL
+        )
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to save API request: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type='application/xml'
+        )
+
+    # Combine Header and MessageDetails for serialization
+    combined_data = {**header_data, **message_details, 'Signature': document_data.get(
+        'Signature', '')}
+
+    # Pass the dictionary data to the serializer
+    serializer = LoanRepaymentRequestSerializer(data=combined_data)
+
+    if serializer.is_valid():
         try:
-            log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
+            LoanRepaymentRequest.objects.create(
+                DeductionCode=serializer.validated_data.get('DeductionCode'),
+                VoteCode=serializer.validated_data.get('VoteCode'),
+                VoteName=serializer.validated_data.get('VoteName'),
+                CheckNumber=serializer.validated_data.get('CheckNumber'),
+                FirstName=serializer.validated_data.get('FirstName'),
+                MiddleName=serializer.validated_data.get('MiddleName'),
+                LastName=serializer.validated_data.get('LastName'),
+                PayDate=serializer.validated_data.get('PayDate'),
+                MessageType=header_data.get('MessageType'),
+                RequestType=INCOMING,
+                status=0
+                # Static value based on the XML structure
             )
-        except Exception as e:
-            return Response(
-                {'error': f'Failed to save API request: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content_type='application/xml'
-            )
+            return Response({
+                "message": "Data successfully inserted into LoanLiquidationNotification."},
+                status=status.HTTP_200_OK)
 
-        # Combine Header and MessageDetails for serialization
-        combined_data = {**header_data, **message_details, 'Signature': document_data.get(
-            'Signature', '')}
-
-        # Pass the dictionary data to the serializer
-        serializer = LoanRepaymentRequestSerializer(data=combined_data)
-
-        if serializer.is_valid():
-            try:
-                LoanRepaymentRequest.objects.create(
-                    DeductionCode=serializer.validated_data.get('DeductionCode'),
-                    VoteCode=serializer.validated_data.get('VoteCode'),
-                    VoteName=serializer.validated_data.get('VoteName'),
-                    CheckNumber=serializer.validated_data.get('CheckNumber'),
-                    FirstName=serializer.validated_data.get('FirstName'),
-                    MiddleName=serializer.validated_data.get('MiddleName'),
-                    LastName=serializer.validated_data.get('LastName'),
-                    PayDate=serializer.validated_data.get('PayDate'),
-                    MessageType=header_data.get('MessageType'),
-                    RequestType=INCOMING,
-                    status=0
-                    # Static value based on the XML structure
-                )
-                return Response({
-                    "message": "Data successfully inserted into LoanLiquidationNotification."},
-                    status=status.HTTP_200_OK)
-
-            except AttributeError as e:
-                return Response({"error": "Missing required fields", "details": str(e)},
+        except AttributeError as e:
+            return Response({"error": "Missing required fields", "details": str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        else:
+    else:
         # Return validation errors
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

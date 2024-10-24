@@ -48,56 +48,58 @@ class LoanOfferCancellationNotificationAPIView(APIView):
             # Parse the XML data to a Python dictionary
             data_dict = xmltodict.parse(xml_data)
 
-            # Extract data from the parsed dictionary
-            document = data_dict.get('Document', {})
-            data = document.get('Data', {})
-            message_details = data.get('MessageDetails', {})
-
-            # Extract specific fields from the XML payload
-            application_number = message_details.get('ApplicationNumber')
-            reason = message_details.get('Reason')
-            fsp_reference_number = message_details.get('FSPReferenceNumber')
-            loan_number = message_details.get('LoanNumber')
-
-            # Validate required fields
-            if not application_number or not fsp_reference_number:
-                return Response(
-                    {'error': 'ApplicationNumber and FSPReferenceNumber are required fields.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Find and update the LoanOfferRequest
-            try:
-                log_and_make_api_call(
-                    request_type=INCOMING,
-                    payload=xml_data,
-                    signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                    url=settings.ESS_UTUMISHI_API
-                    # Replace with actual endpoint URL
-                )
-
-                loan_offer_request = LoanOfferRequest.objects.get(
-                    ApplicationNumber=application_number,
-                    FSPReferenceNumber=fsp_reference_number
-                )
-
-                if loan_offer_request.status >= 3:
-                    return Response(
-                        {'error': 'Operation not allowed. Status must be less than 3.'},
-                        status=status.HTTP_409_CONFLICT
-                    )
-                # Update fields
-                loan_offer_request.CancellationReason = reason
-                loan_offer_request.status = 9
-                loan_offer_request.save()
-
-            except LoanOfferRequest.DoesNotExist:
-                return Response(
-                    {'error': f'LoanOfferRequest with ApplicationNumber {application_number} and LoanNumber {loan_number} not found.'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-
-            return Response({'message': 'Loan offer request updated successfully.'}, status=status.HTTP_200_OK)
+            return offer_cancellation(data_dict, xml_data)
 
         except Exception as e:
             return Response({'error': f'Invalid XML data: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+def offer_cancellation(data_dict, xml_data):
+    document = data_dict.get('Document', {})
+    data = document.get('Data', {})
+    message_details = data.get('MessageDetails', {})
+
+    # Extract specific fields from the XML payload
+    application_number = message_details.get('ApplicationNumber')
+    reason = message_details.get('Reason')
+    fsp_reference_number = message_details.get('FSPReferenceNumber')
+    loan_number = message_details.get('LoanNumber')
+
+    # Validate required fields
+    if not application_number or not fsp_reference_number:
+        return Response(
+            {'error': 'ApplicationNumber and FSPReferenceNumber are required fields.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,
+            url=settings.ESS_UTUMISHI_API
+        )
+
+        loan_offer_request = LoanOfferRequest.objects.get(
+            ApplicationNumber=application_number,
+            FSPReferenceNumber=fsp_reference_number
+        )
+
+        if loan_offer_request.status >= 3:
+            return Response(
+                {'error': 'Operation not allowed. Status must be less than 3.'},
+                status=status.HTTP_409_CONFLICT
+            )
+        # Update fields
+        loan_offer_request.CancellationReason = reason
+        loan_offer_request.status = 9
+        loan_offer_request.save()
+
+    except LoanOfferRequest.DoesNotExist:
+        return Response(
+            {
+                'error': f'LoanOfferRequest with ApplicationNumber {application_number} and LoanNumber {loan_number} not found.'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    return Response({'message': 'Loan offer request updated successfully.'},
+                    status=status.HTTP_200_OK)
+

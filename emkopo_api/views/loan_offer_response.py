@@ -31,7 +31,9 @@ class LoanOfferResponseAPIView(APIView):
         }
     )
     def post(self, request, *args, **kwargs):
-        # Retrieve 'id' from the request data
+        return self.loan_offer_response(request)
+
+    def loan_offer_response(self, request):
         user_response_id = request.data.get('id')
 
         if not user_response_id:
@@ -39,8 +41,6 @@ class LoanOfferResponseAPIView(APIView):
                 {'error': 'id is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        # Fetch the UserResponse instance
         try:
             user_response = UserResponse.objects.get(id=user_response_id)
         except UserResponse.DoesNotExist:
@@ -77,9 +77,8 @@ class LoanOfferResponseAPIView(APIView):
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_data,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
         if response.get('status') == 200:
             loan_offer_request = user_response.LoanOfferRequest

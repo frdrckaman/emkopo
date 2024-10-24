@@ -53,57 +53,60 @@ class LoanTakeoverDisbursementNotificationAPIView(APIView):
             return Response({'error': f'Failed to parse XML: {str(e)}'},
                             status=status.HTTP_400_BAD_REQUEST, content_type='application/xml')
 
-        # Extract 'Document' data to pass to the serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
-            return Response({'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST, content_type='application/xml'
-            )
+        return loan_takeover_disb_notification(data_dict, xml_data)
 
-        # Extract Header and MessageDetails
-        header_data = document_data.get('Data', {}).get('Header', {})
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
+def loan_takeover_disb_notification(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response({'error': 'Document node is missing in the XML data.'},
+                        status=status.HTTP_400_BAD_REQUEST, content_type='application/xml'
+                        )
 
+    # Extract Header and MessageDetails
+    header_data = document_data.get('Data', {}).get('Header', {})
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
+
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            url=settings.ESS_UTUMISHI_API
+            # Replace with actual endpoint URL
+        )
+    except Exception as e:
+        return Response({'error': f'Failed to save API request: {str(e)}'},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        content_type='application/xml')
+
+    # Combine Header and MessageDetails for serialization
+    combined_data = {**header_data, **message_details, 'Signature': document_data.get(
+        'Signature', '')}
+
+    # Validate the data using the serializer
+    serializer = LoanTakeoverDisbursementNotificationSerializer(data=combined_data)
+    # Extract the relevant fields from the XML
+    if serializer.is_valid():
         try:
-            log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
+            LoanTakeoverDisbursementNotification.objects.create(
+                ApplicationNumber=serializer.validated_data.get('ApplicationNumber'),
+                FSPReferenceNumber=serializer.validated_data.get('FSPReferenceNumber'),
+                LoanNumber=serializer.validated_data.get('LoanNumber'),
+                TotalAmountToPay=serializer.validated_data.get('TotalAmountToPay'),
+                DisbursementDate=serializer.validated_data.get('DisbursementDate'),
+                Reason=serializer.validated_data.get('Reason'),
+                MessageType=header_data.get('MessageType'),
+                RequestType=INCOMING,
+                status=0
+                # Static value based on the XML structure
             )
-        except Exception as e:
-            return Response({'error': f'Failed to save API request: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type='application/xml')
+            return Response({
+                "message": "Data successfully inserted into LoanLiquidationNotification."},
+                status=status.HTTP_200_OK)
 
-        # Combine Header and MessageDetails for serialization
-        combined_data = {**header_data, **message_details, 'Signature': document_data.get(
-            'Signature', '')}
-
-        # Validate the data using the serializer
-        serializer = LoanTakeoverDisbursementNotificationSerializer(data=combined_data)
-        # Extract the relevant fields from the XML
-        if serializer.is_valid():
-            try:
-                LoanTakeoverDisbursementNotification.objects.create(
-                    ApplicationNumber=serializer.validated_data.get('ApplicationNumber'),
-                    FSPReferenceNumber=serializer.validated_data.get('FSPReferenceNumber'),
-                    LoanNumber=serializer.validated_data.get('LoanNumber'),
-                    TotalAmountToPay=serializer.validated_data.get('TotalAmountToPay'),
-                    DisbursementDate=serializer.validated_data.get('DisbursementDate'),
-                    Reason=serializer.validated_data.get('Reason'),
-                    MessageType=header_data.get('MessageType'),
-                    RequestType=INCOMING,
-                    status=0
-                    # Static value based on the XML structure
-                )
-                return Response({
-                    "message": "Data successfully inserted into LoanLiquidationNotification."},
-                    status=status.HTTP_200_OK)
-
-            except AttributeError as e:
-                return Response({"error": "Missing required fields", "details": str(e)},
-                                status=status.HTTP_400_BAD_REQUEST)
-        else:
-            # Return validation errors
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except AttributeError as e:
+            return Response({"error": "Missing required fields", "details": str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
+    else:
+        # Return validation errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

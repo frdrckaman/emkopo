@@ -58,67 +58,68 @@ class PartialLoanRepaymentRequestAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 content_type='application/xml'
             )
+        return partial_loan_repayment_request(data_dict, xml_data)
 
-        # Extract 'Document' data to pass to the serializer
-        document_data = data_dict.get('Document')
-        if not document_data:
+def partial_loan_repayment_request(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
+
+    # Extract Header and MessageDetails
+    header_data = document_data.get('Data', {}).get('Header', {})
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
+
+    try:
+        log_and_make_api_call(
+            request_type=INCOMING,
+            payload=xml_data,
+            signature=settings.ESS_SIGNATURE,
+            url=settings.ESS_UTUMISHI_API
+        )
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to save API request: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type='application/xml'
+        )
+    # Combine Header and MessageDetails for serialization
+    combined_data = {**header_data, **message_details,
+                     'Signature': document_data.get('Signature', '')}
+
+    try:
+        # Pass the dictionary data to the serializer
+        serializer = PartialLoanRepaymentRequestSerializer(data=combined_data)
+
+        # Validate and save the data
+        if serializer.is_valid():
+            PartialLoanRepaymentRequest.objects.create(
+                CheckNumber=serializer.validated_data.get('CheckNumber'),
+                FirstName=serializer.validated_data.get('FirstName'),
+                MiddleName=serializer.validated_data.get('MiddleName'),
+                LastName=serializer.validated_data.get('LastName'),
+                VoteCode=serializer.validated_data.get('VoteCode'),
+                VoteName=serializer.validated_data.get('VoteName'),
+                DeductionAmount=serializer.validated_data.get('DeductionAmount'),
+                DeductionCode=serializer.validated_data.get('DeductionCode'),
+                DeductionName=serializer.validated_data.get('DeductionName'),
+                DeductionBalance=serializer.validated_data.get('DeductionBalance'),
+                FSPCode=serializer.validated_data.get('FSPCode'),
+                PaymentOption=serializer.validated_data.get('PaymentOption'),
+                Intention=serializer.validated_data.get('Intention'),
+                AmountToPay=serializer.validated_data.get('AmountToPay'),
+                MessageType=header_data.get('MessageType'),
+                RequestType=INCOMING,
+            )
             return Response(
-                {'error': 'Document node is missing in the XML data.'},
-                status=status.HTTP_400_BAD_REQUEST,
-                content_type='application/xml'
-            )
-
-        # Extract Header and MessageDetails
-        header_data = document_data.get('Data', {}).get('Header', {})
-        message_details = document_data.get('Data', {}).get('MessageDetails', {})
-
-        try:
-            log_and_make_api_call(
-                request_type=INCOMING,
-                payload=xml_data,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
-                url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
-            )
-        except Exception as e:
-            return Response(
-                {'error': f'Failed to save API request: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content_type='application/xml'
-            )
-        # Combine Header and MessageDetails for serialization
-        combined_data = {**header_data, **message_details,
-                         'Signature': document_data.get('Signature', '')}
-
-        # Extract the relevant fields from the XML
-        try:
-            # Pass the dictionary data to the serializer
-            serializer = PartialLoanRepaymentRequestSerializer(data=combined_data)
-
-            # Validate and save the data
-            if serializer.is_valid():
-                PartialLoanRepaymentRequest.objects.create(
-                    CheckNumber=serializer.validated_data.get('CheckNumber'),
-                    FirstName=serializer.validated_data.get('FirstName'),
-                    MiddleName=serializer.validated_data.get('MiddleName'),
-                    LastName=serializer.validated_data.get('LastName'),
-                    VoteCode=serializer.validated_data.get('VoteCode'),
-                    VoteName=serializer.validated_data.get('VoteName'),
-                    DeductionAmount=serializer.validated_data.get('DeductionAmount'),
-                    DeductionCode=serializer.validated_data.get('DeductionCode'),
-                    DeductionName=serializer.validated_data.get('DeductionName'),
-                    DeductionBalance=serializer.validated_data.get('DeductionBalance'),
-                    FSPCode=serializer.validated_data.get('FSPCode'),
-                    PaymentOption=serializer.validated_data.get('PaymentOption'),
-                    Intention=serializer.validated_data.get('Intention'),
-                    AmountToPay=serializer.validated_data.get('AmountToPay'),
-                    MessageType=header_data.get('MessageType'),
-                    RequestType=INCOMING,
-                )
-                return Response({"message": "Data successfully inserted into PartialLoanRepaymentRequest."},
-                                status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except AttributeError as e:
-            return Response({"error": "Missing required fields", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                {"message": "Data successfully inserted into PartialLoanRepaymentRequest."},
+                status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except AttributeError as e:
+        return Response({"error": "Missing required fields", "details": str(e)},
+                        status=status.HTTP_400_BAD_REQUEST)
 

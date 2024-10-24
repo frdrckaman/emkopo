@@ -43,13 +43,15 @@ class LoanMonthlyDeductionRecordAPIView(APIView):
         except Exception as e:
             return Response({"error": "Invalid XML format", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+        return self.loan_monthly_deduction(cleaned_xml, xml_data)
+
+    def loan_monthly_deduction(self, cleaned_xml, xml_data):
         try:
             log_and_make_api_call(
                 request_type=INCOMING,
                 payload=cleaned_xml,
-                signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+                signature=settings.ESS_SIGNATURE,
                 url=settings.ESS_UTUMISHI_API
-                # Replace with actual endpoint URL
             )
         except Exception as e:
             return Response(
@@ -97,7 +99,6 @@ class LoanMonthlyDeductionRecordAPIView(APIView):
 
         except AttributeError as e:
             return Response({"error": "Missing required fields", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
     def clean_xml_data(self, raw_xml):
         """

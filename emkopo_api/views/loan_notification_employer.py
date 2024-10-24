@@ -39,59 +39,60 @@ class LoanNotificationToEmployerAPIView(APIView):
         }
     )
     def post(self, request):
-        # Get the loan_offer_request_id from the request body
-        loan_number = request.data.get("LoanNumber")
+        return loan_notification_employer(request)
 
-        # Retrieve the LoanOfferRequest instance
-        loan_offer_request = LoanOfferRequest.objects.get(LoanNumber=loan_number)
+def loan_notification_employer(request):
+    loan_number = request.data.get("LoanNumber")
 
-        fsp = Fsp.objects.first()
+    # Retrieve the LoanOfferRequest instance
+    loan_offer_request = LoanOfferRequest.objects.get(LoanNumber=loan_number)
 
-        if not fsp:
-            return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
+    fsp = Fsp.objects.first()
 
-        msg_id = str(uuid.uuid4())
-        message_type = 'NOTIFICATION_FROM_FSP1_TO_EMPLOYER'
+    if not fsp:
+        return Response({"error": "FSP not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Generate XML data for the API call
-        response = generate_xml_for_notification(loan_offer_request, fsp)
+    # Generate XML data for the API call
+    response = generate_xml_for_notification(loan_offer_request, fsp)
 
-        if response.get('status') == 200:
-            # After sending the payload, insert data into the LoanNotificationEmployer model
-            try:
-                LoanNotificationEmployer.objects.create(
-                    PaymentReference=loan_offer_request.PaymentReferenceNumber,
-                    FSPCode="0003",
-                    FSPName="FSP1 Name",
-                    ProductCode=int(loan_offer_request.ProductCode),
-                    ProductName="Salary Loan",
-                    FSP1LoanNumber=loan_offer_request.FSP1LoanNumber,
-                    ApplicationNumber=loan_offer_request.ApplicationNumber,
-                    LoanPayoffAmount=loan_offer_request.TotalAmountToPay or 0,
-                    LoanLiquidationDate=loan_offer_request.DisbursementDate.date() if loan_offer_request.DisbursementDate else datetime.now().date(),
-                    CheckNumber=str(loan_offer_request.CheckNumber),
-                    FirstName=loan_offer_request.FirstName,
-                    MiddleName=loan_offer_request.MiddleName,
-                    LastName=loan_offer_request.LastName,
-                    VoteCode=loan_offer_request.VoteCode,
-                    VoteName=loan_offer_request.VoteName,
-                    NIN=loan_offer_request.NIN,
-                    DeductionCode="011001",
-                    DeductionDescription="Deduction Description",
-                    MessageType="NOTIFICATION_FROM_FSP1_TO_EMPLOYER",
-                    RequestType="OUTWARD_NOTIFICATION",
-                )
-            except Exception as e:
-                return Response(
-                    {'error': f'Failed to save LoanNotificationEmployer: {str(e)}'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content_type='application/xml'
-                )
+    if response.get('status') == 200:
+        # After sending the payload, insert data into the LoanNotificationEmployer model
+        try:
+            LoanNotificationEmployer.objects.create(
+                PaymentReference=loan_offer_request.PaymentReferenceNumber,
+                FSPCode="0003",
+                FSPName="FSP1 Name",
+                ProductCode=int(loan_offer_request.ProductCode),
+                ProductName="Salary Loan",
+                FSP1LoanNumber=loan_offer_request.FSP1LoanNumber,
+                ApplicationNumber=loan_offer_request.ApplicationNumber,
+                LoanPayoffAmount=loan_offer_request.TotalAmountToPay or 0,
+                LoanLiquidationDate=loan_offer_request.DisbursementDate.date() if loan_offer_request.DisbursementDate else datetime.now().date(),
+                CheckNumber=str(loan_offer_request.CheckNumber),
+                FirstName=loan_offer_request.FirstName,
+                MiddleName=loan_offer_request.MiddleName,
+                LastName=loan_offer_request.LastName,
+                VoteCode=loan_offer_request.VoteCode,
+                VoteName=loan_offer_request.VoteName,
+                NIN=loan_offer_request.NIN,
+                DeductionCode="011001",
+                DeductionDescription="Deduction Description",
+                MessageType="NOTIFICATION_FROM_FSP1_TO_EMPLOYER",
+                RequestType="OUTWARD_NOTIFICATION",
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to save LoanNotificationEmployer: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content_type='application/xml'
+            )
 
-            return Response({"message": "Notification successfully sent and saved."}, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": response.get('error', 'Failed to send notification')},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"message": "Notification successfully sent and saved."},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({"error": response.get('error', 'Failed to send notification')},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 def generate_xml_for_notification(loan_offer_request, fsp):
     """
@@ -139,8 +140,7 @@ def generate_xml_for_notification(loan_offer_request, fsp):
     response = log_and_make_api_call(
         request_type=OUTGOING,
         payload=xml_string,
-        signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+        signature=settings.ESS_SIGNATURE,
         url=settings.ESS_UTUMISHI_API
-        # Replace with actual endpoint URL
     )
     return response
