@@ -19,7 +19,7 @@ from emkopo_api.views import ProductCatalogXMLView, LoanChargesRequestAPIView, \
     AccountValidationResponseAPIView, BranchDetailsAPIView, LoanMonthlyDeductionRecordAPIView, \
     PartialLoanRepaymentRequestAPIView, PartialLoanRepaymentResponseAPIView, \
     GenerateXMLForDecommissionView, LoanDeductionStopNotificationAPIView, \
-    GeneralResponseAPIView
+    GeneralResponseAPIView, SbtEmkopoAPIEndpoint
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -85,6 +85,7 @@ urlpatterns = [
     path('loan-deduction-stop-notification/', LoanDeductionStopNotificationAPIView.as_view(),
          name='loan-deduction-stop-notification'),
     path('general-response/', GeneralResponseAPIView.as_view(), name='general-response'),
+    path('sbt-emkopo-api/', SbtEmkopoAPIEndpoint.as_view(), name='sbt-emkopo-api'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

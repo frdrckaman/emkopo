@@ -74,7 +74,7 @@ class LoanFinalApprovalNotificationAPIView(APIView):
 
         return log_and_make_api_call(payload, xml_data)
 
-def loan_final_appproval(payload, xml_data):
+def loan_final_approval(payload, xml_data):
     content_type = 'application/xml'
     response = log_and_make_api_call(
         request_type=INCOMING,

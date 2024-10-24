@@ -80,9 +80,8 @@ def deduction_stop_notification(data_dict, xml_data):
         log_and_make_api_call(
             request_type=INCOMING,
             payload=xml_data,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
     except Exception as e:
         return Response(

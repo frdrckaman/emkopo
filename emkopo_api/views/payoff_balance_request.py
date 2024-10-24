@@ -51,6 +51,17 @@ class LoanPayOffBalanceRequestAPIView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 def payoff_balance_request(data_dict, xml_data):
+    document_data = data_dict.get('Document')
+    if not document_data:
+        return Response(
+            {'error': 'Document node is missing in the XML data.'},
+            status=status.HTTP_400_BAD_REQUEST,
+            content_type='application/xml'
+        )
+    # Extract Header and MessageDetails
+    header_data = document_data.get('Data', {}).get('Header', {})
+    message_details = document_data.get('Data', {}).get('MessageDetails', {})
+
     log_and_make_api_call(
         request_type=INCOMING,
         payload=xml_data,
@@ -99,7 +110,7 @@ def payoff_balance_request(data_dict, xml_data):
         DeductionName=deduction_name,
         DeductionBalance=deduction_balance,
         PaymentOption=payment_option,
-        MessageType="TOP_UP_PAY_0FF_BALANCE_REQUEST",
+        MessageType=header_data.get('MessageType'),
         RequestType=INCOMING,
     )
 
