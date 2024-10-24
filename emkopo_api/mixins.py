@@ -48,10 +48,10 @@ def log_and_make_api_call(request_type, payload, signature, url):
         MessageType=message_type,
         RequestType=request_type,
         TimeStamp=timezone.now(),
-        ApiUrl=url,  # Add the new ApiUrl field
+        ApiUrl=url,
         PayLoad=payload,
         Signature=signature,
-        Status=0  # Initial status, assuming 0 for "pending"
+        Status=0
     )
 
     if request_type == OUTGOING:
@@ -64,6 +64,7 @@ def log_and_make_api_call(request_type, payload, signature, url):
 
                 # Update the ApiRequest object with the response status
                 api_request.Status = response.status_code
+                api_request.response = response.content
                 api_request.save()
 
                 return {
@@ -205,7 +206,7 @@ def convert_to_xml(request_type, message_type, data, fsp, msg_id):
                 SubElement(message_details, key).text = str(value)
 
     # Add the Signature element
-    SubElement(document, "Signature").text = "XYZ"
+    SubElement(document, "Signature").text = settings.EMKOPO_SIGNATURE
 
     # Convert the Element to a string
     xml_string = tostring(document, encoding="utf-8").decode("utf-8").strip()

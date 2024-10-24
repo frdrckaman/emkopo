@@ -106,7 +106,7 @@ def generate_xml_for_validation_response(request_data, fsp):
         SubElement(message_details, "Reason").text = data["Reason"]
 
         # Add the Signature element
-        SubElement(document, "Signature").text = "Signature"
+        SubElement(document, "Signature").text = settings.EMKOPO_SIGNATURE
 
         # Convert the XML Element to string
         xml_string = tostring(document, encoding="utf-8").decode("utf-8")
@@ -114,9 +114,8 @@ def generate_xml_for_validation_response(request_data, fsp):
         response = log_and_make_api_call(
             request_type=OUTGOING,
             payload=xml_string,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            signature=settings.ESS_SIGNATURE,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
         return response
     else:
