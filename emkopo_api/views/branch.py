@@ -1,3 +1,4 @@
+import base64
 import uuid
 
 from django.conf import settings
@@ -10,6 +11,7 @@ from drf_yasg import openapi
 
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_constants.constants import OUTGOING
+from emkopo_mixins.signature import load_private_key, sign_data
 from emkopo_product.models import District, Fsp
 
 
@@ -78,16 +80,32 @@ def generate_xml_for_branch_details(districts, fsp):
             SubElement(branch_elem, "BranchCode").text = branch.BranchCode
             SubElement(branch_elem, "BranchName").text = branch.BranchName
 
-    # Add the Signature element
-    SubElement(document, "Signature").text = settings.EMKOPO_SIGNATURE
-
-    # Convert the XML Element to string
+    # Convert the XML Element to string (we'll sign this string)
     xml_string = tostring(document, encoding="utf-8").decode("utf-8")
 
+    # Load the private key to sign the data
+    private_key = load_private_key(settings.EMKOPO_PRIVATE_KEY)
+
+    # Convert the XML string to bytes
+    xml_bytes = xml_string.encode('utf-8')
+
+    # Sign the XML data (xml_bytes) using the private key
+    signature = sign_data(private_key, xml_bytes)
+
+    # Encode the signature in base64
+    signature_b64 = base64.b64encode(signature).decode('utf-8')
+
+    # Add the Signature element to the document
+    SubElement(document, "Signature").text = signature_b64
+
+    # Convert the final XML (with the signature) to string
+    final_xml_string = tostring(document, encoding="utf-8").decode("utf-8")
+
+    # Send the API response with the final XML payload
     response = log_and_make_api_call(
         request_type=OUTGOING,
-        payload=xml_string,
-        signature=settings.ESS_SIGNATURE,
+        payload=final_xml_string,
+        signature=signature_b64,
         url=settings.ESS_UTUMISHI_API
     )
     return response

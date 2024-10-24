@@ -14,7 +14,7 @@ from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import AccountValidationResponseSerializer
 from emkopo_constants.constants import OUTGOING
 from emkopo_loan.models import LoanOfferRequest
-from emkopo_mixins.sign_data import load_private_key, sign_data
+from emkopo_mixins.signature import load_private_key, sign_data
 from emkopo_product.models import Fsp
 
 

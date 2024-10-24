@@ -1,3 +1,4 @@
+import base64
 import uuid
 
 from django.conf import settings
@@ -8,6 +9,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from emkopo_constants.constants import OUTGOING
 from emkopo_loan.models import LoanNotificationEmployer
+from emkopo_mixins.signature import load_private_key, sign_data
 from emkopo_product.models import Fsp
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -117,18 +119,33 @@ def generate_xml_for_repayment(request_data, fsp):
         SubElement(message_details, "PaymentAmount").text = str(data["PaymentAmount"])
         SubElement(message_details, "LoanBalance").text = str(data["LoanBalance"])
 
-        # Add the Signature element
-        SubElement(document, "Signature").text = "XYZ"
-
-        # Convert the XML Element to string
+        # Convert the XML Element to string (we'll sign this string)
         xml_string = tostring(document, encoding="utf-8").decode("utf-8")
 
+        # Load the private key to sign the data
+        private_key = load_private_key(settings.EMKOPO_PRIVATE_KEY)
+
+        # Convert the XML string to bytes
+        xml_bytes = xml_string.encode('utf-8')
+
+        # Sign the XML data (xml_bytes) using the private key
+        signature = sign_data(private_key, xml_bytes)
+
+        # Encode the signature in base64
+        signature_b64 = base64.b64encode(signature).decode('utf-8')
+
+        # Add the Signature element to the document
+        SubElement(document, "Signature").text = signature_b64
+
+        # Convert the final XML (with the signature) to string
+        final_xml_string = tostring(document, encoding="utf-8").decode("utf-8")
+
+        # Send the API response with the final XML payload
         response = log_and_make_api_call(
             request_type=OUTGOING,
-            payload=xml_string,
-            signature=settings.ESS_SIGNATURE,  # Replace with actual signature if available
+            payload=final_xml_string,
+            signature=signature_b64,
             url=settings.ESS_UTUMISHI_API
-            # Replace with actual endpoint URL
         )
         return response
     else:
