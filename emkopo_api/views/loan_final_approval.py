@@ -11,6 +11,7 @@ from drf_yasg import openapi
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_constants.constants import INCOMING
 from emkopo_loan.models import LoanOfferRequest
+from emkopo_mixins.signature import verify_xml_signature
 
 
 class LoanFinalApprovalNotificationAPIView(APIView):
@@ -64,7 +65,11 @@ class LoanFinalApprovalNotificationAPIView(APIView):
             except Exception as e:
                 return Response({'error': f'Invalid XML data: {str(e)}'},
                                 status=status.HTTP_400_BAD_REQUEST)
-
+            if not settings.EMKOPO_SIT:
+                # Verify the XML signature before proceeding
+                if not verify_xml_signature(xml_data):
+                    return Response({"error": "Signature verification failed"},
+                                    status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(
                 {

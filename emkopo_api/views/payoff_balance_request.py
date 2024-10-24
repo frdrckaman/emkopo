@@ -11,6 +11,7 @@ from drf_yasg import openapi
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_constants.constants import INCOMING
 from emkopo_loan.models import LoanPayOffBalanceRequest
+from emkopo_mixins.signature import verify_xml_signature
 
 
 class LoanPayOffBalanceRequestAPIView(APIView):
@@ -41,6 +42,12 @@ class LoanPayOffBalanceRequestAPIView(APIView):
             # Decode the XML data from the request body
             xml_data = request.body.decode('utf-8').strip()
             xml_data = re.sub(r'>\s+<', '><', xml_data)
+
+            if not settings.EMKOPO_SIT:
+                # Verify the XML signature before proceeding
+                if not verify_xml_signature(xml_data):
+                    return Response({"error": "Signature verification failed"},
+                                    status=status.HTTP_400_BAD_REQUEST)
             # Parse the XML data to a Python dictionary
             data_dict = xmltodict.parse(xml_data)
 

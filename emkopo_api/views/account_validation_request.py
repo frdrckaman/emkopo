@@ -10,6 +10,7 @@ from drf_yasg import openapi
 import re
 
 from emkopo_loan.models import AccountValidationRequest
+from emkopo_mixins.signature import verify_xml_signature
 from ..mixins import log_and_make_api_call
 from ..serializers import AccountValidationRequestSerializer
 
@@ -49,6 +50,12 @@ class AccountValidationRequestAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 content_type='application/xml'
             )
+
+        if not settings.EMKOPO_SIT:
+            # Verify the XML signature before proceeding
+            if not verify_xml_signature(xml_data):
+                return Response({"error": "Signature verification failed"},
+                                status=status.HTTP_400_BAD_REQUEST)
 
         # Convert XML data to a dictionary
         try:

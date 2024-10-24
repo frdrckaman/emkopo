@@ -1,5 +1,6 @@
 import re
 
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,6 +24,7 @@ from emkopo_api.views.loan_repayment_request import loan_repayment_request
 from emkopo_api.views.loan_takeover_disb_notification import loan_takeover_disb_notification
 from emkopo_api.views.partial_loan_repayment_request import partial_loan_repayment_request
 from emkopo_api.views.payoff_balance_request import payoff_balance_request
+from emkopo_mixins.signature import verify_xml_signature
 
 
 class SbtEmkopoAPIEndpoint(APIView):
@@ -51,6 +53,13 @@ class SbtEmkopoAPIEndpoint(APIView):
         try:
             xml_data = request.body.decode('utf-8').strip()
             xml_data = re.sub(r'>\s+<', '><', xml_data)
+
+            if not settings.EMKOPO_SIT:
+                # Verify the XML signature before proceeding
+                if not verify_xml_signature(xml_data):
+                    return Response({"error": "Signature verification failed"},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
             # Convert XML to Python dictionary using xmltodict
             data_dict = xmltodict.parse(xml_data)
 

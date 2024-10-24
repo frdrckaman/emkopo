@@ -52,7 +52,8 @@ def verify_xml_signature(xml_payload):
     """
     Verifies the signature of an XML payload using the extracted public key.
     """
-    public_key = settings.ESS_PUBLIC_KEY
+
+    public_key = load_public_key_from_crt(settings.ESS_PUBLIC_KEY)
     # Parse the XML to extract the signature and the signed data
     tree = ElementTree(fromstring(xml_payload))
     root = tree.getroot()

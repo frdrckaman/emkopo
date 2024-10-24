@@ -11,6 +11,7 @@ from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanOfferRequestSerializer
 from emkopo_constants.constants import INCOMING, NEW_LOAN, TOP_UP_LOAN, TAKE_OVER_LOAN
 from emkopo_loan.models import LoanOfferRequest
+from emkopo_mixins.signature import verify_xml_signature
 
 
 class LoanOfferRequestAPIView(APIView):
@@ -46,6 +47,11 @@ class LoanOfferRequestAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 content_type='application/xml'
             )
+        if not settings.EMKOPO_SIT:
+            # Verify the XML signature before proceeding
+            if not verify_xml_signature(xml_data):
+                return Response({"error": "Signature verification failed"},
+                                status=status.HTTP_400_BAD_REQUEST)
         # Convert XML data to a dictionary
         try:
             data_dict = xmltodict.parse(xml_data)

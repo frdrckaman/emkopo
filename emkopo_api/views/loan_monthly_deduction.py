@@ -12,6 +12,7 @@ import re
 from emkopo_api.mixins import log_and_make_api_call
 from emkopo_api.serializers import LoanDeductionRecordSerializer
 from emkopo_constants.constants import INCOMING
+from emkopo_mixins.signature import verify_xml_signature
 
 
 class LoanMonthlyDeductionRecordAPIView(APIView):
@@ -42,6 +43,12 @@ class LoanMonthlyDeductionRecordAPIView(APIView):
             xml_data = fromstring(cleaned_xml)  # Parse the cleaned XML
         except Exception as e:
             return Response({"error": "Invalid XML format", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not settings.EMKOPO_SIT:
+            # Verify the XML signature before proceeding
+            if not verify_xml_signature(xml_data):
+                return Response({"error": "Signature verification failed"},
+                                status=status.HTTP_400_BAD_REQUEST)
 
         return self.loan_monthly_deduction(cleaned_xml, xml_data)
 
