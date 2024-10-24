@@ -78,7 +78,9 @@ def log_and_make_api_call(request_type, payload, signature, url):
 
                 # Update the ApiRequest object with the simulated response status
                 api_request.Status = mock_response.status_code
+                api_request.response = mock_response.content
                 api_request.save()
+                print()
 
                 return {
                     'status': mock_response.status_code,
@@ -87,6 +89,7 @@ def log_and_make_api_call(request_type, payload, signature, url):
         except requests.exceptions.RequestException as e:
             # Log the error in the database
             api_request.Status = 500  # Assuming 500 for internal errors
+            api_request.response = str(e)
             api_request.save()
 
             return {
@@ -99,6 +102,7 @@ def log_and_make_api_call(request_type, payload, signature, url):
         mock_response.content = "Data Saved successfully"
 
         api_request.Status = mock_response.status_code
+        api_request.response = mock_response.content
         api_request.save()
 
         return {

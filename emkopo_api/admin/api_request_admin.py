@@ -18,6 +18,7 @@ class ApiRequestAdmin(BaseSimpleHistoryAdmin):
                     "ApiUrl",
                     "PayLoad",
                     "Status",
+                    "response",
                 ),
             },
         ),
@@ -31,6 +32,7 @@ class ApiRequestAdmin(BaseSimpleHistoryAdmin):
         "Status",
         "ApiUrl",
         "PayLoad",
+        "response",
     )
 
     search_fields = (
