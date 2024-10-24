@@ -5,9 +5,13 @@ from emkopo_mixins.model import BaseUuidModel
 
 
 class District(BaseUuidModel):
+    DistrictNane = models.CharField(
+        verbose_name="District Name",
+        max_length=120,
+    )
     DistrictCode = models.CharField(
         verbose_name="District Code",
-        max_length=120,
+        max_length=45,
     )
     active = models.BooleanField(
         verbose_name="Status",

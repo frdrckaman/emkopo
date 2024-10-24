@@ -12,6 +12,7 @@ class DistrictAdmin(BaseSimpleHistoryAdmin):
             None,
             {
                 "fields": (
+                    "DistrictNane",
                     "DistrictCode",
                     "active",
                 ),
@@ -21,6 +22,7 @@ class DistrictAdmin(BaseSimpleHistoryAdmin):
     )
 
     list_display = (
+        "DistrictNane",
         "DistrictCode",
         "active",
     )
