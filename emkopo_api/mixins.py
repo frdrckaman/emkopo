@@ -65,7 +65,7 @@ def log_and_make_api_call(request_type, payload, signature, url):
 
                 # Update the ApiRequest object with the response status
                 api_request.Status = response.status_code
-                api_request.response = response.content
+                api_request.response = response.content.decode('utf-8')
                 api_request.save()
 
                 return {
