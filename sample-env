@@ -23,4 +23,5 @@ EMKOPO_TERMS_SERVICE_URL=https://www.stanbicbank.co.tz/tanzania/personal/about-u
 EMKOPO_PRODUCT_DECOMMISSION_API=http://localhost:8000/api/product-decommission/
 ESS_UTUMISHI_API=http://154.118.230.140:9802/ess-loans/mvtyztwq/consume
 ESS_SIGNATURE=
-ESS_CRT=.etc/crt/esstraining.crt
+ESS_PUBLIC_KEY=
+EMKOPO_PRIVATE_KEY=
