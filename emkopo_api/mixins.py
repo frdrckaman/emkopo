@@ -61,7 +61,7 @@ def log_and_make_api_call(request_type, payload, signature, url):
         try:
             if settings.EMKOPO_PROD or settings.EMKOPO_UAT:
                 headers = {'Content-Type': 'application/xml', 'Signature': signature}
-                response = requests.post(url, data=payload, headers=headers)
+                response = requests.post(url, data=payload, headers=headers, verify=False)
 
                 # Update the ApiRequest object with the response status
                 api_request.Status = response.status_code
